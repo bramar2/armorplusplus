@@ -1,0 +1,16 @@
+name: ArmorPlusPlus
+description: Recreates the famous BlockArmor mod!
+version: 0.0.9
+main: me.Marvel.ArmorPlusPlus.ArmorPlusPlus
+author: Author
+api-version: 1.13
+commands:
+    armorplusplus:
+        usage: /<command>
+        description: Opens a GUI with all armor
+        permission: armorplusplus.cheat
+permissions:
+    armorplusplus.*:
+        description: No description
+        children:
+            armorplusplus.cheat: true
