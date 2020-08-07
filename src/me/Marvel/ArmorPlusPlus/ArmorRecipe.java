@@ -8,7 +8,6 @@ import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.attribute.AttributeModifier.Operation;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.EquipmentSlot;
@@ -16,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 public class ArmorRecipe {
 	
@@ -1198,10 +1198,6 @@ public class ArmorRecipe {
 		m2.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 4, Operation.ADD_NUMBER, EquipmentSlot.CHEST));
 		m3.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 3, Operation.ADD_NUMBER, EquipmentSlot.LEGS));
 		m4.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 2, Operation.ADD_NUMBER, EquipmentSlot.FEET));
-		m1.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, new AttributeModifier(UUID.randomUUID(), "generic.attackSpeed", 0.25, Operation.ADD_NUMBER, EquipmentSlot.HEAD));
-		m2.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, new AttributeModifier(UUID.randomUUID(), "generic.attackSpeed", 0.25, Operation.ADD_NUMBER, EquipmentSlot.CHEST));
-		m3.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, new AttributeModifier(UUID.randomUUID(), "generic.attackSpeed", 0.25, Operation.ADD_NUMBER, EquipmentSlot.LEGS));
-		m4.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, new AttributeModifier(UUID.randomUUID(), "generic.attackSpeed", 0.25, Operation.ADD_NUMBER, EquipmentSlot.FEET));
 		m1.setLore(lore);
 		m2.setLore(lore);
 		m3.setLore(lore);
@@ -1232,6 +1228,82 @@ public class ArmorRecipe {
 		recipe2.setIngredient('*', Material.QUARTZ_BLOCK);
 		recipe3.setIngredient('*', Material.QUARTZ_BLOCK);
 		recipe4.setIngredient('*', Material.QUARTZ_BLOCK);
+
+		server.addRecipe(recipe1);
+		server.addRecipe(recipe2);
+		server.addRecipe(recipe3);
+		server.addRecipe(recipe4);
+	}
+	public void obsidianArmor() {
+		ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
+		ItemStack armor2 = new ItemStack(Material.LEATHER_CHESTPLATE);
+		ItemStack armor3 = new ItemStack(Material.LEATHER_LEGGINGS);
+		ItemStack armor4 = new ItemStack(Material.LEATHER_BOOTS);
+		LeatherArmorMeta m1 = (LeatherArmorMeta) armor1.getItemMeta();
+		LeatherArmorMeta m2 = (LeatherArmorMeta) armor2.getItemMeta();
+		LeatherArmorMeta m3 = (LeatherArmorMeta) armor3.getItemMeta();
+		LeatherArmorMeta m4 = (LeatherArmorMeta) armor4.getItemMeta();
+		m1.setDisplayName("Obsidian Helmet");
+		m2.setDisplayName("Obsidian Chestplate");
+		m3.setDisplayName("Obsidian Leggings");
+		m4.setDisplayName("Obsidian Boots");
+		
+		m1.getPersistentDataContainer().set(new NamespacedKey(plugin, "obsidianHelm"), PersistentDataType.BYTE, Byte.parseByte("1"));
+		m2.getPersistentDataContainer().set(new NamespacedKey(plugin, "obsidianChest"), PersistentDataType.BYTE, Byte.parseByte("1"));
+		m3.getPersistentDataContainer().set(new NamespacedKey(plugin, "obsidianLegs"), PersistentDataType.BYTE, Byte.parseByte("1"));
+		m4.getPersistentDataContainer().set(new NamespacedKey(plugin, "obsidianFeet"), PersistentDataType.BYTE, Byte.parseByte("1"));
+		
+		ArrayList<String> lore = new ArrayList<String>();
+        lore.add(ChatColor.GRAY + "Immovable");
+        lore.add(ChatColor.DARK_RED + "Flame Resistant");
+        lore.add(ChatColor.RED + "Health Boost");
+        lore.add(ChatColor.GOLD + "(4 pieces must be worn for abilities to work)");
+        m1.setColor(Color.fromRGB(35, 1, 48));m2.setColor(Color.fromRGB(35, 1, 48));m3.setColor(Color.fromRGB(35, 1, 48));m4.setColor(Color.fromRGB(35, 1, 48));
+        m1.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+		m2.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+		m3.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+		m4.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+
+		m1.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 3, Operation.ADD_NUMBER, EquipmentSlot.HEAD));
+		m2.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 6, Operation.ADD_NUMBER, EquipmentSlot.CHEST));
+		m3.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 4, Operation.ADD_NUMBER, EquipmentSlot.LEGS));
+		m4.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 3, Operation.ADD_NUMBER, EquipmentSlot.FEET));
+		
+		m1.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor_toughness", 5, Operation.ADD_NUMBER, EquipmentSlot.HEAD));
+		m2.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor_toughness", 5, Operation.ADD_NUMBER, EquipmentSlot.CHEST));
+		m3.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor_toughness", 5, Operation.ADD_NUMBER, EquipmentSlot.LEGS));
+		m4.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor_toughness", 5, Operation.ADD_NUMBER, EquipmentSlot.FEET));
+		
+		m1.setLore(lore);
+		m2.setLore(lore);
+		m3.setLore(lore);
+		m4.setLore(lore);
+		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+
+		armor1.setItemMeta(m1);
+		armor2.setItemMeta(m2);
+		armor3.setItemMeta(m3);
+		armor4.setItemMeta(m4);
+
+
+		// Shaped Recipe
+		ShapedRecipe recipe1 = new ShapedRecipe(new NamespacedKey(plugin, "obsidian_helmet"), armor1);
+		ShapedRecipe recipe2 = new ShapedRecipe(new NamespacedKey(plugin, "obsidian_chestplate"), armor2);
+		ShapedRecipe recipe3 = new ShapedRecipe(new NamespacedKey(plugin, "obsidian_leggings"), armor3);
+		ShapedRecipe recipe4 = new ShapedRecipe(new NamespacedKey(plugin, "obsidian_boots"), armor4);
+
+		recipe1.shape("***", "* *");
+		recipe2.shape("* *", "***", "***");
+		recipe3.shape("***", "* *", "* *");
+		recipe4.shape("* *", "* *");
+
+		recipe1.setIngredient('*', Material.OBSIDIAN);
+		recipe2.setIngredient('*', Material.OBSIDIAN);
+		recipe3.setIngredient('*', Material.OBSIDIAN);
+		recipe4.setIngredient('*', Material.OBSIDIAN);
 
 		server.addRecipe(recipe1);
 		server.addRecipe(recipe2);
