@@ -7,8 +7,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.attribute.AttributeModifier.Operation;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -23,8 +23,16 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.Plugin;
 
 public class ArmorPlusPlus implements CommandExecutor, Listener {	
+	
+	Plugin plugin;
+	
+	public ArmorPlusPlus(Plugin plugin) {
+		this.plugin = plugin;
+	}
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -53,6 +61,7 @@ public class ArmorPlusPlus implements CommandExecutor, Listener {
 				gui.setItem(15, new ItemStack(Material.STICKY_PISTON));
 				gui.setItem(16, new ItemStack(Material.SAND));
 				gui.setItem(17, new ItemStack(Material.QUARTZ_BLOCK));
+				gui.setItem(18, new ItemStack(Material.OBSIDIAN));
 				p.openInventory(gui);
 			}else {
 				p.sendMessage("Unknown command. Type \"help\" to get help!");
@@ -757,10 +766,63 @@ public class ArmorPlusPlus implements CommandExecutor, Listener {
 						m2.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 4, Operation.ADD_NUMBER, EquipmentSlot.CHEST));
 						m3.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 3, Operation.ADD_NUMBER, EquipmentSlot.LEGS));
 						m4.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 2, Operation.ADD_NUMBER, EquipmentSlot.FEET));
-						m1.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, new AttributeModifier(UUID.randomUUID(), "generic.attackSpeed", 0.25, Operation.ADD_NUMBER, EquipmentSlot.HEAD));
-						m2.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, new AttributeModifier(UUID.randomUUID(), "generic.attackSpeed", 0.25, Operation.ADD_NUMBER, EquipmentSlot.CHEST));
-						m3.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, new AttributeModifier(UUID.randomUUID(), "generic.attackSpeed", 0.25, Operation.ADD_NUMBER, EquipmentSlot.LEGS));
-						m4.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, new AttributeModifier(UUID.randomUUID(), "generic.attackSpeed", 0.25, Operation.ADD_NUMBER, EquipmentSlot.FEET));
+						m1.setLore(lore);
+						m2.setLore(lore);
+						m3.setLore(lore);
+						m4.setLore(lore);
+						m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+						m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+						m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+						m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+
+						armor1.setItemMeta(m1);
+						armor2.setItemMeta(m2);
+						armor3.setItemMeta(m3);
+						armor4.setItemMeta(m4);
+						p.getInventory().addItem(armor1);
+						p.getInventory().addItem(armor2);
+						p.getInventory().addItem(armor3);
+						p.getInventory().addItem(armor4);
+					}else if(e.getSlot() == 18) {
+						ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
+						ItemStack armor2 = new ItemStack(Material.LEATHER_CHESTPLATE);
+						ItemStack armor3 = new ItemStack(Material.LEATHER_LEGGINGS);
+						ItemStack armor4 = new ItemStack(Material.LEATHER_BOOTS);
+						LeatherArmorMeta m1 = (LeatherArmorMeta) armor1.getItemMeta();
+						LeatherArmorMeta m2 = (LeatherArmorMeta) armor2.getItemMeta();
+						LeatherArmorMeta m3 = (LeatherArmorMeta) armor3.getItemMeta();
+						LeatherArmorMeta m4 = (LeatherArmorMeta) armor4.getItemMeta();
+						m1.setDisplayName("Obsidian Helmet");
+						m2.setDisplayName("Obsidian Chestplate");
+						m3.setDisplayName("Obsidian Leggings");
+						m4.setDisplayName("Obsidian Boots");
+						
+						m1.getPersistentDataContainer().set(new NamespacedKey(plugin, "obsidianHelm"), PersistentDataType.BYTE, Byte.parseByte("1"));
+						m2.getPersistentDataContainer().set(new NamespacedKey(plugin, "obsidianChest"), PersistentDataType.BYTE, Byte.parseByte("1"));
+						m3.getPersistentDataContainer().set(new NamespacedKey(plugin, "obsidianLegs"), PersistentDataType.BYTE, Byte.parseByte("1"));
+						m4.getPersistentDataContainer().set(new NamespacedKey(plugin, "obsidianFeet"), PersistentDataType.BYTE, Byte.parseByte("1"));
+						
+						ArrayList<String> lore = new ArrayList<String>();
+				        lore.add(ChatColor.GRAY + "Immovable");
+				        lore.add(ChatColor.DARK_RED + "Flame Resistant");
+				        lore.add(ChatColor.RED + "Health Boost");
+				        lore.add(ChatColor.GOLD + "(4 pieces must be worn for abilities to work)");
+				        m1.setColor(Color.fromRGB(35, 1, 48));m2.setColor(Color.fromRGB(35, 1, 48));m3.setColor(Color.fromRGB(35, 1, 48));m4.setColor(Color.fromRGB(35, 1, 48));
+				        m1.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+						m2.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+						m3.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+						m4.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+
+						m1.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 3, Operation.ADD_NUMBER, EquipmentSlot.HEAD));
+						m2.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 6, Operation.ADD_NUMBER, EquipmentSlot.CHEST));
+						m3.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 4, Operation.ADD_NUMBER, EquipmentSlot.LEGS));
+						m4.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 3, Operation.ADD_NUMBER, EquipmentSlot.FEET));
+						
+						m1.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor_toughness", 5, Operation.ADD_NUMBER, EquipmentSlot.HEAD));
+						m2.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor_toughness", 5, Operation.ADD_NUMBER, EquipmentSlot.CHEST));
+						m3.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor_toughness", 5, Operation.ADD_NUMBER, EquipmentSlot.LEGS));
+						m4.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor_toughness", 5, Operation.ADD_NUMBER, EquipmentSlot.FEET));
+						
 						m1.setLore(lore);
 						m2.setLore(lore);
 						m3.setLore(lore);
