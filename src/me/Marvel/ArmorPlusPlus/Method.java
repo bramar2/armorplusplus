@@ -57,22 +57,21 @@ public class Method {
 			try {
 				if(item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, tag + "Helm"), PersistentDataType.BYTE)) {
 					// helmet
-					content[i] = newArmor[0];
+					p.getInventory().setItem(i, newArmor[0]);
 				}else if(item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, tag + "Chest"), PersistentDataType.BYTE)) {
 					// chestplate
-					content[i] = newArmor[1];
+					p.getInventory().setItem(i, newArmor[1]);
 				}else if(item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, tag + "Legs"), PersistentDataType.BYTE)) {
 					// legs
-					content[i] = newArmor[2];
+					p.getInventory().setItem(i, newArmor[2]);
 				}else if(item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, tag + "Feet"), PersistentDataType.BYTE)) {
 					// feet
-					content[i] = newArmor[3];
+					p.getInventory().setItem(i, newArmor[3]);
 				}
 			}catch(Exception e) {
 				
 			}
 			continue;
 		}
-		p.getInventory().setContents(content);
 	}
 }
