@@ -3,6 +3,7 @@ package me.Marvel.ArmorPlusPlus;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import me.Marvel.ArmorPlusPlus.Commands.TabComplete;
 public class ArmorPlusPlus extends JavaPlugin {
 	
 	@Override
@@ -11,13 +12,12 @@ public class ArmorPlusPlus extends JavaPlugin {
 		getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "Armor++ plugin enabled v" + this.getDescription().getVersion());
 		getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "==========================");
 		getCommand("armorplusplus").setExecutor(new me.Marvel.ArmorPlusPlus.Commands.ArmorPlusPlus(this));
-		getCommand("armorplusplus").setTabCompleter(new me.Marvel.ArmorPlusPlus.Commands.TabComplete());
+		getCommand("armorplusplus").setTabCompleter(new TabComplete());
 		getServer().getPluginManager().registerEvents(new me.Marvel.ArmorPlusPlus.Commands.ArmorPlusPlus(this), this);
 		getServer().getPluginManager().registerEvents(new ArmorAbilities(this), this);
 		Method.plugin = this;
 		loadRecipe();
 		loadAbilities();
-
 	}
 
 	private void loadRecipe() {
@@ -42,6 +42,7 @@ public class ArmorPlusPlus extends JavaPlugin {
 		ar.sandArmor();
 		ar.quartzArmor();
 		ar.obsidianArmor();
+//		ar.emeraldArmor();
 	}
 	private void loadAbilities() {
 			// For every 2.5 second
@@ -80,6 +81,7 @@ public class ArmorPlusPlus extends JavaPlugin {
 					ability.sandArmor();
 					ability.quartzArmor();
 					ability.obsidianArmor();
+//					ability.emeraldArmor();
 				}
 			}, 0L, 1L);
 			
