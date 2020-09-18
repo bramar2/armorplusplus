@@ -62,6 +62,7 @@ public class ArmorPlusPlus implements CommandExecutor, Listener {
 				gui.setItem(16, new ItemStack(Material.SAND));
 				gui.setItem(17, new ItemStack(Material.QUARTZ_BLOCK));
 				gui.setItem(18, new ItemStack(Material.OBSIDIAN));
+				gui.setItem(19, new ItemStack(Material.EMERALD_BLOCK));
 				p.openInventory(gui);
 			}else {
 				p.sendMessage("Unknown command. Type \"help\" to get help!");
@@ -823,6 +824,56 @@ public class ArmorPlusPlus implements CommandExecutor, Listener {
 						m3.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor_toughness", 5, Operation.ADD_NUMBER, EquipmentSlot.LEGS));
 						m4.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor_toughness", 5, Operation.ADD_NUMBER, EquipmentSlot.FEET));
 						
+						m1.setLore(lore);
+						m2.setLore(lore);
+						m3.setLore(lore);
+						m4.setLore(lore);
+						m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+						m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+						m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+						m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+
+						armor1.setItemMeta(m1);
+						armor2.setItemMeta(m2);
+						armor3.setItemMeta(m3);
+						armor4.setItemMeta(m4);
+						p.getInventory().addItem(armor1);
+						p.getInventory().addItem(armor2);
+						p.getInventory().addItem(armor3);
+						p.getInventory().addItem(armor4);
+					}else if(e.getSlot() == 19) {
+						ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
+						ItemStack armor2 = new ItemStack(Material.LEATHER_CHESTPLATE);
+						ItemStack armor3 = new ItemStack(Material.LEATHER_LEGGINGS);
+						ItemStack armor4 = new ItemStack(Material.LEATHER_BOOTS);
+						LeatherArmorMeta m1 = (LeatherArmorMeta) armor1.getItemMeta();
+						LeatherArmorMeta m2 = (LeatherArmorMeta) armor2.getItemMeta();
+						LeatherArmorMeta m3 = (LeatherArmorMeta) armor3.getItemMeta();
+						LeatherArmorMeta m4 = (LeatherArmorMeta) armor4.getItemMeta();
+						m1.setDisplayName("Emerald Helmet");
+						m2.setDisplayName("Emerald Chestplate");
+						m3.setDisplayName("Emerald Leggings");
+						m4.setDisplayName("Emerald Boots");
+						ArrayList<String> lore = new ArrayList<String>();
+				        lore.add(ChatColor.DARK_GREEN + "Lucky - Greatly increases Fortune,");
+				        lore.add(ChatColor.DARK_GREEN + "Looting, and Luck");
+				        lore.add(ChatColor.GOLD + "(4 pieces must be worn for abilities to work)");
+				        m1.setColor(Color.fromRGB(101, 233, 139));m2.setColor(Color.fromRGB(101, 233, 139));m3.setColor(Color.fromRGB(101, 233, 139));m4.setColor(Color.fromRGB(101, 233, 139));
+				        m1.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+						m2.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+						m3.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+						m4.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+						
+						m1.getPersistentDataContainer().set(new NamespacedKey(plugin, "emeraldHelm"), PersistentDataType.BYTE, Byte.parseByte("1"));
+						m2.getPersistentDataContainer().set(new NamespacedKey(plugin, "emeraldChest"), PersistentDataType.BYTE, Byte.parseByte("1"));
+						m3.getPersistentDataContainer().set(new NamespacedKey(plugin, "emeraldLegs"), PersistentDataType.BYTE, Byte.parseByte("1"));
+						m4.getPersistentDataContainer().set(new NamespacedKey(plugin, "emeraldFeet"), PersistentDataType.BYTE, Byte.parseByte("1"));
+						
+						
+						m1.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 3, Operation.ADD_NUMBER, EquipmentSlot.HEAD));
+						m2.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 5, Operation.ADD_NUMBER, EquipmentSlot.CHEST));
+						m3.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 3, Operation.ADD_NUMBER, EquipmentSlot.LEGS));
+						m4.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 3, Operation.ADD_NUMBER, EquipmentSlot.FEET));
 						m1.setLore(lore);
 						m2.setLore(lore);
 						m3.setLore(lore);
