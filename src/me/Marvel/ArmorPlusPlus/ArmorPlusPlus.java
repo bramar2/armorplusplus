@@ -42,7 +42,7 @@ public class ArmorPlusPlus extends JavaPlugin {
 		ar.sandArmor();
 		ar.quartzArmor();
 		ar.obsidianArmor();
-//		ar.emeraldArmor();
+		ar.emeraldArmor();
 	}
 	private void loadAbilities() {
 			// For every 2.5 second
@@ -81,7 +81,7 @@ public class ArmorPlusPlus extends JavaPlugin {
 					ability.sandArmor();
 					ability.quartzArmor();
 					ability.obsidianArmor();
-//					ability.emeraldArmor();
+					ability.emeraldArmor();
 				}
 			}, 0L, 1L);
 			
