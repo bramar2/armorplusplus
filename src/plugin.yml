@@ -1,6 +1,6 @@
 name: ArmorPlusPlus
-description: Recreates the famous BlockArmor mod! Sorry, but I abandoned this plugin.
-version: 0.1.1
+description: Recreates the famous BlockArmor mod!
+version: @version
 main: me.Marvel.ArmorPlusPlus.ArmorPlusPlus
 author: Author
 api-version: 1.13
