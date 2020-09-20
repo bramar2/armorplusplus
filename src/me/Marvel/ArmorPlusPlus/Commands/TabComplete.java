@@ -14,7 +14,10 @@ public class TabComplete implements TabCompleter {
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
 		if(cmd.getName().equalsIgnoreCase("armorplusplus")) {
 			if(sender instanceof Player) {
-				return new ArrayList<String>();
+				List<String> list = new ArrayList<String>();
+				list.add("check");
+				list.add("gui");
+				return list;
 			}else {
 				return null;
 			}
