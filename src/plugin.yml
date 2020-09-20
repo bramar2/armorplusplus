@@ -1,7 +1,7 @@
 name: ArmorPlusPlus
 description: Recreates the famous BlockArmor mod!
 version: @version
-main: me.Marvel.ArmorPlusPlus.ArmorPlusPlus
+main: me.marvel.armorplusplus.ArmorPlusPlus
 author: Author
 api-version: 1.13
 commands:
