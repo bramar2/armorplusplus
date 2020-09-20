@@ -1,6 +1,7 @@
 package me.Marvel.ArmorPlusPlus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -14,9 +15,9 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier.Operation;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.AbstractArrow.PickupStatus;
 import org.bukkit.entity.Entity;
@@ -50,6 +51,8 @@ public class ArmorAbilities implements Listener {
 	ArrayList<UUID> exp = new ArrayList<UUID>();
 	ArrayList<UUID> pull = new ArrayList<UUID>();
 	ArrayList<UUID> bone = new ArrayList<>();
+	ArrayList<UUID> smeltCooldown = new ArrayList<>();
+	ArrayList<UUID> smeltsneaking = new ArrayList<>();
 	
 	private void check(Player p) {
 		Integer min;
@@ -206,53 +209,61 @@ public class ArmorAbilities implements Listener {
 					String lore3 = p.getInventory().getLeggings().getItemMeta().getLore().get(0);
 					String lore4 = p.getInventory().getBoots().getItemMeta().getLore().get(0);
 					if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
-						String name;
-						ConsoleCommandSender console;
+						if(smeltCooldown.contains(p.getUniqueId())) return;
+						if(p.isSneaking() == false) return;
 						
-						name = p.getName();
-						console = Bukkit.getServer().getConsoleSender();
-						Bukkit.dispatchCommand(console, "execute at " + name + " as @e[type=item,distance=..5] at @s[nbt={Item:{id:\"minecraft:iron_ore\"}}] run particle minecraft:lava ~ ~ ~");
-						Bukkit.dispatchCommand(console, "execute at " + name + " as @e[type=item,distance=..5] as @s[nbt={Item:{id:\"minecraft:iron_ore\"}}] run data modify entity @s Item.id set value \"minecraft:iron_ingot\"");
-						
-						Bukkit.dispatchCommand(console, "execute at " + name + " as @e[type=item,distance=..5] at @s[nbt={Item:{id:\"minecraft:gold_ore\"}}] run particle minecraft:lava ~ ~ ~");
-						Bukkit.dispatchCommand(console, "execute at " + name + " as @e[type=item,distance=..5] as @s[nbt={Item:{id:\"minecraft:gold_ore\"}}] run data modify entity @s Item.id set value \"minecraft:gold_ingot\"");
-						
-						Bukkit.dispatchCommand(console, "execute at " + name + " as @e[type=item,distance=..5] at @s[nbt={Item:{id:\"minecraft:oak_log\"}}] run particle minecraft:lava ~ ~ ~");
-						Bukkit.dispatchCommand(console, "execute at " + name + " as @e[type=item,distance=..5] as @s[nbt={Item:{id:\"minecraft:oak_log\"}}] run data modify entity @s Item.id set value \"minecraft:charcoal\"");
-						
-						Bukkit.dispatchCommand(console, "execute at " + name + " as @e[type=item,distance=..5] at @s[nbt={Item:{id:\"minecraft:stripped_oak_log\"}}] run particle minecraft:lava ~ ~ ~");
-						Bukkit.dispatchCommand(console, "execute at " + name + " as @e[type=item,distance=..5] as @s[nbt={Item:{id:\"minecraft:stripped_oak_log\"}}] run data modify entity @s Item.id set value \"minecraft:charcoal\"");
-						
-						Bukkit.dispatchCommand(console, "execute at " + name + " as @e[type=item,distance=..5] at @s[nbt={Item:{id:\"minecraft:spruce_log\"}}] run particle minecraft:lava ~ ~ ~");
-						Bukkit.dispatchCommand(console, "execute at " + name + " as @e[type=item,distance=..5] as @s[nbt={Item:{id:\"minecraft:spruce_log\"}}] run data modify entity @s Item.id set value \"minecraft:charcoal\"");
-					
-						Bukkit.dispatchCommand(console, "execute at " + name + " as @e[type=item,distance=..5] at @s[nbt={Item:{id:\"minecraft:birch_log\"}}] run particle minecraft:lava ~ ~ ~");
-						Bukkit.dispatchCommand(console, "execute at " + name + " as @e[type=item,distance=..5] as @s[nbt={Item:{id:\"minecraft:birch_log\"}}] run data modify entity @s Item.id set value \"minecraft:charcoal\"");
-						
-						Bukkit.dispatchCommand(console, "execute at " + name + " as @e[type=item,distance=..5] at @s[nbt={Item:{id:\"minecraft:jungle_log\"}}] run particle minecraft:lava ~ ~ ~");
-						Bukkit.dispatchCommand(console, "execute at " + name + " as @e[type=item,distance=..5] as @s[nbt={Item:{id:\"minecraft:jungle_log\"}}] run data modify entity @s Item.id set value \"minecraft:charcoal\"");
-						
-						Bukkit.dispatchCommand(console, "execute at " + name + " as @e[type=item,distance=..5] at @s[nbt={Item:{id:\"minecraft:acacia_log\"}}] run particle minecraft:lava ~ ~ ~");
-						Bukkit.dispatchCommand(console, "execute at " + name + " as @e[type=item,distance=..5] as @s[nbt={Item:{id:\"minecraft:acacia_log\"}}] run data modify entity @s Item.id set value \"minecraft:charcoal\"");
-						
-						Bukkit.dispatchCommand(console, "execute at " + name + " as @e[type=item,distance=..5] at @s[nbt={Item:{id:\"minecraft:dark_oak_log\"}}] run particle minecraft:lava ~ ~ ~");
-						Bukkit.dispatchCommand(console, "execute at " + name + " as @e[type=item,distance=..5] as @s[nbt={Item:{id:\"minecraft:dark_oak_log\"}}] run data modify entity @s Item.id set value \"minecraft:charcoal\"");
-					
-						Bukkit.dispatchCommand(console, "execute at " + name + " as @e[type=item,distance=..5] at @s[nbt={Item:{id:\"minecraft:stripped_spruce_log\"}}] run particle minecraft:lava ~ ~ ~");
-						Bukkit.dispatchCommand(console, "execute at " + name + " as @e[type=item,distance=..5] as @s[nbt={Item:{id:\"minecraft:stripped_spruce_log\"}}] run data modify entity @s Item.id set value \"minecraft:charcoal\"");
-						
-						Bukkit.dispatchCommand(console, "execute at " + name + " as @e[type=item,distance=..5] at @s[nbt={Item:{id:\"minecraft:stripped_birch_log\"}}] run particle minecraft:lava ~ ~ ~");
-						Bukkit.dispatchCommand(console, "execute at " + name + " as @e[type=item,distance=..5] as @s[nbt={Item:{id:\"minecraft:stripped_birch_log\"}}] run data modify entity @s Item.id set value \"minecraft:charcoal\"");
-						
-						Bukkit.dispatchCommand(console, "execute at " + name + " as @e[type=item,distance=..5] at @s[nbt={Item:{id:\"minecraft:stripped_jungle_log\"}}] run particle minecraft:lava ~ ~ ~");
-						Bukkit.dispatchCommand(console, "execute at " + name + " as @e[type=item,distance=..5] as @s[nbt={Item:{id:\"minecraft:stripped_jungle_log\"}}] run data modify entity @s Item.id set value \"minecraft:charcoal\"");
-						
-						Bukkit.dispatchCommand(console, "execute at " + name + " as @e[type=item,distance=..5] at @s[nbt={Item:{id:\"minecraft:stripped_acacia_log\"}}] run particle minecraft:lava ~ ~ ~");
-						Bukkit.dispatchCommand(console, "execute at " + name + " as @e[type=item,distance=..5] as @s[nbt={Item:{id:\"minecraft:stripped_acacia_log\"}}] run data modify entity @s Item.id set value \"minecraft:charcoal\"");
-						
-						Bukkit.dispatchCommand(console, "execute at " + name + " as @e[type=item,distance=..5] at @s[nbt={Item:{id:\"minecraft:stripped_dark_oak_log\"}}] run particle minecraft:lava ~ ~ ~");
-						Bukkit.dispatchCommand(console, "execute at " + name + " as @e[type=item,distance=..5] as @s[nbt={Item:{id:\"minecraft:stripped_dark_oak_log\"}}] run data modify entity @s Item.id set value \"minecraft:charcoal\"");
-						
+						smeltsneaking.add(p.getUniqueId());
+						if(smeltCooldown.contains(p.getUniqueId())) return;
+						HashMap<Material, Material> smeltable_items = Method.getSmeltableItems();
+						World w = p.getWorld();
+						ArrayList<Entity> nearbyEntities = new ArrayList<Entity>(w.getNearbyEntities(p.getLocation(), 5.0, 5.0, 5.0));
+						ArrayList<Item> item = new ArrayList<Item>();
+						for(Entity entity : nearbyEntities) {
+							if(entity instanceof Item) {
+								item.add(((Item)entity));
+							}
+						}
+						for(Item i : item) {
+							if(smeltable_items.containsKey(i.getItemStack().getType())) {
+								smeltCooldown.add(p.getUniqueId());
+								plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+									public void run() {
+										smeltCooldown.remove(p.getUniqueId());
+									}
+								}, 10 * 20L);
+							}
+						}
+						int count = 0;
+						int max = 16;
+						for(Item i : item) {
+							if(count >= max) break;
+							if(smeltable_items.containsKey(i.getItemStack().getType())) {
+								Location loc = i.getLocation();
+								Material type = i.getItemStack().getType();
+								int amount = i.getItemStack().getAmount();
+								ItemStack itemStack = i.getItemStack();
+								i.remove();
+								ItemStack stack = new ItemStack(smeltable_items.get(type));
+								if(!(count + amount > max)) {
+									// count + amount is not > max
+									// meaning count + amount = 1 - 32
+									stack.setAmount(amount);
+									w.dropItem(loc, stack);
+									count += amount;
+								}else {
+									// newAmount = 16 - count;
+									int newAmount = max - count;
+									int spawnBack = amount - newAmount;
+									// spawn the smelted
+									stack.setAmount(newAmount);
+									w.dropItem(loc, stack);
+									// spawn it back
+									itemStack.setAmount(spawnBack);
+									w.dropItem(loc, itemStack);
+									break;
+								}
+							}
+						}
 					}
 					
 				}	
