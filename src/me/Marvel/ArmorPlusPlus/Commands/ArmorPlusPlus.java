@@ -8,6 +8,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier.Operation;
 import org.bukkit.command.Command;
@@ -20,18 +22,25 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 public class ArmorPlusPlus implements CommandExecutor, Listener {	
 	
 	Plugin plugin;
+	me.Marvel.ArmorPlusPlus.ArmorPlusPlus main;
 	
-	public ArmorPlusPlus(Plugin plugin) {
+	public ArmorPlusPlus(Plugin plugin, me.Marvel.ArmorPlusPlus.ArmorPlusPlus main) {
 		this.plugin = plugin;
+		this.main = main;
 	}
 	
 	@Override
@@ -39,31 +48,87 @@ public class ArmorPlusPlus implements CommandExecutor, Listener {
 		if(sender instanceof Player) {
 			Player p = (Player) sender;
 			if(p.hasPermission("armorplusplus.cheat")) {
-				Inventory gui = Bukkit.createInventory(p, 54, ChatColor.GOLD + "All Armor++'s armor");
-				
-				ItemStack dirt = new ItemStack(Material.DIRT);
-				ItemStack ct = new ItemStack(Material.CRAFTING_TABLE);
-				gui.setItem(0, dirt);
-				gui.setItem(1, ct);
-				gui.setItem(2, new ItemStack(Material.GLASS));
-				gui.setItem(3, new ItemStack(Material.FURNACE));
-				gui.setItem(4, new ItemStack(Material.TNT));
-				gui.setItem(5, new ItemStack(Material.NOTE_BLOCK));
-				gui.setItem(6, new ItemStack(Material.CARVED_PUMPKIN));
-				gui.setItem(7, new ItemStack(Material.MELON));
-				gui.setItem(8, new ItemStack(Material.SPONGE));
-				gui.setItem(9, new ItemStack(Material.DISPENSER));
-				gui.setItem(10, new ItemStack(Material.PRISMARINE));
-				gui.setItem(11, new ItemStack(Material.LAPIS_BLOCK));
-				gui.setItem(12, new ItemStack(Material.CACTUS));
-				gui.setItem(13, new ItemStack(Material.OAK_LEAVES));
-				gui.setItem(14, new ItemStack(Material.SUGAR_CANE));
-				gui.setItem(15, new ItemStack(Material.STICKY_PISTON));
-				gui.setItem(16, new ItemStack(Material.SAND));
-				gui.setItem(17, new ItemStack(Material.QUARTZ_BLOCK));
-				gui.setItem(18, new ItemStack(Material.OBSIDIAN));
-				gui.setItem(19, new ItemStack(Material.EMERALD_BLOCK));
-				p.openInventory(gui);
+				if(args.length == 0) {
+					Inventory inv = Bukkit.createInventory(null, 27, ChatColor.GOLD + "Choose!");
+					ArrayList<ItemStack> content = new ArrayList<ItemStack>();
+					for(int i = 0; i < 12; i++) {
+						content.add(new ItemStack(Material.AIR));
+					}
+					ItemStack item1 = new ItemStack(Material.LEATHER_CHESTPLATE);
+					ItemMeta meta = item1.getItemMeta();
+					meta.addEnchant(Enchantment.DAMAGE_ALL, 0, true);
+					meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+					meta.setDisplayName("Armor++'s armor");
+					ArrayList<String> lore = new ArrayList<String>();
+					lore.add(ChatColor.WHITE + "Click here to check all of");
+					lore.add(ChatColor.WHITE + "Armor++'s armor!");
+					meta.setLore(lore);
+					item1.setItemMeta(meta);
+					content.add(item1);
+					content.add(new ItemStack(Material.AIR));
+					ItemStack item2 = new ItemStack(Material.COMPASS);
+					meta = item2.getItemMeta();
+					meta.addEnchant(Enchantment.DAMAGE_ALL, 0, true);
+					meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+					lore = new ArrayList<String>();
+					lore.add(ChatColor.WHITE + "Click here to check updates of");
+					lore.add(ChatColor.WHITE + "ArmorPlusPlus plugin.");
+					meta.setLore(lore);
+					item2.setItemMeta(meta);
+					content.add(item2);
+					for(int i = 0; i < 12; i++) {
+						content.add(new ItemStack(Material.AIR));
+					}
+					inv.setContents(content.toArray(new ItemStack[content.size() - 1]));
+					p.openInventory(inv);
+				}else {
+					if(args[0].equalsIgnoreCase("gui")) {
+						openGui(p);
+					}else if(args[0].equalsIgnoreCase("check")) {
+						if(main.outdated) {
+							p.sendMessage(main.msg);
+						}else {
+							p.sendMessage("Checking the web...");
+							try {
+								String url = "https://www.spigotmc.org/resources/armorplusplus.74748/";
+								String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36";
+								Document doc = Jsoup.connect(url).userAgent(userAgent).get();
+								Element resourceInfo = doc.select("div.resourceInfo").get(0);
+								String version = resourceInfo.select("h1 span.muted").get(0).text();
+								if(!version.equalsIgnoreCase(plugin.getDescription().getVersion())) {
+									// run something
+									boolean noteligible = false;
+									try {
+										int a = Integer.parseInt(plugin.getDescription().getVersion().replace(".", "").replace(" ", ""));
+										if(a == 0) {
+											// do nothing
+										}
+									}catch(Exception e) {
+										p.sendMessage(ChatColor.DARK_RED + "ArmorPlusPlus > Detected invalid version. Please don't modify the plugin's version.");
+										noteligible = true;
+									}
+									if(noteligible) {}
+									else if(!noteligible & Integer.parseInt(version.replace(".", "").replace(" ", "")) < Integer.parseInt(plugin.getDescription().getVersion().replace(".", "").replace(" ", ""))) {
+										p.sendMessage(ChatColor.DARK_RED + "ArmorPlusPlus > Detected invalid version. Please don't modify the plugin's version.");
+									}else if(!noteligible) {
+										// run something
+										main.outdated = true;
+										main.msg = ChatColor.GREEN + "ArmorPlusPlus > Available update version " + version + ". Current plugin has the version " + plugin.getDescription().getVersion() + ". Download at " + url;
+										p.sendMessage(main.msg);
+									}
+								}else {
+									main.uptodate = true;
+									p.sendMessage(ChatColor.GREEN + "ArmorPlusPlus > No available updates. This version is up-to-date.");
+								}
+							}catch(Exception e) {
+								p.sendMessage(ChatColor.RED + "ArmorPlusPlus > Failed to check version updates. Please check the internet connection. If you believe this is an error, Contact the author of the plugin.");
+								if(main.uptodate) p.sendMessage(ChatColor.GREEN + "According to the last check, this version of plugin is up-to-date.");
+							}
+						}
+					}else {
+						p.sendMessage(ChatColor.RED + "Invalid argument. Only 'gui' and 'check' is allowed.");
+					}
+				}
 			}else {
 				p.sendMessage("Unknown command. Type \"help\" to get help!");
 			}
@@ -77,8 +142,8 @@ public class ArmorPlusPlus implements CommandExecutor, Listener {
 		if(e.getView().getTitle().equalsIgnoreCase(ChatColor.GOLD + "All Armor++'s armor")) {
 			if(e.getCurrentItem() != null) {
 				if(e.getWhoClicked() instanceof Player) {
-					Player p = (Player) e.getWhoClicked();
-					e.setCancelled(true);
+					Player p = (Player) e.getWhoClicked();if(e.getClickedInventory() instanceof PlayerInventory) return;
+					e.setCancelled(true);					
 					if(e.getSlot() == 0) {
 						ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
 						ItemStack armor2 = new ItemStack(Material.LEATHER_CHESTPLATE);
@@ -895,5 +960,55 @@ public class ArmorPlusPlus implements CommandExecutor, Listener {
 				}
 			}
 		}
+	}
+	
+	@EventHandler
+	public void mainGUI(InventoryClickEvent e) {
+		if(e.getView().getTitle().equalsIgnoreCase(ChatColor.GOLD + "Choose!")) {
+			if(e.getCurrentItem() != null) {
+				if(e.getWhoClicked() instanceof Player) {
+					Player p = (Player) e.getWhoClicked();
+					if(e.getClickedInventory() instanceof PlayerInventory) return;
+					e.setCancelled(true);
+					if(e.getCurrentItem().getType() == Material.LEATHER_CHESTPLATE) {
+						p.closeInventory();
+						p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.MASTER, 2, 0);
+						p.performCommand("armorplusplus gui");
+					}else if(e.getCurrentItem().getType() == Material.COMPASS) {
+						p.closeInventory();
+						p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.MASTER, 2, 0);
+						p.performCommand("armorplusplus check");
+					}
+				}
+			}
+		}
+	}
+	
+	public void openGui(Player p) {
+		Inventory gui = Bukkit.createInventory(p, 54, ChatColor.GOLD + "All Armor++'s armor");
+		
+		ItemStack dirt = new ItemStack(Material.DIRT);
+		ItemStack ct = new ItemStack(Material.CRAFTING_TABLE);
+		gui.setItem(0, dirt);
+		gui.setItem(1, ct);
+		gui.setItem(2, new ItemStack(Material.GLASS));
+		gui.setItem(3, new ItemStack(Material.FURNACE));
+		gui.setItem(4, new ItemStack(Material.TNT));
+		gui.setItem(5, new ItemStack(Material.NOTE_BLOCK));
+		gui.setItem(6, new ItemStack(Material.CARVED_PUMPKIN));
+		gui.setItem(7, new ItemStack(Material.MELON));
+		gui.setItem(8, new ItemStack(Material.SPONGE));
+		gui.setItem(9, new ItemStack(Material.DISPENSER));
+		gui.setItem(10, new ItemStack(Material.PRISMARINE));
+		gui.setItem(11, new ItemStack(Material.LAPIS_BLOCK));
+		gui.setItem(12, new ItemStack(Material.CACTUS));
+		gui.setItem(13, new ItemStack(Material.OAK_LEAVES));
+		gui.setItem(14, new ItemStack(Material.SUGAR_CANE));
+		gui.setItem(15, new ItemStack(Material.STICKY_PISTON));
+		gui.setItem(16, new ItemStack(Material.SAND));
+		gui.setItem(17, new ItemStack(Material.QUARTZ_BLOCK));
+		gui.setItem(18, new ItemStack(Material.OBSIDIAN));
+		gui.setItem(19, new ItemStack(Material.EMERALD_BLOCK));
+		p.openInventory(gui);
 	}
 }
