@@ -149,6 +149,7 @@ public class ArmorAbilities implements Listener {
 		}
 		
 	}
+	
 	public void craftArmor() {
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			try {
