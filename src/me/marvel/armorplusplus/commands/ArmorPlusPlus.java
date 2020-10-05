@@ -15,6 +15,7 @@ import org.bukkit.attribute.AttributeModifier.Operation;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -29,9 +30,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 
 public class ArmorPlusPlus implements CommandExecutor, Listener {	
 	
@@ -88,41 +86,31 @@ public class ArmorPlusPlus implements CommandExecutor, Listener {
 						if(main.outdated) {
 							p.sendMessage(main.msg);
 						}else {
-							p.sendMessage("Checking the web...");
-							try {
-								String url = "https://www.spigotmc.org/resources/armorplusplus.74748/";
-								String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36";
-								Document doc = Jsoup.connect(url).userAgent(userAgent).get();
-								Element resourceInfo = doc.select("div.resourceInfo").get(0);
-								String version = resourceInfo.select("h1 span.muted").get(0).text();
-								if(!version.equalsIgnoreCase(plugin.getDescription().getVersion())) {
-									// run something
-									boolean noteligible = false;
-									try {
-										int a = Integer.parseInt(plugin.getDescription().getVersion().replace(".", "").replace(" ", ""));
-										if(a == 0) {
-											// do nothing
+							if(main.outdated) {
+								p.sendMessage(main.msg);
+							}else {
+								p.sendMessage("Checking...");
+								main.uc.getVersion((version) -> {
+									if(version == null) {
+										p.sendMessage(ChatColor.RED + "ArmorPlusPlus > Unable to check for update.");
+										if(main.outdated) {
+											p.sendMessage(ChatColor.GREEN + "According to the last update check, the current version is outdated.");
+											p.sendMessage(main.msg);
+										}else if(main.uptodate) {
+											p.sendMessage(ChatColor.GREEN + "According to the last update check, there is no available updates.");
 										}
-									}catch(Exception e) {
-										p.sendMessage(ChatColor.DARK_RED + "ArmorPlusPlus > Detected invalid version. Please don't modify the plugin's version.");
-										noteligible = true;
-									}
-									if(noteligible) {}
-									else if(!noteligible & Integer.parseInt(version.replace(".", "").replace(" ", "")) < Integer.parseInt(plugin.getDescription().getVersion().replace(".", "").replace(" ", ""))) {
-										p.sendMessage(ChatColor.DARK_RED + "ArmorPlusPlus > Detected invalid version. Please don't modify the plugin's version.");
-									}else if(!noteligible) {
-										// run something
+									}else if(version.equalsIgnoreCase(main.getDescription().getVersion())) {
+										main.outdated = false;
+										main.uptodate = true;
+										p.sendMessage(ChatColor.GREEN + "ArmorPlusPlus > No available updates.");
+									}else {
 										main.outdated = true;
-										main.msg = ChatColor.GREEN + "ArmorPlusPlus > Available update version " + version + ". Current plugin has the version " + plugin.getDescription().getVersion() + ". Download at " + url;
+										main.uptodate = false;
+										main.msg = ChatColor.GREEN + "ArmorPlusPlus > Available update version " + version + ". Download at https://www.spigotmc.org/resources/armorplusplus.74748/";
 										p.sendMessage(main.msg);
+										
 									}
-								}else {
-									main.uptodate = true;
-									p.sendMessage(ChatColor.GREEN + "ArmorPlusPlus > No available updates. This version is up-to-date.");
-								}
-							}catch(Exception e) {
-								p.sendMessage(ChatColor.RED + "ArmorPlusPlus > Failed to check version updates. Please check the internet connection. If you believe this is an error, Contact the author of the plugin.");
-								if(main.uptodate) p.sendMessage(ChatColor.GREEN + "According to the last check, this version of plugin is up-to-date.");
+								});
 							}
 						}
 					}else {
@@ -133,7 +121,33 @@ public class ArmorPlusPlus implements CommandExecutor, Listener {
 				p.sendMessage("Unknown command. Type \"help\" to get help!");
 			}
 		}else {
-			System.out.println("You must be a player to do this!");
+			if(args.length != 0) {
+				if(args[0].equalsIgnoreCase("check")) {
+					ConsoleCommandSender p = main.getServer().getConsoleSender();
+					p.sendMessage("Checking...");
+					main.uc.getVersion((version) -> {
+						if(version == null) {
+							p.sendMessage(ChatColor.RED + "ArmorPlusPlus > Unable to check for update.");
+							if(main.outdated) {
+								p.sendMessage(ChatColor.GREEN + "According to the last update check, the current version is outdated.");
+								p.sendMessage(main.msg);
+							}else if(main.uptodate) {
+								p.sendMessage(ChatColor.GREEN + "According to the last update check, there is no available updates.");
+							}
+						}else if(version.equalsIgnoreCase(main.getDescription().getVersion())) {
+							main.outdated = false;
+							main.uptodate = true;
+							p.sendMessage(ChatColor.GREEN + "ArmorPlusPlus > No available updates.");
+						}else {
+							main.outdated = true;
+							main.uptodate = false;
+							main.msg = ChatColor.GREEN + "ArmorPlusPlus > Available update version " + version + ". Download at https://www.spigotmc.org/resources/armorplusplus.74748/";
+							main.getServer().getConsoleSender().sendMessage(main.msg);
+							
+						}
+					});
+				}else System.out.println("You must be a player to do this!");
+			}else System.out.println("You must be a player to do this!");
 		}
 		return true;
 	}
