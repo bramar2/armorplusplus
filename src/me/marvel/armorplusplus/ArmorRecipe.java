@@ -1441,4 +1441,66 @@ public class ArmorRecipe {
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
 	}
+	public void pistonArmor() {
+		ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
+		ItemStack armor2 = new ItemStack(Material.LEATHER_CHESTPLATE);
+		ItemStack armor3 = new ItemStack(Material.LEATHER_LEGGINGS);
+		ItemStack armor4 = new ItemStack(Material.LEATHER_BOOTS);
+		ItemMeta m1 = armor1.getItemMeta();
+		ItemMeta m2 = armor2.getItemMeta();
+		ItemMeta m3 = armor3.getItemMeta();
+		ItemMeta m4 = armor4.getItemMeta();
+		m1.setDisplayName("Piston Helmet");
+		m2.setDisplayName("Piston Chestplate");
+		m3.setDisplayName("Piston Leggings");
+		m4.setDisplayName("Piston Boots");
+		ArrayList<String> lore = new ArrayList<String>();
+        lore.add(ChatColor.GRAY + "Pusher - Pushes nearby entities");
+        lore.add(ChatColor.GOLD + "(4 pieces must be worn for abilities to work)");
+        m1.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+		m2.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+		m3.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+		m4.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+
+		m1.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 2, Operation.ADD_NUMBER, EquipmentSlot.HEAD));
+		m2.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 2, Operation.ADD_NUMBER, EquipmentSlot.CHEST));
+		m3.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 2, Operation.ADD_NUMBER, EquipmentSlot.LEGS));
+		m4.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 2, Operation.ADD_NUMBER, EquipmentSlot.FEET));
+		m1.setLore(lore);
+		m2.setLore(lore);
+		m3.setLore(lore);
+		m4.setLore(lore);
+		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+
+		armor1.setItemMeta(m1);
+		armor2.setItemMeta(m2);
+		armor3.setItemMeta(m3);
+		armor4.setItemMeta(m4);
+
+
+		// Shaped Recipe
+		ShapedRecipe recipe1 = new ShapedRecipe(new NamespacedKey(plugin, "piston_helmet"), armor1);
+		ShapedRecipe recipe2 = new ShapedRecipe(new NamespacedKey(plugin, "piston_chestplate"), armor2);
+		ShapedRecipe recipe3 = new ShapedRecipe(new NamespacedKey(plugin, "piston_leggings"), armor3);
+		ShapedRecipe recipe4 = new ShapedRecipe(new NamespacedKey(plugin, "piston_boots"), armor4);
+
+		recipe1.shape("***", "* *");
+		recipe2.shape("* *", "***", "***");
+		recipe3.shape("***", "* *", "* *");
+		recipe4.shape("* *", "* *");
+
+		recipe1.setIngredient('*', Material.PISTON);
+		recipe2.setIngredient('*', Material.PISTON);
+		recipe3.setIngredient('*', Material.PISTON);
+		recipe4.setIngredient('*', Material.PISTON);
+
+		server.addRecipe(recipe1);
+		server.addRecipe(recipe2);
+		server.addRecipe(recipe3);
+		server.addRecipe(recipe4);
+	}
+	
 }
