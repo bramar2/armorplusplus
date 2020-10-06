@@ -89,6 +89,7 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 		ar.obsidianArmor();
 		ar.emeraldArmor();
 		ar.slimeArmor();
+		ar.pistonArmor();
 	}
 	private void loadAbilities() {
 			// For every 2.5 second
@@ -128,6 +129,7 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 					ability.quartzArmor();
 					ability.obsidianArmor();
 					ability.emeraldArmor();
+					ability.pistonArmor();
 				}
 			}, 0L, 1L);
 			
