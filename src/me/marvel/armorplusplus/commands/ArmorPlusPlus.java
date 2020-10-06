@@ -80,6 +80,9 @@ public class ArmorPlusPlus implements CommandExecutor, Listener {
 					inv.setContents(content.toArray(new ItemStack[content.size() - 1]));
 					p.openInventory(inv);
 				}else {
+					if(args[0].equalsIgnoreCase("test")) {
+						// Command for testing
+					}
 					if(args[0].equalsIgnoreCase("gui")) {
 						openGui(p);
 					}else if(args[0].equalsIgnoreCase("check")) {
@@ -970,6 +973,48 @@ public class ArmorPlusPlus implements CommandExecutor, Listener {
 						p.getInventory().addItem(armor2);
 						p.getInventory().addItem(armor3);
 						p.getInventory().addItem(armor4);
+					}else if(e.getSlot() == 20) {
+						ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
+						ItemStack armor2 = new ItemStack(Material.LEATHER_CHESTPLATE);
+						ItemStack armor3 = new ItemStack(Material.LEATHER_LEGGINGS);
+						ItemStack armor4 = new ItemStack(Material.LEATHER_BOOTS);
+						ItemMeta m1 = armor1.getItemMeta();
+						ItemMeta m2 = armor2.getItemMeta();
+						ItemMeta m3 = armor3.getItemMeta();
+						ItemMeta m4 = armor4.getItemMeta();
+						m1.setDisplayName("Piston Helmet");
+						m2.setDisplayName("Piston Chestplate");
+						m3.setDisplayName("Piston Leggings");
+						m4.setDisplayName("Piston Boots");
+						ArrayList<String> lore = new ArrayList<String>();
+				        lore.add(ChatColor.GRAY + "Pusher - Pushes nearby entities");
+				        lore.add(ChatColor.GOLD + "(4 pieces must be worn for abilities to work)");
+				        m1.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+						m2.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+						m3.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+						m4.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+
+						m1.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 2, Operation.ADD_NUMBER, EquipmentSlot.HEAD));
+						m2.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 2, Operation.ADD_NUMBER, EquipmentSlot.CHEST));
+						m3.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 2, Operation.ADD_NUMBER, EquipmentSlot.LEGS));
+						m4.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 2, Operation.ADD_NUMBER, EquipmentSlot.FEET));
+						m1.setLore(lore);
+						m2.setLore(lore);
+						m3.setLore(lore);
+						m4.setLore(lore);
+						m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+						m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+						m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+						m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+
+						armor1.setItemMeta(m1);
+						armor2.setItemMeta(m2);
+						armor3.setItemMeta(m3);
+						armor4.setItemMeta(m4);
+						p.getInventory().addItem(armor1);
+						p.getInventory().addItem(armor2);
+						p.getInventory().addItem(armor3);
+						p.getInventory().addItem(armor4);
 					}
 				}
 			}
@@ -1023,6 +1068,7 @@ public class ArmorPlusPlus implements CommandExecutor, Listener {
 		gui.setItem(17, new ItemStack(Material.QUARTZ_BLOCK));
 		gui.setItem(18, new ItemStack(Material.OBSIDIAN));
 		gui.setItem(19, new ItemStack(Material.EMERALD_BLOCK));
+		gui.setItem(20, new ItemStack(Material.PISTON));
 		p.openInventory(gui);
 	}
 }
