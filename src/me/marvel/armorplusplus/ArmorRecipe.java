@@ -1503,4 +1503,193 @@ public class ArmorRecipe {
 		server.addRecipe(recipe4);
 	}
 	
+	public void wetspongeArmor() {
+		ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
+		ItemStack armor2 = new ItemStack(Material.LEATHER_CHESTPLATE);
+		ItemStack armor3 = new ItemStack(Material.LEATHER_LEGGINGS);
+		ItemStack armor4 = new ItemStack(Material.LEATHER_BOOTS);
+		LeatherArmorMeta m1 = (LeatherArmorMeta) armor1.getItemMeta();
+		LeatherArmorMeta m2 = (LeatherArmorMeta) armor2.getItemMeta();
+		LeatherArmorMeta m3 = (LeatherArmorMeta) armor3.getItemMeta();
+		LeatherArmorMeta m4 = (LeatherArmorMeta) armor4.getItemMeta();
+		m1.setDisplayName("Wet Sponge Helmet");
+		m2.setDisplayName("Wet Sponge Chestplate");
+		m3.setDisplayName("Wet Sponge Leggings");
+		m4.setDisplayName("Wet Sponge Boots");
+		ArrayList<String> lore = new ArrayList<String>();
+        lore.add(ChatColor.YELLOW + "Absorbent - Absorbs nearby liquids");
+        lore.add(ChatColor.YELLOW + "Absorbent - when sneaking (6 second cooldown)");
+        lore.add(ChatColor.GOLD + "(4 pieces must be worn for abilities to work)");
+        m1.setColor(Color.fromRGB(204, 245, 0));m2.setColor(Color.fromRGB(204, 245, 0));m3.setColor(Color.fromRGB(204, 245, 0));m4.setColor(Color.fromRGB(204, 245, 0));
+		m1.setLore(lore);
+		m2.setLore(lore);
+		m3.setLore(lore);
+		m4.setLore(lore);
+		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+
+		armor1.setItemMeta(m1);
+		armor2.setItemMeta(m2);
+		armor3.setItemMeta(m3);
+		armor4.setItemMeta(m4);
+
+
+		// Shaped Recipe
+		ShapedRecipe recipe1 = new ShapedRecipe(new NamespacedKey(plugin, "wet_sponge_helmet"), armor1);
+		ShapedRecipe recipe2 = new ShapedRecipe(new NamespacedKey(plugin, "wet_sponge_chestplate"), armor2);
+		ShapedRecipe recipe3 = new ShapedRecipe(new NamespacedKey(plugin, "wet_sponge_leggings"), armor3);
+		ShapedRecipe recipe4 = new ShapedRecipe(new NamespacedKey(plugin, "wet_sponge_boots"), armor4);
+
+		recipe1.shape("***", "* *");
+		recipe2.shape("* *", "***", "***");
+		recipe3.shape("***", "* *", "* *");
+		recipe4.shape("* *", "* *");
+
+		recipe1.setIngredient('*', Material.WET_SPONGE);
+		recipe2.setIngredient('*', Material.WET_SPONGE);
+		recipe3.setIngredient('*', Material.WET_SPONGE);
+		recipe4.setIngredient('*', Material.WET_SPONGE);
+
+		server.addRecipe(recipe1);
+		server.addRecipe(recipe2);
+		server.addRecipe(recipe3);
+		server.addRecipe(recipe4);
+	}
+	public void magmaArmor() {
+		ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
+		ItemStack armor2 = new ItemStack(Material.LEATHER_CHESTPLATE);
+		ItemStack armor3 = new ItemStack(Material.LEATHER_LEGGINGS);
+		ItemStack armor4 = new ItemStack(Material.LEATHER_BOOTS);
+		LeatherArmorMeta l1 = (LeatherArmorMeta) armor1.getItemMeta();
+		LeatherArmorMeta l2 = (LeatherArmorMeta) armor2.getItemMeta();
+		LeatherArmorMeta l3 = (LeatherArmorMeta) armor3.getItemMeta();
+		LeatherArmorMeta l4 = (LeatherArmorMeta) armor4.getItemMeta();
+		l1.setColor(Color.fromRGB(225, 45, 0));
+		l2.setColor(Color.fromRGB(225, 45, 0));
+		l3.setColor(Color.fromRGB(225, 45, 0));
+		l4.setColor(Color.fromRGB(225, 45, 0));
+		armor1.setItemMeta(l1);
+		armor2.setItemMeta(l2);
+		armor3.setItemMeta(l3);
+		armor4.setItemMeta(l4);
+		ItemMeta m1 = armor1.getItemMeta();
+		ItemMeta m2 = armor2.getItemMeta();
+		ItemMeta m3 = armor3.getItemMeta();
+		ItemMeta m4 = armor4.getItemMeta();
+		
+		m1.getPersistentDataContainer().set(new NamespacedKey(plugin, "magmaHelm"), PersistentDataType.BYTE, Byte.parseByte("1"));
+		m2.getPersistentDataContainer().set(new NamespacedKey(plugin, "magmaChest"), PersistentDataType.BYTE, Byte.parseByte("1"));
+		m3.getPersistentDataContainer().set(new NamespacedKey(plugin, "magmaLegs"), PersistentDataType.BYTE, Byte.parseByte("1"));
+		m4.getPersistentDataContainer().set(new NamespacedKey(plugin, "magmaFeet"), PersistentDataType.BYTE, Byte.parseByte("1"));
+		
+		m1.setDisplayName("Magma Helmet");
+		m2.setDisplayName("Magma Chestplate");
+		m3.setDisplayName("Magma Leggings");
+		m4.setDisplayName("Magma Boots");
+		ArrayList<String> lore = new ArrayList<String>();
+		lore.add(ChatColor.RED + "Fiery - Ignites enemies after attacking or being attacked");
+        lore.add(ChatColor.DARK_RED + "Flame Resistant - Provides Fire Protection IV");
+        lore.add(ChatColor.GOLD + "(4 pieces must be worn for abilities to work)");
+		m1.setLore(lore);
+		m2.setLore(lore);
+		m3.setLore(lore);
+		m4.setLore(lore);
+		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+
+		armor1.setItemMeta(m1);
+		armor2.setItemMeta(m2);
+		armor3.setItemMeta(m3);
+		armor4.setItemMeta(m4);
+
+
+		// Shaped Recipe
+		ShapedRecipe recipe1 = new ShapedRecipe(new NamespacedKey(plugin, "magma_helmet"), armor1);
+		ShapedRecipe recipe2 = new ShapedRecipe(new NamespacedKey(plugin, "magma_chestplate"), armor2);
+		ShapedRecipe recipe3 = new ShapedRecipe(new NamespacedKey(plugin, "magma_leggings"), armor3);
+		ShapedRecipe recipe4 = new ShapedRecipe(new NamespacedKey(plugin, "magma_boots"), armor4);
+
+		recipe1.shape("***", "* *");
+		recipe2.shape("* *", "***", "***");
+		recipe3.shape("***", "* *", "* *");
+		recipe4.shape("* *", "* *");
+
+		recipe1.setIngredient('*', Material.MAGMA_BLOCK);
+		recipe2.setIngredient('*', Material.MAGMA_BLOCK);
+		recipe3.setIngredient('*', Material.MAGMA_BLOCK);
+		recipe4.setIngredient('*', Material.MAGMA_BLOCK);
+
+		server.addRecipe(recipe1);
+		server.addRecipe(recipe2);
+		server.addRecipe(recipe3);
+		server.addRecipe(recipe4);
+	}
+	
+	public void netherrackArmor() {
+		ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
+		ItemStack armor2 = new ItemStack(Material.LEATHER_CHESTPLATE);
+		ItemStack armor3 = new ItemStack(Material.LEATHER_LEGGINGS);
+		ItemStack armor4 = new ItemStack(Material.LEATHER_BOOTS);
+		LeatherArmorMeta m1 = (LeatherArmorMeta) armor1.getItemMeta();
+		LeatherArmorMeta m2 = (LeatherArmorMeta) armor2.getItemMeta();
+		LeatherArmorMeta m3 = (LeatherArmorMeta) armor3.getItemMeta();
+		LeatherArmorMeta m4 = (LeatherArmorMeta) armor4.getItemMeta();
+		m1.setDisplayName("Netherrack Helmet");
+		m2.setDisplayName("Netherrack Chestplate");
+		m3.setDisplayName("Netherrack Leggings");
+		m4.setDisplayName("Netherrack Boots");
+		ArrayList<String> lore = new ArrayList<String>();
+        lore.add(ChatColor.RED + "Fiery - Ignites enemies after attacking or being attacked");
+        lore.add(ChatColor.GOLD + "(4 pieces must be worn for abilities to work)");
+        m1.setColor(Color.fromRGB(160, 66, 66));m2.setColor(Color.fromRGB(160, 66, 66));m3.setColor(Color.fromRGB(160, 66, 66));m4.setColor(Color.fromRGB(160, 66, 66));
+        m1.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+		m2.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+		m3.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+		m4.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+
+		m1.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 1, Operation.ADD_NUMBER, EquipmentSlot.HEAD));
+		m2.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 2, Operation.ADD_NUMBER, EquipmentSlot.CHEST));
+		m3.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 1, Operation.ADD_NUMBER, EquipmentSlot.LEGS));
+		m4.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 1, Operation.ADD_NUMBER, EquipmentSlot.FEET));
+		m1.setLore(lore);
+		m2.setLore(lore);
+		m3.setLore(lore);
+		m4.setLore(lore);
+		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+
+		armor1.setItemMeta(m1);
+		armor2.setItemMeta(m2);
+		armor3.setItemMeta(m3);
+		armor4.setItemMeta(m4);
+
+
+		// Shaped Recipe
+		ShapedRecipe recipe1 = new ShapedRecipe(new NamespacedKey(plugin, "netherrack_helmet"), armor1);
+		ShapedRecipe recipe2 = new ShapedRecipe(new NamespacedKey(plugin, "netherrack_chestplate"), armor2);
+		ShapedRecipe recipe3 = new ShapedRecipe(new NamespacedKey(plugin, "netherrack_leggings"), armor3);
+		ShapedRecipe recipe4 = new ShapedRecipe(new NamespacedKey(plugin, "netherrack_boots"), armor4);
+
+		recipe1.shape("***", "* *");
+		recipe2.shape("* *", "***", "***");
+		recipe3.shape("***", "* *", "* *");
+		recipe4.shape("* *", "* *");
+
+		recipe1.setIngredient('*', Material.NETHERRACK);
+		recipe2.setIngredient('*', Material.NETHERRACK);
+		recipe3.setIngredient('*', Material.NETHERRACK);
+		recipe4.setIngredient('*', Material.NETHERRACK);
+
+		server.addRecipe(recipe1);
+		server.addRecipe(recipe2);
+		server.addRecipe(recipe3);
+		server.addRecipe(recipe4);
+	}
 }
+
