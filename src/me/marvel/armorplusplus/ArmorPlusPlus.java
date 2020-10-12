@@ -90,6 +90,9 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 		ar.emeraldArmor();
 		ar.slimeArmor();
 		ar.pistonArmor();
+		ar.wetspongeArmor();
+		ar.magmaArmor();
+		ar.netherrackArmor();
 	}
 	private void loadAbilities() {
 			// For every 2.5 second
@@ -130,10 +133,13 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 					ability.obsidianArmor();
 					ability.emeraldArmor();
 					ability.pistonArmor();
+					ability.wetspongeArmor();
+					ability.magmaArmor();
+					/*Netherrack armor not needing a method since it triggers an event.*/
 				}
 			}, 0L, 1L);
 			
-			// For every 12 tickss
+			// For every 12 ticks
 			this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 				@Override
 				public void run() {
