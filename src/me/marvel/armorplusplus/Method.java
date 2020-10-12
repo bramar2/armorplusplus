@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
@@ -53,23 +54,47 @@ public class Method {
 			
 		}
 	}
-	public static void replaceArmorInInventory(Player p, String tag, ItemStack[] newArmor) {
+	public static void replaceArmorInInventory(Player p, String tag, ItemStack[] newArmor, boolean checkEnch, Enchantment ench) {
 		ItemStack[] content = p.getInventory().getContents();
 		for(int i = 0; i < content.length; i++) {
 			ItemStack item = content[i];
 			try {
 				if(item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, tag + "Helm"), PersistentDataType.BYTE)) {
 					// helmet
-					p.getInventory().setItem(i, newArmor[0]);
+					if(!checkEnch) p.getInventory().setItem(i, newArmor[0]);
+					else if(checkEnch) {
+						if(!(item.containsEnchantment(ench))) return;
+						p.getInventory().setItem(i, newArmor[0]);
+					}else {
+						plugin.getLogger().warning("[ArmorPlusPlus/WARN] Invalid boolean value. Unable to replace some armor. Please contact author to prevent Custom Armors having enchantments/attributes that wasn't supposed to be there! Other Info: at me.marvel.armorplusplus.Method.java:69 - Failed to replace armor[0]");
+					}
 				}else if(item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, tag + "Chest"), PersistentDataType.BYTE)) {
 					// chestplate
-					p.getInventory().setItem(i, newArmor[1]);
+					if(!checkEnch) p.getInventory().setItem(i, newArmor[1]);
+					else if(checkEnch) {
+						if(!(item.containsEnchantment(ench))) return;
+						p.getInventory().setItem(i, newArmor[1]);
+					}else {
+						plugin.getLogger().warning("[ArmorPlusPlus/WARN] Invalid boolean value. Unable to replace some armor. Please contact author to prevent Custom Armors having enchantments/attributes that wasn't supposed to be there! Other Info: at me.marvel.armorplusplus.Method.java:78 - Failed to replace armor[1]");
+					}
 				}else if(item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, tag + "Legs"), PersistentDataType.BYTE)) {
 					// legs
-					p.getInventory().setItem(i, newArmor[2]);
+					if(!checkEnch) p.getInventory().setItem(i, newArmor[2]);
+					else if(checkEnch) {
+						if(!(item.containsEnchantment(ench))) return;
+						p.getInventory().setItem(i, newArmor[2]);
+					}else {
+						plugin.getLogger().warning("[ArmorPlusPlus/WARN] Invalid boolean value. Unable to replace some armor. Please contact author to prevent Custom Armors having enchantments/attributes that wasn't supposed to be there! Other Info: at me.marvel.armorplusplus.Method.java:87 - Failed to replace armor[2]");
+					}
 				}else if(item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, tag + "Feet"), PersistentDataType.BYTE)) {
 					// feet
-					p.getInventory().setItem(i, newArmor[3]);
+					if(!checkEnch) p.getInventory().setItem(i, newArmor[3]);
+					else if(checkEnch) {
+						if(!(item.containsEnchantment(ench))) return;
+						p.getInventory().setItem(i, newArmor[3]);
+					}else {
+						plugin.getLogger().warning("[ArmorPlusPlus/WARN] Invalid boolean value. Unable to replace some armor. Please contact author to prevent Custom Armors having enchantments/attributes that wasn't supposed to be there! Other Info: at me.marvel.armorplusplus.Method.java:96 - Failed to replace armor[3]");
+					}
 				}
 			}catch(Exception e) {
 				
