@@ -1,9 +1,11 @@
 package me.marvel.armorplusplus;
 
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.marvel.armorplusplus.commands.TabComplete;
@@ -13,13 +15,18 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 	public boolean uptodate = false;
 	public String msg = "";
 	public UpdateChecker uc;
+	private boolean hasMineTinker = false;
 	
 	@EventHandler
 	public void onJoinEvent(PlayerJoinEvent e) {
 		if(e.getPlayer().isOp() || e.getPlayer().hasPermission("armorplusplus.cheat")) {
+			Player p = e.getPlayer();
 			if(outdated) {
-				if(msg != "") e.getPlayer().sendMessage(msg);
-				else e.getPlayer().sendMessage(ChatColor.GREEN + "ArmorPlusPlus > Available update version. Current plugin is outdated. Download at https://www.spigotmc.org/resources/armorplusplus.74748/");
+				if(msg != "") p.sendMessage(msg);
+				else p.sendMessage(ChatColor.GREEN + "ArmorPlusPlus > Available update version. Current plugin is outdated. Download at https://www.spigotmc.org/resources/armorplusplus.74748/");
+			}
+			if(hasMineTinker) {
+				p.sendMessage(ChatColor.RED + "ArmorPlusPlus > Incompatibility plugin found: MineTinker. Note: This plugin will not work properly!");
 			}
 		}
 	}
@@ -53,7 +60,7 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 				});
 			}
 		}catch(Exception e) {
-			getLogger().warning(ChatColor.RED + "ArmorPlusPlus > Unable to check updates. To manually check updates, please type /armorplusplus check.");
+			getServer().getConsoleSender().sendMessage(ChatColor.RED + "ArmorPlusPlus > Unable to check updates. To manually check updates, please type /armorplusplus check.");
 		}
 		
 		getCommand("armorplusplus").setExecutor(new me.marvel.armorplusplus.commands.ArmorPlusPlus(this, this));
@@ -63,6 +70,18 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 		Method.plugin = this;
 		loadRecipe();
 		loadAbilities();
+		for(Plugin p : getServer().getPluginManager().getPlugins()) {
+			String name = p.getName();
+			if(name.equalsIgnoreCase("MineTinker")) {
+				hasMineTinker = true;
+			}
+		}
+		if(hasMineTinker) {
+			getServer().getConsoleSender().sendMessage(ChatColor.RED + "ArmorPlusPlus >  Incompatibility plugins found: MineTinker.");
+			getServer().getConsoleSender().sendMessage(ChatColor.RED + "ArmorPlusPlus > This plugin will not work properly!");
+		}else {
+			getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[ArmorPlusPlus/INFO] No incompatibility plugins found!");
+		}
 	}
 
 	private void loadRecipe() {
@@ -88,11 +107,13 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 		ar.quartzArmor();
 		ar.obsidianArmor();
 		ar.emeraldArmor();
-		ar.slimeArmor();
 		ar.pistonArmor();
 		ar.wetspongeArmor();
 		ar.magmaArmor();
 		ar.netherrackArmor();
+		ar.brickArmor();
+		ar.netherBrickArmor();
+		ar.redNetherBrickArmor();
 	}
 	private void loadAbilities() {
 			// For every 2.5 second
@@ -136,6 +157,9 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 					ability.wetspongeArmor();
 					ability.magmaArmor();
 					/*Netherrack armor not needing a method since it triggers an event.*/
+					ability.brickArmor();
+					ability.netherBrickArmor();
+					ability.redNetherBrickArmor();
 				}
 			}, 0L, 1L);
 			
