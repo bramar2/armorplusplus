@@ -1145,6 +1145,184 @@ public class ArmorPlusPlus implements CommandExecutor, Listener {
 						p.getInventory().addItem(armor2);
 						p.getInventory().addItem(armor3);
 						p.getInventory().addItem(armor4);
+					}else if(e.getSlot() == 24) {
+						ItemStack armor1 = new ItemStack(Material.IRON_HELMET);
+						ItemStack armor2 = new ItemStack(Material.IRON_CHESTPLATE);
+						ItemStack armor3 = new ItemStack(Material.IRON_LEGGINGS);
+						ItemStack armor4 = new ItemStack(Material.IRON_BOOTS);
+						ItemMeta m1 = armor1.getItemMeta();
+						ItemMeta m2 = armor2.getItemMeta();
+						ItemMeta m3 = armor3.getItemMeta();
+						ItemMeta m4 = armor4.getItemMeta();
+						m1.setDisplayName("Ender Helmet");
+						m2.setDisplayName("Ender Chestplate");
+						m3.setDisplayName("Ender Leggings");
+						m4.setDisplayName("Ender Boots");
+						ArrayList<String> lore = new ArrayList<String>();
+				        lore.add(ChatColor.DARK_PURPLE + "Ender Hoarder - Provides access to your ender chest");
+				        lore.add(ChatColor.DARK_PURPLE + "Ender Hoarder - when sneaking");
+				        lore.add(ChatColor.GOLD + "(4 pieces must be worn for abilities to work)");
+						m1.setLore(lore);
+						m2.setLore(lore);
+						m3.setLore(lore);
+						m4.setLore(lore);
+						m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+						m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+						m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+						m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+
+						armor1.setItemMeta(m1);
+						armor2.setItemMeta(m2);
+						armor3.setItemMeta(m3);
+						armor4.setItemMeta(m4);
+						p.getInventory().addItem(armor1);
+						p.getInventory().addItem(armor2);
+						p.getInventory().addItem(armor3);
+						p.getInventory().addItem(armor4);
+					}else if(e.getSlot() == 25) {
+						ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
+						ItemStack armor2 = new ItemStack(Material.LEATHER_CHESTPLATE);
+						ItemStack armor3 = new ItemStack(Material.LEATHER_LEGGINGS);
+						ItemStack armor4 = new ItemStack(Material.LEATHER_BOOTS);
+						LeatherArmorMeta m1 = (LeatherArmorMeta) armor1.getItemMeta();
+						LeatherArmorMeta m2 = (LeatherArmorMeta) armor2.getItemMeta();
+						LeatherArmorMeta m3 = (LeatherArmorMeta) armor3.getItemMeta();
+						LeatherArmorMeta m4 = (LeatherArmorMeta) armor4.getItemMeta();
+						m1.setDisplayName("Brick Helmet");
+						m2.setDisplayName("Brick Chestplate");
+						m3.setDisplayName("Brick Leggings");
+						m4.setDisplayName("Brick Boots");
+						ArrayList<String> lore = new ArrayList<String>();
+				        lore.add(ChatColor.RED + "Health Boost - Increases Max Health by 2 hearts");
+				        lore.add(ChatColor.GOLD + "(4 pieces must be worn for abilities to work)");
+				        m1.setColor(Color.fromRGB(145, 90, 74));m2.setColor(Color.fromRGB(145, 90, 74));m3.setColor(Color.fromRGB(145, 90, 74));m4.setColor(Color.fromRGB(145, 90, 74));
+				        m1.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+						m2.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+						m3.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+						m4.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+						
+						m1.getPersistentDataContainer().set(new NamespacedKey(plugin, "brickHelm"), PersistentDataType.BYTE, Byte.valueOf("1"));
+						m2.getPersistentDataContainer().set(new NamespacedKey(plugin, "brickChest"), PersistentDataType.BYTE, Byte.valueOf("1"));
+						m3.getPersistentDataContainer().set(new NamespacedKey(plugin, "brickLegs"), PersistentDataType.BYTE, Byte.valueOf("1"));
+						m4.getPersistentDataContainer().set(new NamespacedKey(plugin, "brickFeet"), PersistentDataType.BYTE, Byte.valueOf("1"));
+						
+						m1.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 3, Operation.ADD_NUMBER, EquipmentSlot.HEAD));
+						m2.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 3, Operation.ADD_NUMBER, EquipmentSlot.CHEST));
+						m3.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 3, Operation.ADD_NUMBER, EquipmentSlot.LEGS));
+						m4.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 3, Operation.ADD_NUMBER, EquipmentSlot.FEET));
+						m1.setLore(lore);
+						m2.setLore(lore);
+						m3.setLore(lore);
+						m4.setLore(lore);
+						m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+						m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+						m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+						m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+
+						armor1.setItemMeta(m1);
+						armor2.setItemMeta(m2);
+						armor3.setItemMeta(m3);
+						armor4.setItemMeta(m4);
+						p.getInventory().addItem(armor1);
+						p.getInventory().addItem(armor2);
+						p.getInventory().addItem(armor3);
+						p.getInventory().addItem(armor4);
+					}else if(e.getSlot() == 26) {
+						ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
+						ItemStack armor2 = new ItemStack(Material.LEATHER_CHESTPLATE);
+						ItemStack armor3 = new ItemStack(Material.LEATHER_LEGGINGS);
+						ItemStack armor4 = new ItemStack(Material.LEATHER_BOOTS);
+						LeatherArmorMeta m1 = (LeatherArmorMeta) armor1.getItemMeta();
+						LeatherArmorMeta m2 = (LeatherArmorMeta) armor2.getItemMeta();
+						LeatherArmorMeta m3 = (LeatherArmorMeta) armor3.getItemMeta();
+						LeatherArmorMeta m4 = (LeatherArmorMeta) armor4.getItemMeta();
+						m1.setDisplayName("Nether Brick Helmet");
+						m2.setDisplayName("Nether Brick Chestplate");
+						m3.setDisplayName("Nether Brick Leggings");
+						m4.setDisplayName("Nether Brick Boots");
+						ArrayList<String> lore = new ArrayList<String>();
+				        lore.add(ChatColor.RED + "Health Boost - Increases Max Health by 2 hearts");
+				        lore.add(ChatColor.GOLD + "(4 pieces must be worn for abilities to work)");
+				        m1.setColor(Color.fromRGB(62, 33, 38));m2.setColor(Color.fromRGB(62, 33, 38));m3.setColor(Color.fromRGB(62, 33, 38));m4.setColor(Color.fromRGB(62, 33, 38));
+				        m1.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+						m2.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+						m3.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+						m4.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+						
+						m1.getPersistentDataContainer().set(new NamespacedKey(plugin, "netherBrickHelm"), PersistentDataType.BYTE, Byte.valueOf("1"));
+						m2.getPersistentDataContainer().set(new NamespacedKey(plugin, "netherBrickChest"), PersistentDataType.BYTE, Byte.valueOf("1"));
+						m3.getPersistentDataContainer().set(new NamespacedKey(plugin, "netherBrickLegs"), PersistentDataType.BYTE, Byte.valueOf("1"));
+						m4.getPersistentDataContainer().set(new NamespacedKey(plugin, "netherBrickFeet"), PersistentDataType.BYTE, Byte.valueOf("1"));
+						
+						m1.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 3, Operation.ADD_NUMBER, EquipmentSlot.HEAD));
+						m2.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 3, Operation.ADD_NUMBER, EquipmentSlot.CHEST));
+						m3.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 3, Operation.ADD_NUMBER, EquipmentSlot.LEGS));
+						m4.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 3, Operation.ADD_NUMBER, EquipmentSlot.FEET));
+						m1.setLore(lore);
+						m2.setLore(lore);
+						m3.setLore(lore);
+						m4.setLore(lore);
+						m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+						m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+						m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+						m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+
+						armor1.setItemMeta(m1);
+						armor2.setItemMeta(m2);
+						armor3.setItemMeta(m3);
+						armor4.setItemMeta(m4);
+						p.getInventory().addItem(armor1);
+						p.getInventory().addItem(armor2);
+						p.getInventory().addItem(armor3);
+						p.getInventory().addItem(armor4);
+					}else if(e.getSlot() == 27) {
+						ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
+						ItemStack armor2 = new ItemStack(Material.LEATHER_CHESTPLATE);
+						ItemStack armor3 = new ItemStack(Material.LEATHER_LEGGINGS);
+						ItemStack armor4 = new ItemStack(Material.LEATHER_BOOTS);
+						LeatherArmorMeta m1 = (LeatherArmorMeta) armor1.getItemMeta();
+						LeatherArmorMeta m2 = (LeatherArmorMeta) armor2.getItemMeta();
+						LeatherArmorMeta m3 = (LeatherArmorMeta) armor3.getItemMeta();
+						LeatherArmorMeta m4 = (LeatherArmorMeta) armor4.getItemMeta();
+						m1.setDisplayName("Red Nether Brick Helmet");
+						m2.setDisplayName("Red Nether Brick Chestplate");
+						m3.setDisplayName("Red Nether Brick Leggings");
+						m4.setDisplayName("Red Nether Brick Boots");
+						ArrayList<String> lore = new ArrayList<String>();
+				        lore.add(ChatColor.RED + "Health Boost - Increases Max Health by 2 hearts");
+				        lore.add(ChatColor.GOLD + "(4 pieces must be worn for abilities to work)");
+				        m1.setColor(Color.fromRGB(119, 15, 16));m2.setColor(Color.fromRGB(119, 15, 16));m3.setColor(Color.fromRGB(119, 15, 16));m4.setColor(Color.fromRGB(119, 15, 16));
+				        m1.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+						m2.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+						m3.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+						m4.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+						
+						m1.getPersistentDataContainer().set(new NamespacedKey(plugin, "redNetherBrickHelm"), PersistentDataType.BYTE, Byte.valueOf("1"));
+						m2.getPersistentDataContainer().set(new NamespacedKey(plugin, "redNetherBrickChest"), PersistentDataType.BYTE, Byte.valueOf("1"));
+						m3.getPersistentDataContainer().set(new NamespacedKey(plugin, "redNetherBrickLegs"), PersistentDataType.BYTE, Byte.valueOf("1"));
+						m4.getPersistentDataContainer().set(new NamespacedKey(plugin, "redNetherBrickFeet"), PersistentDataType.BYTE, Byte.valueOf("1"));
+
+						m1.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 3, Operation.ADD_NUMBER, EquipmentSlot.HEAD));
+						m2.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 3, Operation.ADD_NUMBER, EquipmentSlot.CHEST));
+						m3.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 3, Operation.ADD_NUMBER, EquipmentSlot.LEGS));
+						m4.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 3, Operation.ADD_NUMBER, EquipmentSlot.FEET));
+						m1.setLore(lore);
+						m2.setLore(lore);
+						m3.setLore(lore);
+						m4.setLore(lore);
+						m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+						m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+						m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+						m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+
+						armor1.setItemMeta(m1);
+						armor2.setItemMeta(m2);
+						armor3.setItemMeta(m3);
+						armor4.setItemMeta(m4);
+						p.getInventory().addItem(armor1);
+						p.getInventory().addItem(armor2);
+						p.getInventory().addItem(armor3);
+						p.getInventory().addItem(armor4);
 					}
 				}
 			}
@@ -1202,6 +1380,10 @@ public class ArmorPlusPlus implements CommandExecutor, Listener {
 		gui.setItem(21, new ItemStack(Material.WET_SPONGE));
 		gui.setItem(22, new ItemStack(Material.MAGMA_BLOCK));
 		gui.setItem(23, new ItemStack(Material.NETHERRACK));
+		gui.setItem(24, new ItemStack(Material.ENDER_CHEST));
+		gui.setItem(25, new ItemStack(Material.BRICKS));
+		gui.setItem(26, new ItemStack(Material.NETHER_BRICKS));
+		gui.setItem(27, new ItemStack(Material.RED_NETHER_BRICKS));
 		p.openInventory(gui);
 	}
 }
