@@ -8,6 +8,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
+/**
+ * TabComplete for /armorplusplus
+ */
 public class TabComplete implements TabCompleter {
 	
 	@Override

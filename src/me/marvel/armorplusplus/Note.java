@@ -4,6 +4,11 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+/**
+ * Customizations for Note armor.
+ * <p>
+ * To make different sounds on different blocks.
+ */
 public class Note {
 
 	Float pitch;

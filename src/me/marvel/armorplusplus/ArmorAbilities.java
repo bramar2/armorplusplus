@@ -34,6 +34,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -45,6 +47,13 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+import me.marvel.armorplusplus.events.PlayerLandEvent;
+
+/**
+ * Contains all abilities.
+ * <p>
+ * Required for all armor abilities to work.
+ */
 public class ArmorAbilities implements Listener {
 	
 	private ArrayList<UUID> anti = new ArrayList<UUID>();
@@ -2210,5 +2219,44 @@ public class ArmorAbilities implements Listener {
 
 		}
 
+	}
+	@EventHandler
+	public void slimeLandEvent(PlayerLandEvent e) {
+		Player p = e.getPlayer();
+		if(!Method.ifWearingAll(p, "Slime", ChatColor.GREEN + "Slimey - Bounces off floors")) return;
+		if(!p.isSneaking()) {
+			if(e.getVelocity().getY() > -6) e.getPlayer().setVelocity(e.getPlayer().getVelocity().setY((e.getVelocity().getY() * -17/25)));
+			else e.getPlayer().setVelocity(e.getPlayer().getVelocity().setY(6.0));
+			e.getPlayer().setFallDistance(0);
+		}else e.getPlayer().setFallDistance(0);
+		try {
+			p.stopSound(Sound.ENTITY_PLAYER_SMALL_FALL);
+		}catch(Exception ex) {
+			
+		}
+		try {
+			p.stopSound(Sound.ENTITY_PLAYER_BIG_FALL);
+		}catch(Exception ex) {
+			
+		}
+	}
+	@EventHandler
+	public void slimeDamageEvent(EntityDamageEvent e) {
+		if(e.getEntityType() != EntityType.PLAYER) return;
+		Player p = (Player) e.getEntity();
+		if(!Method.ifWearingAll(p, "Slime", ChatColor.GREEN + "Slimey - Bounces off floors")) return;
+		if(e.getCause() == DamageCause.FALL) {
+			try {
+				p.stopSound(Sound.ENTITY_PLAYER_SMALL_FALL);
+			}catch(Exception ex) {
+				
+			}
+			try {
+				p.stopSound(Sound.ENTITY_PLAYER_BIG_FALL);
+			}catch(Exception ex) {
+				
+			}
+			e.setCancelled(true);
+		}
 	}
 }

@@ -13,12 +13,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 
+/**
+ * Automates methods.
+ * <p>
+ * To make the code simpler.
+ */
 public class Method {
-	/*
-	 * Automates the method of making a recipe and checking armor for abilities, 
-	 * so the code will be much simpler (i think & i hope)
-	 * 2020
-	 */
+	
 	public static Plugin plugin;
 	public static boolean ifWearingAll(Player p, String armorname, String lore1) {
 		boolean result = false;

@@ -1,5 +1,8 @@
 package me.marvel.armorplusplus;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,6 +12,15 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.marvel.armorplusplus.commands.TabComplete;
+import me.marvel.armorplusplus.utils.Metrics;
+import me.marvel.armorplusplus.utils.UpdateChecker;
+
+
+/**
+ * Main class of the plugin.
+ * <p>
+ * Contains all the necessary stuff for the plugin to work.
+ */
 public class ArmorPlusPlus extends JavaPlugin implements Listener {
 	
 	public boolean outdated = false;
@@ -16,6 +28,7 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 	public String msg = "";
 	public UpdateChecker uc;
 	private boolean hasMineTinker = false;
+	private me.marvel.armorplusplus.events.Listener listener;
 	
 	@EventHandler
 	public void onJoinEvent(PlayerJoinEvent e) {
@@ -67,6 +80,8 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 		getCommand("armorplusplus").setTabCompleter(new TabComplete());
 		getServer().getPluginManager().registerEvents(new me.marvel.armorplusplus.commands.ArmorPlusPlus(this, this), this);
 		getServer().getPluginManager().registerEvents(new ArmorAbilities(this), this);
+		listener = new me.marvel.armorplusplus.events.Listener(this);
+		listener.listen();
 		Method.plugin = this;
 		loadRecipe();
 		loadAbilities();
@@ -82,6 +97,7 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 		}else {
 			getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[ArmorPlusPlus/INFO] No incompatibility plugins found!");
 		}
+		loadMetrics();
 	}
 
 	private void loadRecipe() {
@@ -114,6 +130,7 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 		ar.brickArmor();
 		ar.netherBrickArmor();
 		ar.redNetherBrickArmor();
+		ar.slimeArmor();
 	}
 	private void loadAbilities() {
 			// For every 2.5 second
@@ -170,6 +187,23 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 					ability.cactusArmor();
 				}
 			}, 0L, 12L);
+	}
+	private void loadMetrics() {
+		int pluginId = 9177;
+		Metrics metrics = new Metrics(this, pluginId);
+		metrics.addCustomChart(new Metrics.DrilldownPie("plugin_outdated", () -> {
+			Map<String, Map<String, Integer>> map = new HashMap<>();
+			Map<String, Integer> entry = new HashMap<>();
+			entry.put((outdated == uptodate ? "Unknown" : outdated ? "Outdated" : "Up-to-date"), 1);
+			if(outdated) {
+				map.put("Outdated", entry);
+			}else if(uptodate) {
+				map.put("Up-to-date", entry);
+			}else {
+				map.put("Unknown", entry);
+			}
+			return map;
+		}));
 	}
 	
 	@Override
