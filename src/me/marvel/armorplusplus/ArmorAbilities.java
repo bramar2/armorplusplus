@@ -67,6 +67,7 @@ public class ArmorAbilities implements Listener {
 	private ArrayList<UUID> smeltsneaking = new ArrayList<UUID>();
 	private ArrayList<UUID> pistonCooldown = new ArrayList<UUID>();
 	private ArrayList<UUID> wscooldown = new ArrayList<UUID>();
+	private ArrayList<UUID> teleportCooldown = new ArrayList<UUID>();
 	
 	private void check(Player p) {
 		Integer min;
@@ -1898,6 +1899,7 @@ public class ArmorAbilities implements Listener {
 					m4.setDisplayName("Brick Boots");
 					ArrayList<String> lore = new ArrayList<String>();
 			        lore.add(ChatColor.RED + "Health Boost - Increases Max Health by 2 hearts");
+			        lore.add(ChatColor.GRAY + "Immovable - Gives 25% Knockback Resistance");
 			        lore.add(ChatColor.GOLD + "(4 pieces must be worn for abilities to work)");
 			        m1.setColor(Color.fromRGB(145, 90, 74));m2.setColor(Color.fromRGB(145, 90, 74));m3.setColor(Color.fromRGB(145, 90, 74));m4.setColor(Color.fromRGB(145, 90, 74));
 			        m1.removeAttributeModifier(Attribute.GENERIC_ARMOR);
@@ -1919,6 +1921,11 @@ public class ArmorAbilities implements Listener {
 					m2.addAttributeModifier(Attribute.GENERIC_MAX_HEALTH, new AttributeModifier(UUID.randomUUID(), "generic.max_health", 1, Operation.ADD_NUMBER, EquipmentSlot.CHEST));
 					m3.addAttributeModifier(Attribute.GENERIC_MAX_HEALTH, new AttributeModifier(UUID.randomUUID(), "generic.max_health", 1, Operation.ADD_NUMBER, EquipmentSlot.LEGS));
 					m4.addAttributeModifier(Attribute.GENERIC_MAX_HEALTH, new AttributeModifier(UUID.randomUUID(), "generic.max_health", 1, Operation.ADD_NUMBER, EquipmentSlot.FEET));
+					
+					m1.addAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE, new AttributeModifier(UUID.randomUUID(), "generic.knockback_resistance", 0.25, Operation.ADD_NUMBER, EquipmentSlot.HEAD));
+					m2.addAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE, new AttributeModifier(UUID.randomUUID(), "generic.knockback_resistance", 0.25, Operation.ADD_NUMBER, EquipmentSlot.CHEST));
+					m3.addAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE, new AttributeModifier(UUID.randomUUID(), "generic.knockback_resistance", 0.25, Operation.ADD_NUMBER, EquipmentSlot.LEGS));
+					m4.addAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE, new AttributeModifier(UUID.randomUUID(), "generic.knockback_resistance", 0.25, Operation.ADD_NUMBER, EquipmentSlot.FEET));
 					
 					m1.setLore(lore);
 					m2.setLore(lore);
@@ -1950,6 +1957,7 @@ public class ArmorAbilities implements Listener {
 					m4.setDisplayName("Brick Boots");
 					ArrayList<String> lore = new ArrayList<String>();
 			        lore.add(ChatColor.RED + "Health Boost - Increases Max Health by 2 hearts");
+			        lore.add(ChatColor.GRAY + "Immovable - Gives 25% Knockback Resistance");
 			        lore.add(ChatColor.GOLD + "(4 pieces must be worn for abilities to work)");
 			        m1.setColor(Color.fromRGB(145, 90, 74));m2.setColor(Color.fromRGB(145, 90, 74));m3.setColor(Color.fromRGB(145, 90, 74));m4.setColor(Color.fromRGB(145, 90, 74));
 			        m1.removeAttributeModifier(Attribute.GENERIC_ARMOR);
@@ -2012,6 +2020,7 @@ public class ArmorAbilities implements Listener {
 					m4.setDisplayName("Nether Brick Boots");
 					ArrayList<String> lore = new ArrayList<String>();
 			        lore.add(ChatColor.RED + "Health Boost - Increases Max Health by 2 hearts");
+			        lore.add(ChatColor.GRAY + "Immovable - Gives 25% Knockback Resistance");
 			        lore.add(ChatColor.GOLD + "(4 pieces must be worn for abilities to work)");
 			        m1.setColor(Color.fromRGB(62, 33, 38));m2.setColor(Color.fromRGB(62, 33, 38));m3.setColor(Color.fromRGB(62, 33, 38));m4.setColor(Color.fromRGB(62, 33, 38));
 			        m1.removeAttributeModifier(Attribute.GENERIC_ARMOR);
@@ -2033,6 +2042,11 @@ public class ArmorAbilities implements Listener {
 					m2.addAttributeModifier(Attribute.GENERIC_MAX_HEALTH, new AttributeModifier(UUID.randomUUID(), "generic.max_health", 1, Operation.ADD_NUMBER, EquipmentSlot.CHEST));
 					m3.addAttributeModifier(Attribute.GENERIC_MAX_HEALTH, new AttributeModifier(UUID.randomUUID(), "generic.max_health", 1, Operation.ADD_NUMBER, EquipmentSlot.LEGS));
 					m4.addAttributeModifier(Attribute.GENERIC_MAX_HEALTH, new AttributeModifier(UUID.randomUUID(), "generic.max_health", 1, Operation.ADD_NUMBER, EquipmentSlot.FEET));
+					
+					m1.addAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE, new AttributeModifier(UUID.randomUUID(), "generic.knockback_resistance", 0.25, Operation.ADD_NUMBER, EquipmentSlot.HEAD));
+					m2.addAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE, new AttributeModifier(UUID.randomUUID(), "generic.knockback_resistance", 0.25, Operation.ADD_NUMBER, EquipmentSlot.CHEST));
+					m3.addAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE, new AttributeModifier(UUID.randomUUID(), "generic.knockback_resistance", 0.25, Operation.ADD_NUMBER, EquipmentSlot.LEGS));
+					m4.addAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE, new AttributeModifier(UUID.randomUUID(), "generic.knockback_resistance", 0.25, Operation.ADD_NUMBER, EquipmentSlot.FEET));
 					
 					m1.setLore(lore);
 					m2.setLore(lore);
@@ -2064,6 +2078,7 @@ public class ArmorAbilities implements Listener {
 					m4.setDisplayName("Nether Brick Boots");
 					ArrayList<String> lore = new ArrayList<String>();
 			        lore.add(ChatColor.RED + "Health Boost - Increases Max Health by 2 hearts");
+			        lore.add(ChatColor.GRAY + "Immovable - Gives 25% Knockback Resistance");
 			        lore.add(ChatColor.GOLD + "(4 pieces must be worn for abilities to work)");
 			        m1.setColor(Color.fromRGB(62, 33, 38));m2.setColor(Color.fromRGB(62, 33, 38));m3.setColor(Color.fromRGB(62, 33, 38));m4.setColor(Color.fromRGB(62, 33, 38));
 			        m1.removeAttributeModifier(Attribute.GENERIC_ARMOR);
@@ -2127,6 +2142,7 @@ public class ArmorAbilities implements Listener {
 					m4.setDisplayName("Red Nether Brick Boots");
 					ArrayList<String> lore = new ArrayList<String>();
 			        lore.add(ChatColor.RED + "Health Boost - Increases Max Health by 2 hearts");
+			        lore.add(ChatColor.GRAY + "Immovable - Gives 25% Knockback Resistance");
 			        lore.add(ChatColor.GOLD + "(4 pieces must be worn for abilities to work)");
 			        m1.setColor(Color.fromRGB(119, 15, 16));m2.setColor(Color.fromRGB(119, 15, 16));m3.setColor(Color.fromRGB(119, 15, 16));m4.setColor(Color.fromRGB(119, 15, 16));
 			        m1.removeAttributeModifier(Attribute.GENERIC_ARMOR);
@@ -2148,6 +2164,11 @@ public class ArmorAbilities implements Listener {
 					m2.addAttributeModifier(Attribute.GENERIC_MAX_HEALTH, new AttributeModifier(UUID.randomUUID(), "generic.max_health", 1, Operation.ADD_NUMBER, EquipmentSlot.CHEST));
 					m3.addAttributeModifier(Attribute.GENERIC_MAX_HEALTH, new AttributeModifier(UUID.randomUUID(), "generic.max_health", 1, Operation.ADD_NUMBER, EquipmentSlot.LEGS));
 					m4.addAttributeModifier(Attribute.GENERIC_MAX_HEALTH, new AttributeModifier(UUID.randomUUID(), "generic.max_health", 1, Operation.ADD_NUMBER, EquipmentSlot.FEET));
+
+					m1.addAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE, new AttributeModifier(UUID.randomUUID(), "generic.knockback_resistance", 0.25, Operation.ADD_NUMBER, EquipmentSlot.HEAD));
+					m2.addAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE, new AttributeModifier(UUID.randomUUID(), "generic.knockback_resistance", 0.25, Operation.ADD_NUMBER, EquipmentSlot.CHEST));
+					m3.addAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE, new AttributeModifier(UUID.randomUUID(), "generic.knockback_resistance", 0.25, Operation.ADD_NUMBER, EquipmentSlot.LEGS));
+					m4.addAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE, new AttributeModifier(UUID.randomUUID(), "generic.knockback_resistance", 0.25, Operation.ADD_NUMBER, EquipmentSlot.FEET));
 					
 					m1.setLore(lore);
 					m2.setLore(lore);
@@ -2179,6 +2200,7 @@ public class ArmorAbilities implements Listener {
 					m4.setDisplayName("Red Nether Brick Boots");
 					ArrayList<String> lore = new ArrayList<String>();
 			        lore.add(ChatColor.RED + "Health Boost - Increases Max Health by 2 hearts");
+			        lore.add(ChatColor.GRAY + "Immovable - Gives 25% Knockback Resistance");
 			        lore.add(ChatColor.GOLD + "(4 pieces must be worn for abilities to work)");
 			        m1.setColor(Color.fromRGB(119, 15, 16));m2.setColor(Color.fromRGB(119, 15, 16));m3.setColor(Color.fromRGB(119, 15, 16));m4.setColor(Color.fromRGB(119, 15, 16));
 			        m1.removeAttributeModifier(Attribute.GENERIC_ARMOR);
@@ -2240,6 +2262,7 @@ public class ArmorAbilities implements Listener {
 			
 		}
 	}
+	
 	@EventHandler
 	public void slimeDamageEvent(EntityDamageEvent e) {
 		if(e.getEntityType() != EntityType.PLAYER) return;
@@ -2258,5 +2281,39 @@ public class ArmorAbilities implements Listener {
 			}
 			e.setCancelled(true);
 		}
+	}
+	public void endstoneArmor() {
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			try {
+				if(Method.ifWearingAll(p, "End Stone", "Ender - Teleports in the direction you're looking at")) {
+					/* Put the ability below. This is auto-generated
+					* from ArmorCreator program
+                    * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
+					*/
+					if(!p.isSneaking()) return;
+					if(teleportCooldown.contains(p.getUniqueId())) return;
+					if(p.getTargetBlock(null, 15).getType() == Material.AIR || p.getTargetBlock(null, 15).getType() == Material.LAVA) {
+						p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+						return;
+					}
+					p.teleport(p.getTargetBlock(null, 30).getLocation().add(0, 1, 0));
+	                p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1F, 1F);
+	                teleportCooldown.add(p.getUniqueId());
+					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+						public void run() {
+							try {
+								teleportCooldown.remove(p.getUniqueId());
+							}catch(Exception e) {
+								
+							}
+						}
+					}, 15 * 20L);
+				}
+			}catch(Exception e) {
+				
+			}
+
+		}
+
 	}
 }

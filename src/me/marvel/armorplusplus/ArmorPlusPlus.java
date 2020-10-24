@@ -131,6 +131,7 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 		ar.netherBrickArmor();
 		ar.redNetherBrickArmor();
 		ar.slimeArmor();
+		ar.endstoneArmor();
 	}
 	private void loadAbilities() {
 			// For every 2.5 second
@@ -177,7 +178,8 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 					ability.brickArmor();
 					ability.netherBrickArmor();
 					ability.redNetherBrickArmor();
-				}
+					ability.endstoneArmor();
+					}
 			}, 0L, 1L);
 			
 			// For every 12 ticks
