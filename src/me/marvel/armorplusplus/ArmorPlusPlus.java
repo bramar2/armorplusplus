@@ -132,6 +132,7 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 		ar.redNetherBrickArmor();
 		ar.slimeArmor();
 		ar.endstoneArmor();
+		ar.iceArmor();
 	}
 	private void loadAbilities() {
 			// For every 2.5 second
@@ -179,6 +180,7 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 					ability.netherBrickArmor();
 					ability.redNetherBrickArmor();
 					ability.endstoneArmor();
+					ability.iceArmor();
 					}
 			}, 0L, 1L);
 			
@@ -192,20 +194,43 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 	}
 	private void loadMetrics() {
 		int pluginId = 9177;
-		Metrics metrics = new Metrics(this, pluginId);
-		metrics.addCustomChart(new Metrics.DrilldownPie("plugin_outdated", () -> {
-			Map<String, Map<String, Integer>> map = new HashMap<>();
-			Map<String, Integer> entry = new HashMap<>();
-			entry.put((outdated == uptodate ? "Unknown" : outdated ? "Outdated" : "Up-to-date"), 1);
-			if(outdated) {
-				map.put("Outdated", entry);
-			}else if(uptodate) {
-				map.put("Up-to-date", entry);
-			}else {
-				map.put("Unknown", entry);
+		Plugin plugin = this;
+		getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+			public void run() {
+				Metrics metrics = new Metrics(plugin, pluginId);
+				metrics.addCustomChart(new Metrics.DrilldownPie("plugin_outdated", () -> {
+					Map<String, Map<String, Integer>> map = new HashMap<>();
+					Map<String, Integer> entry = new HashMap<>();
+					uc.getVersion(version -> {  
+						if(getDescription().getVersion().equalsIgnoreCase(version)) {
+							uptodate = true;
+							outdated = false;
+						}else if(version != null) {
+							if(!outdated) {
+								msg = ChatColor.GREEN + "ArmorPlusPlus > Available update version " + version + ". Download at https://www.spigotmc.org/resources/armorplusplus.74748/";
+								getServer().getConsoleSender().sendMessage(msg);
+								for(Player p : getServer().getOnlinePlayers()) {
+									if(p.hasPermission("armorplusplus.cheat") || p.isOp()) {
+										p.sendMessage(msg);
+									}
+								}
+							}
+							outdated = true;
+							uptodate = false;
+						}
+					});
+					entry.put((outdated == uptodate ? "Unknown" : outdated ? "Outdated" : "Up-to-date"), 1);
+					if(outdated) {
+						map.put("Outdated", entry);
+					}else if(uptodate) {
+						map.put("Up-to-date", entry);
+					}else {
+						map.put("Unknown", entry);
+					}
+					return map;
+				}));
 			}
-			return map;
-		}));
+		}, 0L, 10 /*minutes*/ * 60 * 20L);
 	}
 	
 	@Override

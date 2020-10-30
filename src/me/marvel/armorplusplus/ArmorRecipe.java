@@ -1963,6 +1963,72 @@ public class ArmorRecipe {
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
 	}
+	public void iceArmor() {
+		ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
+		ItemStack armor2 = new ItemStack(Material.LEATHER_CHESTPLATE);
+		ItemStack armor3 = new ItemStack(Material.LEATHER_LEGGINGS);
+		ItemStack armor4 = new ItemStack(Material.LEATHER_BOOTS);
+		LeatherArmorMeta m1 = (LeatherArmorMeta) armor1.getItemMeta();
+		LeatherArmorMeta m2 = (LeatherArmorMeta) armor2.getItemMeta();
+		LeatherArmorMeta m3 = (LeatherArmorMeta) armor3.getItemMeta();
+		LeatherArmorMeta m4 = (LeatherArmorMeta) armor4.getItemMeta();
+		m1.setDisplayName("Ice Helmet");
+		m2.setDisplayName("Ice Chestplate");
+		m3.setDisplayName("Ice Leggings");
+		m4.setDisplayName("Ice Boots");
+		ArrayList<String> lore = new ArrayList<String>();
+        lore.add(ChatColor.AQUA + "Frosty - Provides Frost Walking II");
+        lore.add(ChatColor.GOLD + "(4 pieces must be worn for abilities to work)");
+        m1.setColor(Color.fromRGB(156, 185, 237));m2.setColor(Color.fromRGB(156, 185, 237));m3.setColor(Color.fromRGB(156, 185, 237));m4.setColor(Color.fromRGB(156, 185, 237));
+        m1.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+		m2.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+		m3.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+		m4.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+
+		m1.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 2, Operation.ADD_NUMBER, EquipmentSlot.HEAD));
+		m2.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 2, Operation.ADD_NUMBER, EquipmentSlot.CHEST));
+		m3.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 2, Operation.ADD_NUMBER, EquipmentSlot.LEGS));
+		m4.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 2, Operation.ADD_NUMBER, EquipmentSlot.FEET));
+		m1.getPersistentDataContainer().set(new NamespacedKey(plugin, "iceHelm"), PersistentDataType.BYTE, Byte.valueOf("1"));
+		m2.getPersistentDataContainer().set(new NamespacedKey(plugin, "iceChest"), PersistentDataType.BYTE, Byte.valueOf("1"));
+		m3.getPersistentDataContainer().set(new NamespacedKey(plugin, "iceLegs"), PersistentDataType.BYTE, Byte.valueOf("1"));
+		m4.getPersistentDataContainer().set(new NamespacedKey(plugin, "iceFeet"), PersistentDataType.BYTE, Byte.valueOf("1"));
+		m1.setLore(lore);
+		m2.setLore(lore);
+		m3.setLore(lore);
+		m4.setLore(lore);
+		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+
+		armor1.setItemMeta(m1);
+		armor2.setItemMeta(m2);
+		armor3.setItemMeta(m3);
+		armor4.setItemMeta(m4);
+
+
+		// Shaped Recipe
+		ShapedRecipe recipe1 = new ShapedRecipe(new NamespacedKey(plugin, "ice_helmet"), armor1);
+		ShapedRecipe recipe2 = new ShapedRecipe(new NamespacedKey(plugin, "ice_chestplate"), armor2);
+		ShapedRecipe recipe3 = new ShapedRecipe(new NamespacedKey(plugin, "ice_leggings"), armor3);
+		ShapedRecipe recipe4 = new ShapedRecipe(new NamespacedKey(plugin, "ice_boots"), armor4);
+
+		recipe1.shape("***", "* *");
+		recipe2.shape("* *", "***", "***");
+		recipe3.shape("***", "* *", "* *");
+		recipe4.shape("* *", "* *");
+
+		recipe1.setIngredient('*', Material.ICE);
+		recipe2.setIngredient('*', Material.ICE);
+		recipe3.setIngredient('*', Material.ICE);
+		recipe4.setIngredient('*', Material.ICE);
+
+		server.addRecipe(recipe1);
+		server.addRecipe(recipe2);
+		server.addRecipe(recipe3);
+		server.addRecipe(recipe4);
+	}
 	
 }
 
