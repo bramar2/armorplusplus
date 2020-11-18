@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
@@ -25,7 +26,7 @@ public class Listener {
 		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 			public void run() {
 				for(Player p : plugin.getServer().getOnlinePlayers()) {
-					if(p.isOnGround()) {
+					if(((LivingEntity)p).isOnGround()) {
 						if(playerVectorData.containsKey(p.getUniqueId())) {
 							plugin.getServer().getPluginManager().callEvent(new PlayerLandEvent(p, p.getUniqueId(), playerVectorData.get(p.getUniqueId())));
 							playerVectorData.remove(p.getUniqueId());

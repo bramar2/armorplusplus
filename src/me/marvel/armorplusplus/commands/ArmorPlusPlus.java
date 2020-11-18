@@ -1470,6 +1470,50 @@ public class ArmorPlusPlus implements CommandExecutor, Listener {
 						p.getInventory().addItem(armor2);
 						p.getInventory().addItem(armor3);
 						p.getInventory().addItem(armor4);
+					}else if(e.getSlot() == 31) {
+						if(checkVersion16(p, true, true)) return;
+						ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
+						ItemStack armor2 = new ItemStack(Material.LEATHER_CHESTPLATE);
+						ItemStack armor3 = new ItemStack(Material.LEATHER_LEGGINGS);
+						ItemStack armor4 = new ItemStack(Material.LEATHER_BOOTS);
+						LeatherArmorMeta m1 = (LeatherArmorMeta) armor1.getItemMeta();
+						LeatherArmorMeta m2 = (LeatherArmorMeta) armor2.getItemMeta();
+						LeatherArmorMeta m3 = (LeatherArmorMeta) armor3.getItemMeta();
+						LeatherArmorMeta m4 = (LeatherArmorMeta) armor4.getItemMeta();
+						m1.setDisplayName("Bone Helmet");
+						m2.setDisplayName("Bone Chestplate");
+						m3.setDisplayName("Bone Leggings");
+						m4.setDisplayName("Bone Boots");
+						ArrayList<String> lore = new ArrayList<String>();
+				        lore.add(ChatColor.WHITE + "Bonemealer - Applies bone meal to nearby blocks.");
+				        lore.add(ChatColor.GOLD + "(4 pieces must be worn for abilities to work)");
+				        m1.setColor(Color.fromRGB(219, 214, 191));m2.setColor(Color.fromRGB(219, 214, 191));m3.setColor(Color.fromRGB(219, 214, 191));m4.setColor(Color.fromRGB(219, 214, 191));
+				        m1.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+						m2.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+						m3.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+						m4.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+
+						m1.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 3, Operation.ADD_NUMBER, EquipmentSlot.HEAD));
+						m2.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 3, Operation.ADD_NUMBER, EquipmentSlot.CHEST));
+						m3.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 3, Operation.ADD_NUMBER, EquipmentSlot.LEGS));
+						m4.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 3, Operation.ADD_NUMBER, EquipmentSlot.FEET));
+						m1.setLore(lore);
+						m2.setLore(lore);
+						m3.setLore(lore);
+						m4.setLore(lore);
+						m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+						m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+						m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+						m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+
+						armor1.setItemMeta(m1);
+						armor2.setItemMeta(m2);
+						armor3.setItemMeta(m3);
+						armor4.setItemMeta(m4);
+						p.getInventory().addItem(armor1);
+						p.getInventory().addItem(armor2);
+						p.getInventory().addItem(armor3);
+						p.getInventory().addItem(armor4);
 					}
 				}
 			}
@@ -1534,6 +1578,14 @@ public class ArmorPlusPlus implements CommandExecutor, Listener {
 		gui.setItem(28, new ItemStack(Material.SLIME_BLOCK));
 		gui.setItem(29, new ItemStack(Material.END_STONE));
 		gui.setItem(30, new ItemStack(Material.ICE));
+		gui.setItem(31, new ItemStack(Material.BONE_BLOCK));
 		p.openInventory(gui);
+	}
+	private boolean checkVersion16(Player p, boolean makeVillagerSound, boolean sendMessage) {
+		if(!main.ver16) {
+			if(makeVillagerSound) p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+			p.sendMessage(ChatColor.RED + "The armor is only available in 1.16 and newer versions!");
+			return true;
+		}else return false;
 	}
 }

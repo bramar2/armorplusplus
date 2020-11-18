@@ -29,6 +29,7 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 	public UpdateChecker uc;
 	private boolean hasMineTinker = false;
 	private me.marvel.armorplusplus.events.Listener listener;
+	public boolean ver16 = false;
 	
 	@EventHandler
 	public void onJoinEvent(PlayerJoinEvent e) {
@@ -46,6 +47,9 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 	
 	@Override
 	public void onEnable() {
+		if(getServer().getVersion().toLowerCase().contains("1.16")) {
+			ver16 = true;
+		}else ver16 = false;
 		getServer().getPluginManager().registerEvents(this, this);
 		this.saveDefaultConfig();
 		this.getConfig().options().copyDefaults(true);
@@ -133,6 +137,7 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 		ar.slimeArmor();
 		ar.endstoneArmor();
 		ar.iceArmor();
+		if(ver16) ar.boneArmor();
 	}
 	private void loadAbilities() {
 			// For every 2.5 second
@@ -181,6 +186,7 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 					ability.redNetherBrickArmor();
 					ability.endstoneArmor();
 					ability.iceArmor();
+					if(ver16) ability.boneArmor();
 					}
 			}, 0L, 1L);
 			
