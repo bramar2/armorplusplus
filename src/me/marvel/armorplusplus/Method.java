@@ -12,6 +12,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 /**
  * Automates methods.
@@ -134,6 +136,21 @@ public class Method {
 			continue;
 		}
 	}
+	
+	public static void addPotionEffect(Player p, PotionEffectType type, int duration, int amplifier, boolean ambient, boolean particles, boolean icon) {
+		if(!p.hasPotionEffect(type)) p.addPotionEffect(new PotionEffect(type, duration, amplifier, ambient, particles, icon));
+		else {
+			boolean give = false;
+			for(PotionEffect potionEffect : p.getActivePotionEffects()) {
+				if(potionEffect.getType() == type && potionEffect.getDuration() < 3) {
+					give = true;
+					break;
+				}
+			}
+			if(give) p.addPotionEffect(new PotionEffect(type, duration, amplifier, ambient, particles, icon));
+		}
+	}
+	
 	public static void replaceArmorInInventory(Player p, String tag, ItemStack[] newArmor, boolean checkEnch, Enchantment ench) {
 		ItemStack[] content = p.getInventory().getContents();
 		for(int i = 0; i < content.length; i++) {

@@ -138,6 +138,7 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 		ar.endstoneArmor();
 		ar.iceArmor();
 		if(ver16) ar.boneArmor();
+		ar.soulsandArmor();
 	}
 	private void loadAbilities() {
 			// For every 2.5 second
@@ -187,6 +188,7 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 					ability.endstoneArmor();
 					ability.iceArmor();
 					if(ver16) ability.boneArmor();
+					ability.soulsandArmor();
 					}
 			}, 0L, 1L);
 			

@@ -38,7 +38,9 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -119,6 +121,37 @@ public class ArmorAbilities implements Listener {
 	public ArmorAbilities(ArmorPlusPlus ArmorPlusPlus) {
 		plugin = ArmorPlusPlus;
 	}
+	
+	@EventHandler
+	public void onAnvilRename(InventoryClickEvent e) {
+		try {
+			if(!(e.getClickedInventory() instanceof AnvilInventory)) return;
+			if(!(e.getSlot() == 2)) return;
+			AnvilInventory inventory = (AnvilInventory) e.getClickedInventory();
+			ItemStack item = inventory.getItem(0);
+			boolean correctarmor = false;
+			for(String lore : item.getItemMeta().getLore()) {
+				if(lore.equalsIgnoreCase(ChatColor.GOLD + "(4 pieces must be worn for abilities to work)")) {
+					correctarmor = true;
+					break;
+				}
+			}
+			if(!correctarmor) return;
+			if(item.getItemMeta().getDisplayName().equalsIgnoreCase(inventory.getRenameText())) return;
+			
+			e.setCancelled(true);
+			
+			if(e.getWhoClicked() instanceof Player) {
+				Player p = (Player) e.getWhoClicked();
+				p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1F, 1F);
+				p.sendMessage(ChatColor.RED + "This item cannot be renamed. Renaming it would lose its ability!");
+				p.setLevel(p.getLevel());
+			}
+		}catch(Exception e1) {
+			
+		}
+	}
+	
 	@SuppressWarnings("deprecation")
 	public void dirtArmor() {
 		for(Player p : Bukkit.getOnlinePlayers()) {
@@ -203,8 +236,17 @@ public class ArmorAbilities implements Listener {
 					String lore3 = p.getInventory().getLeggings().getItemMeta().getLore().get(0);
 					String lore4 = p.getInventory().getBoots().getItemMeta().getLore().get(0);
 					if(lore1.equalsIgnoreCase(ChatColor.GRAY + "Invisibility - Provides Invisibility") && lore2.equalsIgnoreCase(ChatColor.GRAY + "Invisibility - Provides Invisibility") && lore3.equalsIgnoreCase(ChatColor.GRAY + "Invisibility - Provides Invisibility") && lore4.equalsIgnoreCase(ChatColor.GRAY + "Invisibility - Provides Invisibility")) {
-						p.removePotionEffect(PotionEffectType.INVISIBILITY);
-						p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 5, 9, false, false, false));
+						if(!p.hasPotionEffect(PotionEffectType.INVISIBILITY)) p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 5, 9, false, false, false));
+						else {
+							boolean give = false;
+							for(PotionEffect potionEffect : p.getActivePotionEffects()) {
+								if(potionEffect.getType() == PotionEffectType.INVISIBILITY && potionEffect.getDuration() < 3) {
+									give = true;
+									break;
+								}
+							}
+							if(give) p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 5, 9, false, false, false));
+						}
 					}
 				}	
 				
@@ -572,8 +614,17 @@ public class ArmorAbilities implements Listener {
 						 * from ArmorCreator program
 						 */
 						if(p.getLocation().getBlock().getType().equals(Material.KELP) | p.getLocation().getBlock().getType().equals(Material.WATER) | p.getLocation().getBlock().getType().equals(Material.SEAGRASS) | p.getLocation().getBlock().getType().equals(Material.TALL_SEAGRASS)) {
-							p.removePotionEffect(PotionEffectType.NIGHT_VISION);
-							p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 10, 2, false, false));
+							if(!p.hasPotionEffect(PotionEffectType.NIGHT_VISION)) p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 10, 2, false, false));
+							else {
+								boolean give = false;
+								for(PotionEffect potionEffect : p.getActivePotionEffects()) {
+									if(potionEffect.getType() == PotionEffectType.NIGHT_VISION && potionEffect.getDuration() < 3) {
+										give = true;
+										break;
+									}
+								}
+								if(give) p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 10, 2, false, false));
+							}
 						}
 					}
 				}
@@ -740,8 +791,17 @@ public class ArmorAbilities implements Listener {
 						/* Put the ability below. This is auto-generated
 						 * from ArmorCreator program
 						 */
-						p.removePotionEffect(PotionEffectType.SLOW_FALLING);
-						p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 25, 0, false, false));
+						if(!p.hasPotionEffect(PotionEffectType.SLOW_FALLING)) p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 25, 0, false, false));
+						else {
+							boolean give = false;
+							for(PotionEffect potionEffect : p.getActivePotionEffects()) {
+								if(potionEffect.getType() == PotionEffectType.SLOW_FALLING && potionEffect.getDuration() < 3) {
+									give = true;
+									break;
+								}
+							}
+							if(give) p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 25, 0, false, false));
+						}
 					}
 				}
 			}catch(NullPointerException e) {
@@ -771,9 +831,18 @@ public class ArmorAbilities implements Listener {
 					if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
 						/* Put the ability below. This is auto-generated
 						 * from ArmorCreator program
-						 */
-						p.removePotionEffect(PotionEffectType.SPEED);
-						p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 25, 1, false, false));
+						 */						
+						if(!p.hasPotionEffect(PotionEffectType.SPEED)) p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 25, 1, false, false));
+						else {
+							boolean give = false;
+							for(PotionEffect potionEffect : p.getActivePotionEffects()) {
+								if(potionEffect.getType() == PotionEffectType.SPEED && potionEffect.getDuration() < 3) {
+									give = true;
+									break;
+								}
+							}
+							if(give) p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 25, 1, false, false));
+						}
 					}
 				}
 			}catch(NullPointerException e) {
@@ -885,10 +954,28 @@ public class ArmorAbilities implements Listener {
 						 * from ArmorCreator program
                          * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
 						 */
-						p.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
-						p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 10, 0, false, false));
-						p.removePotionEffect(PotionEffectType.SPEED);
-						p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 10, 1, false, false));
+						if(!p.hasPotionEffect(PotionEffectType.INCREASE_DAMAGE)) p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 10, 0, false, false));
+						else {
+							boolean give = false;
+							for(PotionEffect potionEffect : p.getActivePotionEffects()) {
+								if(potionEffect.getType() == PotionEffectType.INCREASE_DAMAGE && potionEffect.getDuration() < 3) {
+									give = true;
+									break;
+								}
+							}
+							if(give) p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 10, 0, false, false));
+						}
+						if(!p.hasPotionEffect(PotionEffectType.SPEED)) p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 10, 1, false, false));
+						else {
+							boolean give = false;
+							for(PotionEffect potionEffect : p.getActivePotionEffects()) {
+								if(potionEffect.getType() == PotionEffectType.SPEED && potionEffect.getDuration() < 3) {
+									give = true;
+									break;
+								}
+							}
+							if(give) p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 10, 1, false, false));
+						}
 					}
 				}
 			}catch(NullPointerException e) {
@@ -1075,7 +1162,17 @@ public class ArmorAbilities implements Listener {
 						 * from ArmorCreator program
                          * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
 						 */
-						p.addPotionEffect(new PotionEffect(PotionEffectType.LUCK, 10, 1, true, false));
+						if(!p.hasPotionEffect(PotionEffectType.LUCK)) p.addPotionEffect(new PotionEffect(PotionEffectType.LUCK, 10, 1, true, false));
+						else {
+							boolean give = false;
+							for(PotionEffect potionEffect : p.getActivePotionEffects()) {
+								if(potionEffect.getType() == PotionEffectType.LUCK && potionEffect.getDuration() < 3) {
+									give = true;
+									break;
+								}
+							}
+							if(give) p.addPotionEffect(new PotionEffect(PotionEffectType.LUCK, 10, 1, true, false));
+						}
 					}
 				}
 			}catch(NullPointerException e) {
@@ -2458,6 +2555,23 @@ public class ArmorAbilities implements Listener {
 							}
 						}
 					}
+				}
+			}catch(Exception e) {
+
+			}
+
+		}
+
+	}
+	public void soulsandArmor() {
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			try {
+				if(Method.ifWearingAll(p, "Soul Sand", ChatColor.GRAY + "Slow Motion - Live life in the slow lane")) {
+					/* Put the ability below. This is auto-generated
+					* from ArmorCreator program
+                    * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
+					*/
+					Method.addPotionEffect(p, PotionEffectType.SLOW, 5, 0, false, false, false);
 				}
 			}catch(Exception e) {
 
