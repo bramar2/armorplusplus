@@ -8,9 +8,14 @@ commands:
     armorplusplus:
         usage: /<command>
         description: Opens a GUI with all armor
-        permission: armorplusplus.cheat
+        permission: armorplusplus.checkupdate
 permissions:
     armorplusplus.*:
         description: No description
         children:
             armorplusplus.cheat: true
+            armorplusplus.checkupdate: true
+    armorplusplus.cheat:
+        description: No description
+        children:
+            armorplusplus.checkupdate: true
