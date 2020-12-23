@@ -1,15 +1,23 @@
 package me.marvel.armorplusplus;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
@@ -23,6 +31,23 @@ import org.bukkit.potion.PotionEffectType;
 public class Method {
 	
 	public static Plugin plugin;
+	public static String NMSVERSION;
+	public static Enchantment GLOWING;
+	
+	/**
+	 * e.g str = test. str2 = te. Matched!
+	 * @param str2 The word that is gonna be matched to str
+	 * @param str The word that is gonna be matched on str
+	 */
+	public static boolean matches(String str2, String str) {
+		int length = str.length();
+		for(int i = 1; i <= length; i++) {
+			String substring = str.substring(0, i);
+			if(str2.equalsIgnoreCase(substring)) return true;
+		}
+		return false;
+	}
+	
 	public static boolean ifWearingAll(Player p, String armorname, String lore1) {
 		boolean result = false;
 		try {
@@ -60,6 +85,66 @@ public class Method {
 			
 		}
 	}
+	/**
+	 * Get String NBT Tag of an Item
+	 * @param item The item
+	 * @param path The NBT Tag
+	 */
+	public static Map.Entry<Object, String> getNBTTag(ItemStack item, String path) throws Exception {
+		Object stack = getNMSClass("CraftItemStack", PackageType.CRAFTBUKKIT_INVENTORY).getMethod("asNMSCopy", ItemStack.class).invoke(null, item);
+		Object compound = stack.getClass().getMethod("getOrCreateTag").invoke(stack);
+		Object nbt = compound.getClass().getMethod("get", String.class).invoke(compound, path);
+		String str = (String) nbt.getClass().getMethod("asString").invoke(nbt);
+		return new Map.Entry<Object, String>() {
+
+			@Override
+			public Object getKey() {
+				return nbt;
+			}
+
+			@Override
+			public String getValue() {
+				return str;
+			}
+
+			@Override
+			public String setValue(String value) {
+				return null;
+			}
+		};
+	}
+	public static Map.Entry<Object, String> getNBTTag(Object nbtBase, String path) throws Exception {
+		Object compound = getNMSClass("NBTTagCompound", PackageType.MINECRAFT_SERVER).cast(nbtBase);
+		Object nbt = compound.getClass().getMethod("get", String.class).invoke(compound, path);
+		String str = (String) nbt.getClass().getMethod("asString").invoke(nbt);
+		return new Map.Entry<Object, String>() {
+
+			@Override
+			public Object getKey() {
+				return nbt;
+			}
+
+			@Override
+			public String getValue() {
+				return str;
+			}
+
+			@Override
+			public String setValue(String value) {
+				return null;
+			}
+		};
+	}
+	
+	public static boolean hasNBTTag(ItemStack item, String tag) throws Exception {	
+		Object stack = getNMSClass("CraftItemStack", PackageType.CRAFTBUKKIT_INVENTORY).getMethod("asNMSCopy", ItemStack.class).invoke(null, item);
+		Object compound = stack.getClass().getMethod("getOrCreateTag").invoke(stack);
+		return (boolean) compound.getClass().getMethod("hasKey", String.class).invoke(compound, tag);
+	}
+	public static boolean hasNBTTag(Object compound, String tag) throws Exception {
+		return (boolean) compound.getClass().getMethod("hasKey", String.class).invoke(compound, tag);
+	}
+	
 	public static void replaceArmorInInventory(Player p, String tag, ItemStack[] newArmor, boolean checkAttr, Attribute attribute) {
 		ItemStack[] content = p.getInventory().getContents();
 		for(int i = 0; i < content.length; i++) {
@@ -199,6 +284,33 @@ public class Method {
 			continue;
 		}
 	}
+	
+	public static ItemStack getCommandItem(Material material, String id) {
+		ItemStack item = new ItemStack(material);
+		ItemMeta meta = item.getItemMeta();
+		String materialName = material.name().toLowerCase().replace("_", " ");
+		materialName = materialName.substring(0, 1).toUpperCase() + materialName.substring(1);
+		materialName += " [ID = " + id + "]";
+		
+		meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "armorId"), PersistentDataType.STRING, id);
+		
+		meta.setDisplayName(materialName);
+		item.setItemMeta(meta);
+		return item;
+	}
+	
+	public static Class<?> getNMSClass(String name, PackageType packageType) throws ClassNotFoundException {
+		return Class.forName((packageType == PackageType.MINECRAFT_SERVER ? "net.minecraft.server." : "org.bukkit.craftbukkit.") + NMSVERSION + (packageType == PackageType.CRAFTBUKKIT_INVENTORY ? ".inventory" : (packageType == PackageType.CRAFTBUKKIT_ENTITY ? ".entity" : "")) + "." + name);
+	}
+	
+	public static void sendActionBar(Player p, String jsonMessage) throws Exception {
+		
+		Object packet = getNMSClass("PacketPlayOutTitle", PackageType.MINECRAFT_SERVER).getConstructor(getNMSClass("PacketPlayOutTitle", PackageType.MINECRAFT_SERVER).getDeclaredClasses()[0], getNMSClass("IChatBaseComponent", PackageType.MINECRAFT_SERVER)).newInstance(getNMSClass("PacketPlayOutTitle", PackageType.MINECRAFT_SERVER).getDeclaredClasses()[0].getField("ACTIONBAR").get(null), getNMSClass("IChatBaseComponent", PackageType.MINECRAFT_SERVER).getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, jsonMessage));
+		Object handle = p.getClass().getMethod("getHandle").invoke(p);
+		Object connection = handle.getClass().getField("playerConnection").get(handle);
+		connection.getClass().getMethod("sendPacket", getNMSClass("Packet", PackageType.MINECRAFT_SERVER)).invoke(connection, packet);
+	}
+	
 	public static HashMap<Material, Material> getSmeltableItems() {
 		HashMap<Material, Material> mat = new HashMap<Material, Material>();
 		// 1st input, 2nd output
@@ -318,4 +430,86 @@ public class Method {
 		return mat;
 	}
 	
+	public static void openConfigGUI(Player p, final List<String> missing) {
+		Inventory inv = Bukkit.createInventory(null, 5*9, ChatColor.GOLD + "Configuration");
+		ItemStack glassPane = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+		ItemMeta glassMeta = glassPane.getItemMeta();
+		glassMeta.setDisplayName(" ");
+		glassPane.setItemMeta(glassMeta);
+		for(int i = 0; i <= 8; i++) {
+			inv.setItem(i, glassPane);
+		}
+		for(int i = 36; i <= 44; i++) {
+			inv.setItem(i, glassPane);
+		}
+		ItemStack barrier = new ItemStack(Material.BARRIER);
+		ItemMeta barriermeta = barrier.getItemMeta();
+		barriermeta.setDisplayName(ChatColor.RED + "Unavailable!");
+		barriermeta.setLore(Arrays.asList(ChatColor.RED + "Doesn't exist in the ", ChatColor.RED + "configuration file!"));
+		barrier.setItemMeta(barriermeta);
+		
+		ItemStack anvil = new ItemStack(Material.ANVIL);
+		ItemMeta anvilmeta = anvil.getItemMeta();
+		anvilmeta.setDisplayName("check-update");
+		anvilmeta.setLore(Arrays.asList(ChatColor.WHITE + "Automatic update check.", ChatColor.WHITE + "Current value: " + plugin.getConfig().getBoolean("check-update")));
+		anvil.setItemMeta(anvilmeta);
+		ItemStack enchantedbook = new ItemStack(Material.ENCHANTED_BOOK);
+		ItemMeta enchbookmeta = enchantedbook.getItemMeta();
+		enchbookmeta.setDisplayName("glowing-armor");
+		enchbookmeta.setLore(Arrays.asList(ChatColor.WHITE + "Changes if the armors are glowing or not.", ChatColor.WHITE + "Current value: " + plugin.getConfig().getBoolean("glowing-armor")));
+		enchantedbook.setItemMeta(enchbookmeta);
+		
+		if(!missing.contains("check-update")) inv.setItem(9, anvil);
+		else inv.setItem(9, barrier);
+		if(!missing.contains("disabled-armors")) inv.setItem(10, enchantedbook);
+		else inv.setItem(10, barrier);
+		
+		p.openInventory(inv);
+	}
+	
+	public static LinkedHashMap<String, String> getArmorIdtoName() {
+		LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+		// id, name
+		map.put("DIRT", "Dirt");
+		map.put("CRAFTING_TABLE", "Crafting");
+		map.put("GLASS", "Glass");
+		map.put("FURNACE", "Furnace");
+		map.put("TNT", "TNT");
+		map.put("NOTE_BLOCK", "Note");
+		map.put("PUMPKIN", "Pumpkin");
+		map.put("MELON", "Melon");
+		map.put("SPONGE", "Sponge");
+		map.put("DISPENSER", "Dispenser");
+		map.put("PRISMARINE", "Prismarine");
+		map.put("LAPIS", "Lapis");
+		map.put("CACTUS", "Cactus");
+		map.put("LEAVES", "Leaves");
+		map.put("SUGAR_CANE", "Sugar Cane");
+		map.put("STICKY_PISTON", "Sticky Piston");
+		map.put("SAND", "Sand");
+		map.put("QUARTZ", "Quartz");
+		map.put("OBSIDIAN", "Obsidian");
+		map.put("EMERALD", "Emerald");
+		map.put("PISTON", "Piston");
+		map.put("WET_SPONGE", "Wet Sponge");
+		map.put("MAGMA", "Magma");
+		map.put("NETHERRACK", "Netherrack");
+		map.put("ENDER", "Ender");
+		map.put("BRICKS", "Brick");
+		map.put("NETHER_BRICKS", "Nether Brick");
+		map.put("RED_NETHER_BRICKS", "Red Nether Brick");
+		map.put("SLIME", "Slime");
+		map.put("END_STONE", "End Stone");
+		map.put("ICE", "Ice");
+		map.put("BONE", "Bone");
+		map.put("SOUL_SAND", "Soul Sand");
+		map.put("SNOW", "Snow");
+		return map;
+	}
+	public enum InventorySlotType {
+		INVENTORY, HELMET, CHESTPLATE, LEGGINGS, BOOTS 
+	}
+	public enum PackageType {
+		MINECRAFT_SERVER, CRAFTBUKKIT, CRAFTBUKKIT_INVENTORY, CRAFTBUKKIT_ENTITY
+	}
 }

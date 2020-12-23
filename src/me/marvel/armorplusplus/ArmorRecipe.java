@@ -30,16 +30,10 @@ public class ArmorRecipe {
 		plugin = ArmorPlusPlus;
 		server = plugin.getServer();
 	}
-
-	public void abilitiesLore() {
-		ArrayList<String> lore = new ArrayList<String>();
-		// Regrowth (Just paste)
-		lore.add(ChatColor.GREEN + "Regrowth - Repair durability slowly");
-		lore.add(ChatColor.GREEN + "Regrowth - but surely!");
-		
-	}
 	
-	public void craftArmor() {
+	public ArrayList<ShapedRecipe> activeRecipes = new ArrayList<ShapedRecipe>();
+	
+	public void craftingArmor() {
 		ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
 		ItemStack armor2 = new ItemStack(Material.LEATHER_CHESTPLATE);
 		ItemStack armor3 = new ItemStack(Material.LEATHER_LEGGINGS);
@@ -61,10 +55,10 @@ public class ArmorRecipe {
 		m3.setLore(lore);
 		m4.setLore(lore);
 		
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 		
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -92,6 +86,11 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 	
 	public void dirtArmor() {
@@ -118,10 +117,10 @@ public class ArmorRecipe {
 		m3.setLore(lore);
 		m4.setLore(lore);
 		
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 		
 		
 		// Less armor for dirt!
@@ -133,9 +132,6 @@ public class ArmorRecipe {
 		m2.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 2, Operation.ADD_NUMBER, EquipmentSlot.CHEST));
 		m3.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 1, Operation.ADD_NUMBER, EquipmentSlot.LEGS));
 		m4.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 1, Operation.ADD_NUMBER, EquipmentSlot.FEET));
-		
-		
-		
 		
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -163,7 +159,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
-		
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 
 	public void glassArmor() {
@@ -189,10 +188,10 @@ public class ArmorRecipe {
 		m3.setLore(lore);
 		m4.setLore(lore);
 		
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 		
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -218,6 +217,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 
 	public void furnaceArmor() {
@@ -237,10 +240,10 @@ public class ArmorRecipe {
 		m3.setDisplayName("Furnace Leggings");
 		m4.setDisplayName("Furnace Boots");
 		
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 		
 		ArrayList<String> lore = new ArrayList<String>();
 		lore.add(ChatColor.DARK_RED + "AutoSmelt - Smelts nearest dropped items");
@@ -287,6 +290,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 	
 	public void tntArmor() {
@@ -306,10 +313,10 @@ public class ArmorRecipe {
 		m3.setDisplayName("TNT Leggings");
 		m4.setDisplayName("TNT Boots");
 		
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 		
 		ArrayList<String> lore = new ArrayList<String>();
 		lore.add(ChatColor.RED + "Explosive - Explodes when sneaking");
@@ -343,6 +350,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 
 	public void noteArmor() {
@@ -360,10 +371,10 @@ public class ArmorRecipe {
 		m3.setDisplayName("Note Leggings");
 		m4.setDisplayName("Note Boots");
 		
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 		
 		ArrayList<String> lore = new ArrayList<String>();
 		lore.add(ChatColor.LIGHT_PURPLE + "Musical - Every step you take becomes a musical melody");
@@ -396,6 +407,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 	
 	public void pumpkinArmor() {
@@ -419,10 +434,10 @@ public class ArmorRecipe {
 		m2.setLore(lore);
 		m3.setLore(lore);
 		m4.setLore(lore);
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -450,6 +465,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 	public void melonArmor() {
 		ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
@@ -472,10 +491,10 @@ public class ArmorRecipe {
 		m2.setLore(lore);
 		m3.setLore(lore);
 		m4.setLore(lore);
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -503,6 +522,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 	public void spongeArmor() {
 		ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
@@ -526,10 +549,10 @@ public class ArmorRecipe {
 		m2.setLore(lore);
 		m3.setLore(lore);
 		m4.setLore(lore);
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -557,6 +580,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 	public void dispenserArmor() {
 		ItemStack armor1 = new ItemStack(Material.CHAINMAIL_HELMET);
@@ -579,10 +606,10 @@ public class ArmorRecipe {
 		m2.setLore(lore);
 		m3.setLore(lore);
 		m4.setLore(lore);
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -610,6 +637,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 	public void prismarineArmor() {
 		ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
@@ -650,10 +681,10 @@ public class ArmorRecipe {
 		m2.setLore(lore);
 		m3.setLore(lore);
 		m4.setLore(lore);
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -681,6 +712,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 	public void enderArmor() {
 		ItemStack armor1 = new ItemStack(Material.IRON_HELMET);
@@ -703,10 +738,10 @@ public class ArmorRecipe {
 		m2.setLore(lore);
 		m3.setLore(lore);
 		m4.setLore(lore);
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -734,6 +769,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 	public void lapisArmor() {
 		ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
@@ -765,10 +804,10 @@ public class ArmorRecipe {
 		m2.setLore(lore);
 		m3.setLore(lore);
 		m4.setLore(lore);
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -796,6 +835,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 	public void cactusArmor() {
 		ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
@@ -832,10 +875,10 @@ public class ArmorRecipe {
 		m2.setLore(lore);
 		m3.setLore(lore);
 		m4.setLore(lore);
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -863,6 +906,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 	public void leavesArmor() {
 		ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
@@ -886,10 +933,10 @@ public class ArmorRecipe {
 		m2.setLore(lore);
 		m3.setLore(lore);
 		m4.setLore(lore);
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -1017,6 +1064,36 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2e);
 		server.addRecipe(recipe3e);
 		server.addRecipe(recipe4e);
+		
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
+		
+		if(!activeRecipes.contains(recipe1a)) activeRecipes.add(recipe1a);
+		if(!activeRecipes.contains(recipe2a)) activeRecipes.add(recipe2a);
+		if(!activeRecipes.contains(recipe3a)) activeRecipes.add(recipe3a);
+		if(!activeRecipes.contains(recipe4a)) activeRecipes.add(recipe4a);
+		
+		if(!activeRecipes.contains(recipe1b)) activeRecipes.add(recipe1b);
+		if(!activeRecipes.contains(recipe2b)) activeRecipes.add(recipe2b);
+		if(!activeRecipes.contains(recipe3b)) activeRecipes.add(recipe3b);
+		if(!activeRecipes.contains(recipe4b)) activeRecipes.add(recipe4b);
+		
+		if(!activeRecipes.contains(recipe1c)) activeRecipes.add(recipe1c);
+		if(!activeRecipes.contains(recipe2c)) activeRecipes.add(recipe2c);
+		if(!activeRecipes.contains(recipe3c)) activeRecipes.add(recipe3c);
+		if(!activeRecipes.contains(recipe4c)) activeRecipes.add(recipe4c);
+		
+		if(!activeRecipes.contains(recipe1d)) activeRecipes.add(recipe1d);
+		if(!activeRecipes.contains(recipe2d)) activeRecipes.add(recipe2d);
+		if(!activeRecipes.contains(recipe3d)) activeRecipes.add(recipe3d);
+		if(!activeRecipes.contains(recipe4d)) activeRecipes.add(recipe4d);
+		
+		if(!activeRecipes.contains(recipe1e)) activeRecipes.add(recipe1e);
+		if(!activeRecipes.contains(recipe2e)) activeRecipes.add(recipe2e);
+		if(!activeRecipes.contains(recipe3e)) activeRecipes.add(recipe3e);
+		if(!activeRecipes.contains(recipe4e)) activeRecipes.add(recipe4e);
 	}
 	public void sugarcaneArmor() {
 		ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
@@ -1039,10 +1116,10 @@ public class ArmorRecipe {
 		m2.setLore(lore);
 		m3.setLore(lore);
 		m4.setLore(lore);
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 		
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -1070,6 +1147,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 	public void stickypistonArmor() {
 		ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
@@ -1093,10 +1174,10 @@ public class ArmorRecipe {
 		m2.setLore(lore);
 		m3.setLore(lore);
 		m4.setLore(lore);
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -1124,6 +1205,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 	public void sandArmor() {
 		ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
@@ -1146,10 +1231,10 @@ public class ArmorRecipe {
 		m2.setLore(lore);
 		m3.setLore(lore);
 		m4.setLore(lore);
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -1177,6 +1262,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 	public void quartzArmor() {
 		ItemStack armor1 = new ItemStack(Material.CHAINMAIL_HELMET);
@@ -1207,10 +1296,10 @@ public class ArmorRecipe {
 		m2.setLore(lore);
 		m3.setLore(lore);
 		m4.setLore(lore);
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -1238,6 +1327,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 	public void obsidianArmor() {
 		ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
@@ -1283,10 +1376,10 @@ public class ArmorRecipe {
 		m2.setLore(lore);
 		m3.setLore(lore);
 		m4.setLore(lore);
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -1314,6 +1407,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 	public void emeraldArmor() {
 		ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
@@ -1352,10 +1449,10 @@ public class ArmorRecipe {
 		m2.setLore(lore);
 		m3.setLore(lore);
 		m4.setLore(lore);
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -1383,6 +1480,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 	public void pistonArmor() {
 		ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
@@ -1413,10 +1514,10 @@ public class ArmorRecipe {
 		m2.setLore(lore);
 		m3.setLore(lore);
 		m4.setLore(lore);
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -1444,6 +1545,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 	
 	public void wetspongeArmor() {
@@ -1468,10 +1573,10 @@ public class ArmorRecipe {
 		m2.setLore(lore);
 		m3.setLore(lore);
 		m4.setLore(lore);
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -1499,6 +1604,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 	public void magmaArmor() {
 		ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
@@ -1539,10 +1648,10 @@ public class ArmorRecipe {
 		m2.setLore(lore);
 		m3.setLore(lore);
 		m4.setLore(lore);
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -1570,6 +1679,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 	
 	public void netherrackArmor() {
@@ -1602,10 +1715,10 @@ public class ArmorRecipe {
 		m2.setLore(lore);
 		m3.setLore(lore);
 		m4.setLore(lore);
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -1633,6 +1746,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 	
 	public void brickArmor() {
@@ -1671,10 +1788,10 @@ public class ArmorRecipe {
 		m2.setLore(lore);
 		m3.setLore(lore);
 		m4.setLore(lore);
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -1702,6 +1819,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 	public void netherBrickArmor() {
 		ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
@@ -1739,10 +1860,10 @@ public class ArmorRecipe {
 		m2.setLore(lore);
 		m3.setLore(lore);
 		m4.setLore(lore);
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -1770,6 +1891,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 	public void redNetherBrickArmor() {
 		ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
@@ -1807,10 +1932,10 @@ public class ArmorRecipe {
 		m2.setLore(lore);
 		m3.setLore(lore);
 		m4.setLore(lore);
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -1838,6 +1963,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 	public void slimeArmor() {
 		ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
@@ -1869,10 +1998,10 @@ public class ArmorRecipe {
 		m2.setLore(lore);
 		m3.setLore(lore);
 		m4.setLore(lore);
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -1900,6 +2029,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 	public void endstoneArmor() {
 		ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
@@ -1931,10 +2064,10 @@ public class ArmorRecipe {
 		m2.setLore(lore);
 		m3.setLore(lore);
 		m4.setLore(lore);
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -1962,6 +2095,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 	public void iceArmor() {
 		ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
@@ -1997,10 +2134,10 @@ public class ArmorRecipe {
 		m2.setLore(lore);
 		m3.setLore(lore);
 		m4.setLore(lore);
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -2028,9 +2165,14 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 	
 	public void boneArmor() {
+		if(!plugin.ver16) return;
 		ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
 		ItemStack armor2 = new ItemStack(Material.LEATHER_CHESTPLATE);
 		ItemStack armor3 = new ItemStack(Material.LEATHER_LEGGINGS);
@@ -2060,10 +2202,10 @@ public class ArmorRecipe {
 		m2.setLore(lore);
 		m3.setLore(lore);
 		m4.setLore(lore);
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -2091,6 +2233,10 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 	public void soulsandArmor() {
 		ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
@@ -2122,10 +2268,10 @@ public class ArmorRecipe {
 		m2.setLore(lore);
 		m3.setLore(lore);
 		m4.setLore(lore);
-		m1.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m2.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m3.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-		m4.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
 
 		armor1.setItemMeta(m1);
 		armor2.setItemMeta(m2);
@@ -2153,6 +2299,80 @@ public class ArmorRecipe {
 		server.addRecipe(recipe2);
 		server.addRecipe(recipe3);
 		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
+	}
+	public void snowArmor() {
+		ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
+		ItemStack armor2 = new ItemStack(Material.LEATHER_CHESTPLATE);
+		ItemStack armor3 = new ItemStack(Material.LEATHER_LEGGINGS);
+		ItemStack armor4 = new ItemStack(Material.LEATHER_BOOTS);
+		LeatherArmorMeta m1 = (LeatherArmorMeta) armor1.getItemMeta();
+		LeatherArmorMeta m2 = (LeatherArmorMeta) armor2.getItemMeta();
+		LeatherArmorMeta m3 = (LeatherArmorMeta) armor3.getItemMeta();
+		LeatherArmorMeta m4 = (LeatherArmorMeta) armor4.getItemMeta();
+		m1.setDisplayName("Snow Helmet");
+		m2.setDisplayName("Snow Chestplate");
+		m3.setDisplayName("Snow Leggings");
+		m4.setDisplayName("Snow Boots");
+		ArrayList<String> lore = new ArrayList<String>();
+        lore.add(ChatColor.WHITE + "Snowy - Spawns snow and snowballs");
+        lore.add(ChatColor.GOLD + "(4 pieces must be worn for abilities to work)");
+        m1.setColor(Color.fromRGB(247, 251, 251));m2.setColor(Color.fromRGB(247, 251, 251));m3.setColor(Color.fromRGB(247, 251, 251));m4.setColor(Color.fromRGB(247, 251, 251));
+        m1.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+		m2.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+		m3.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+		m4.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+
+		m1.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 1, Operation.ADD_NUMBER, EquipmentSlot.HEAD));
+		m2.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 1, Operation.ADD_NUMBER, EquipmentSlot.CHEST));
+		m3.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 1, Operation.ADD_NUMBER, EquipmentSlot.LEGS));
+		m4.addAttributeModifier(Attribute.GENERIC_ARMOR, new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(), "generic.armor", 1, Operation.ADD_NUMBER, EquipmentSlot.FEET));
+		m1.getPersistentDataContainer().set(new NamespacedKey(plugin, "snowHelm"), PersistentDataType.BYTE, Byte.valueOf("1"));
+		m2.getPersistentDataContainer().set(new NamespacedKey(plugin, "snowChest"), PersistentDataType.BYTE, Byte.valueOf("1"));
+		m3.getPersistentDataContainer().set(new NamespacedKey(plugin, "snowLegs"), PersistentDataType.BYTE, Byte.valueOf("1"));
+		m4.getPersistentDataContainer().set(new NamespacedKey(plugin, "snowFeet"), PersistentDataType.BYTE, Byte.valueOf("1"));
+		m1.setLore(lore);
+		m2.setLore(lore);
+		m3.setLore(lore);
+		m4.setLore(lore);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
+		if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
+
+		armor1.setItemMeta(m1);
+		armor2.setItemMeta(m2);
+		armor3.setItemMeta(m3);
+		armor4.setItemMeta(m4);
+
+
+		// Shaped Recipe
+		ShapedRecipe recipe1 = new ShapedRecipe(new NamespacedKey(plugin, "snow_helmet"), armor1);
+		ShapedRecipe recipe2 = new ShapedRecipe(new NamespacedKey(plugin, "snow_chestplate"), armor2);
+		ShapedRecipe recipe3 = new ShapedRecipe(new NamespacedKey(plugin, "snow_leggings"), armor3);
+		ShapedRecipe recipe4 = new ShapedRecipe(new NamespacedKey(plugin, "snow_boots"), armor4);
+
+		recipe1.shape("***", "* *");
+		recipe2.shape("* *", "***", "***");
+		recipe3.shape("***", "* *", "* *");
+		recipe4.shape("* *", "* *");
+
+		recipe1.setIngredient('*', Material.SNOW_BLOCK);
+		recipe2.setIngredient('*', Material.SNOW_BLOCK);
+		recipe3.setIngredient('*', Material.SNOW_BLOCK);
+		recipe4.setIngredient('*', Material.SNOW_BLOCK);
+
+		server.addRecipe(recipe1);
+		server.addRecipe(recipe2);
+		server.addRecipe(recipe3);
+		server.addRecipe(recipe4);
+		if(!activeRecipes.contains(recipe1)) activeRecipes.add(recipe1);
+		if(!activeRecipes.contains(recipe2)) activeRecipes.add(recipe2);
+		if(!activeRecipes.contains(recipe3)) activeRecipes.add(recipe3);
+		if(!activeRecipes.contains(recipe4)) activeRecipes.add(recipe4);
 	}
 }
 

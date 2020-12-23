@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -28,7 +29,7 @@ public class Listener {
 				for(Player p : plugin.getServer().getOnlinePlayers()) {
 					if(((LivingEntity)p).isOnGround()) {
 						if(playerVectorData.containsKey(p.getUniqueId())) {
-							plugin.getServer().getPluginManager().callEvent(new PlayerLandEvent(p, p.getUniqueId(), playerVectorData.get(p.getUniqueId())));
+							if(p.getLocation().getBlock().getType() != Material.WATER) plugin.getServer().getPluginManager().callEvent(new PlayerLandEvent(p, p.getUniqueId(), playerVectorData.get(p.getUniqueId())));
 							playerVectorData.remove(p.getUniqueId());
 						}
 					}else {
