@@ -580,12 +580,24 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 	}
 	private void loadMetrics() {
 		Metrics metrics = new Metrics(this, 9177);
+		boolean already = false;
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 			public void run() {
-				metrics.addCustomChart(new Metrics.DrilldownPie("plugin_outdated", () -> {
+				if(!already) metrics.addCustomChart(new Metrics.DrilldownPie("plugin_outdated", () -> {
 					Map<String, Map<String, Integer>> map = new HashMap<>();
 					Map<String, Integer> entry = new HashMap<>();
-					uc.getVersion(version -> {  
+					entry.put((outdated == uptodate ? "Unknown" : outdated ? "Outdated" : "Up-to-date"), 1);
+					if(outdated) {
+						map.put("Outdated", entry);
+					}else if(uptodate) {
+						map.put("Up-to-date", entry);
+					}else {
+						map.put("Unknown", entry);
+					}
+					return map;
+				}));
+				else {
+					uc.getVersion(version -> {
 						if(getDescription().getVersion().equalsIgnoreCase(version)) {
 							uptodate = true;
 							outdated = false;
@@ -603,16 +615,7 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 							uptodate = false;
 						}
 					});
-					entry.put((outdated == uptodate ? "Unknown" : outdated ? "Outdated" : "Up-to-date"), 1);
-					if(outdated) {
-						map.put("Outdated", entry);
-					}else if(uptodate) {
-						map.put("Up-to-date", entry);
-					}else {
-						map.put("Unknown", entry);
-					}
-					return map;
-				}));
+				}
 			}
 		}, 0L, 10 /*minutes*/ * 60 * 20L);
 	}
