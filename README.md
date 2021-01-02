@@ -10,4 +10,5 @@ Download Python3 to run it
 Milestones
 
 1000 Downloads ✓ - 10/16/2020, 
-2000 Downloads ✗
+2000 Downloads ✓ - 1/2/2021,
+5000 Downloads ✗
