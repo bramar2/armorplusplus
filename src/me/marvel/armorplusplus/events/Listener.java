@@ -15,10 +15,12 @@ import org.bukkit.util.Vector;
  */
 public class Listener {
 	private Plugin plugin;
+	private me.marvel.armorplusplus.ArmorPlusPlus main;
 	private HashMap<UUID, Vector> playerVectorData = new HashMap<UUID, Vector>();
 	
-	public Listener(Plugin p) {
+	public Listener(Plugin p, me.marvel.armorplusplus.ArmorPlusPlus main) {
 		this.plugin = p;
+		this.main = main;
 	}
 	public void listen() {
 		playerLandEvent();
@@ -46,6 +48,6 @@ public class Listener {
 					}
 				}
 			}
-		}, 0L, 1L);
+		}, 0L, main.interval);
 	}
 }

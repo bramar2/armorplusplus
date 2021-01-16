@@ -205,6 +205,11 @@ public class ArmorPlusPlus implements CommandExecutor, Listener {
 						}
 					}
 					main.loadRecipe();
+					main.interval = plugin.getConfig().getInt("tick-interval");
+					plugin.getServer().getScheduler().cancelTasks(plugin);
+					main.loadAbilities();
+					main.loadMetrics();
+					main.listener.listen();
 					//
 					p.sendMessage(ChatColor.GREEN + "Configuration reloaded.");
 				}else if(args[0].equalsIgnoreCase("resetconfig")) {

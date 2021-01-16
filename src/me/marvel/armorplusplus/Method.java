@@ -33,7 +33,6 @@ public class Method {
 	public static Plugin plugin;
 	public static String NMSVERSION;
 	public static Enchantment GLOWING;
-	
 	/**
 	 * e.g str = test. str2 = te. Matched!
 	 * @param str2 The word that is gonna be matched to str

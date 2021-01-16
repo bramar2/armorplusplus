@@ -43,6 +43,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -54,6 +55,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import me.marvel.armorplusplus.events.PlayerLandEvent;
+import static me.marvel.armorplusplus.Method.*;
 
 /**
  * Contains all abilities.
@@ -204,26 +206,22 @@ public class ArmorAbilities implements Listener {
 		
 	}
 	
-	public void craftingArmor() {
-		for(Player p : Bukkit.getOnlinePlayers()) {
-			try {
-				String name1 = p.getInventory().getHelmet().getItemMeta().getDisplayName();
-				String name2 = p.getInventory().getChestplate().getItemMeta().getDisplayName();
-				String name3 = p.getInventory().getLeggings().getItemMeta().getDisplayName();
-				String name4 = p.getInventory().getBoots().getItemMeta().getDisplayName();
-				if(name1.equalsIgnoreCase("Crafting Helmet") && name2.equalsIgnoreCase("Crafting Chestplate") && name3.equalsIgnoreCase("Crafting Leggings") && name4.equalsIgnoreCase("Crafting Boots")) {
-					String lore1 = p.getInventory().getHelmet().getItemMeta().getLore().get(0);
-					String lore2 = p.getInventory().getChestplate().getItemMeta().getLore().get(0);
-					String lore3 = p.getInventory().getLeggings().getItemMeta().getLore().get(0);
-					String lore4 = p.getInventory().getBoots().getItemMeta().getLore().get(0);
-					if(lore1.equalsIgnoreCase(ChatColor.GOLD + "Crafter - Opens a crafting table") && lore2.equalsIgnoreCase(ChatColor.GOLD + "Crafter - Opens a crafting table") && lore3.equalsIgnoreCase(ChatColor.GOLD + "Crafter - Opens a crafting table") && lore4.equalsIgnoreCase(ChatColor.GOLD + "Crafter - Opens a crafting table")) {
-						if(p.isSneaking() == true) {
-							p.openWorkbench(p.getLocation(), true);
-						}
-					}
+	@EventHandler
+	public void craftingArmor(PlayerToggleSneakEvent e) {
+		Player p = e.getPlayer();
+		if(e.isSneaking()) {
+			String name1 = p.getInventory().getHelmet().getItemMeta().getDisplayName();
+			String name2 = p.getInventory().getChestplate().getItemMeta().getDisplayName();
+			String name3 = p.getInventory().getLeggings().getItemMeta().getDisplayName();
+			String name4 = p.getInventory().getBoots().getItemMeta().getDisplayName();
+			if(name1.equalsIgnoreCase("Crafting Helmet") && name2.equalsIgnoreCase("Crafting Chestplate") && name3.equalsIgnoreCase("Crafting Leggings") && name4.equalsIgnoreCase("Crafting Boots")) {
+				String lore1 = p.getInventory().getHelmet().getItemMeta().getLore().get(0);
+				String lore2 = p.getInventory().getChestplate().getItemMeta().getLore().get(0);
+				String lore3 = p.getInventory().getLeggings().getItemMeta().getLore().get(0);
+				String lore4 = p.getInventory().getBoots().getItemMeta().getLore().get(0);
+				if(lore1.equalsIgnoreCase(ChatColor.GOLD + "Crafter - Opens a crafting table") && lore2.equalsIgnoreCase(ChatColor.GOLD + "Crafter - Opens a crafting table") && lore3.equalsIgnoreCase(ChatColor.GOLD + "Crafter - Opens a crafting table") && lore4.equalsIgnoreCase(ChatColor.GOLD + "Crafter - Opens a crafting table")) {
+					p.openWorkbench(p.getLocation(), true);
 				}
-			}catch(NullPointerException e) {
-				
 			}
 		}
 	}
@@ -247,7 +245,7 @@ public class ArmorAbilities implements Listener {
 								break;
 							}
 						}
-						if(!hasInvis) p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 20, 9, false, false, false));
+						if(!hasInvis) p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, plugin.interval + 20, 9, false, false, false));
 					}
 				}	
 				
@@ -256,125 +254,115 @@ public class ArmorAbilities implements Listener {
 			}
 		}
 	}
-	public void furnaceArmor() {
-		for(Player p : Bukkit.getOnlinePlayers()) {
-			try {
-				String name1 = p.getInventory().getHelmet().getItemMeta().getDisplayName();
-				String name2 = p.getInventory().getChestplate().getItemMeta().getDisplayName();
-				String name3 = p.getInventory().getLeggings().getItemMeta().getDisplayName();
-				String name4 = p.getInventory().getBoots().getItemMeta().getDisplayName();
-				if(name1.equalsIgnoreCase("Furnace Helmet") && name2.equalsIgnoreCase("Furnace Chestplate") && name3.equalsIgnoreCase("Furnace Leggings") && name4.equalsIgnoreCase("Furnace Boots")) {
-					String lore = ChatColor.DARK_RED + "AutoSmelt - Smelts nearest dropped items";
-					String lore1 = p.getInventory().getHelmet().getItemMeta().getLore().get(0);
-					String lore2 = p.getInventory().getChestplate().getItemMeta().getLore().get(0);
-					String lore3 = p.getInventory().getLeggings().getItemMeta().getLore().get(0);
-					String lore4 = p.getInventory().getBoots().getItemMeta().getLore().get(0);
-					if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
-						if(smeltCooldown.contains(p.getUniqueId())) return;
-						if(p.isSneaking() == false) return;
-						
-						smeltsneaking.add(p.getUniqueId());
-						if(smeltCooldown.contains(p.getUniqueId())) return;
-						HashMap<Material, Material> smeltable_items = Method.getSmeltableItems();
-						World w = p.getWorld();
-						ArrayList<Entity> nearbyEntities = new ArrayList<Entity>(w.getNearbyEntities(p.getLocation(), 5.0, 5.0, 5.0));
-						ArrayList<Item> item = new ArrayList<Item>();
-						for(Entity entity : nearbyEntities) {
-							if(entity instanceof Item) {
-								item.add(((Item)entity));
-							}
+	@EventHandler
+	public void furnaceArmor(PlayerToggleSneakEvent e) {
+		Player p = e.getPlayer();
+		if(e.isSneaking()) {
+			String name1 = p.getInventory().getHelmet().getItemMeta().getDisplayName();
+			String name2 = p.getInventory().getChestplate().getItemMeta().getDisplayName();
+			String name3 = p.getInventory().getLeggings().getItemMeta().getDisplayName();
+			String name4 = p.getInventory().getBoots().getItemMeta().getDisplayName();
+			if(name1.equalsIgnoreCase("Furnace Helmet") && name2.equalsIgnoreCase("Furnace Chestplate") && name3.equalsIgnoreCase("Furnace Leggings") && name4.equalsIgnoreCase("Furnace Boots")) {
+				String lore = ChatColor.DARK_RED + "AutoSmelt - Smelts nearest dropped items";
+				String lore1 = p.getInventory().getHelmet().getItemMeta().getLore().get(0);
+				String lore2 = p.getInventory().getChestplate().getItemMeta().getLore().get(0);
+				String lore3 = p.getInventory().getLeggings().getItemMeta().getLore().get(0);
+				String lore4 = p.getInventory().getBoots().getItemMeta().getLore().get(0);
+				if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
+					if(smeltCooldown.contains(p.getUniqueId())) return;
+					smeltsneaking.add(p.getUniqueId());
+					if(smeltCooldown.contains(p.getUniqueId())) return;
+					HashMap<Material, Material> smeltable_items = getSmeltableItems();
+					World w = p.getWorld();
+					ArrayList<Entity> nearbyEntities = new ArrayList<Entity>(w.getNearbyEntities(p.getLocation(), 5.0, 5.0, 5.0));
+					ArrayList<Item> item = new ArrayList<Item>();
+					for(Entity entity : nearbyEntities) {
+						if(entity instanceof Item) {
+							item.add(((Item)entity));
 						}
-						for(Item i : item) {
-							if(smeltable_items.containsKey(i.getItemStack().getType())) {
-								smeltCooldown.add(p.getUniqueId());
-								plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-									public void run() {
-										smeltCooldown.remove(p.getUniqueId());
-									}
-								}, 10 * 20L);
+					}
+					for(Item i : item) {
+						if(smeltable_items.containsKey(i.getItemStack().getType())) {
+							smeltCooldown.add(p.getUniqueId());
+							plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+								public void run() {
+									smeltCooldown.remove(p.getUniqueId());
+								}
+							}, 10 * 20L);
+							break;
+						}
+					}
+					int count = 0;
+					int max = 16;
+					for(Item i : item) {
+						if(count >= max) break;
+						if(smeltable_items.containsKey(i.getItemStack().getType())) {
+							Location loc = i.getLocation();
+							Material type = i.getItemStack().getType();
+							int amount = i.getItemStack().getAmount();
+							ItemStack itemStack = i.getItemStack();
+							i.remove();
+							ItemStack stack = new ItemStack(smeltable_items.get(type));
+							if(!(count + amount > max)) {
+								// count + amount is not > max
+								// meaning count + amount = 1 - 32
+								stack.setAmount(amount);
+								w.dropItem(loc, stack);
+								count += amount;
+							}else {
+								// newAmount = 16 - count;
+								int newAmount = max - count;
+								int spawnBack = amount - newAmount;
+								// spawn the smelted
+								stack.setAmount(newAmount);
+								w.dropItem(loc, stack);
+								// spawn it back
+								itemStack.setAmount(spawnBack);
+								w.dropItem(loc, itemStack);
 								break;
 							}
 						}
-						int count = 0;
-						int max = 16;
-						for(Item i : item) {
-							if(count >= max) break;
-							if(smeltable_items.containsKey(i.getItemStack().getType())) {
-								Location loc = i.getLocation();
-								Material type = i.getItemStack().getType();
-								int amount = i.getItemStack().getAmount();
-								ItemStack itemStack = i.getItemStack();
-								i.remove();
-								ItemStack stack = new ItemStack(smeltable_items.get(type));
-								if(!(count + amount > max)) {
-									// count + amount is not > max
-									// meaning count + amount = 1 - 32
-									stack.setAmount(amount);
-									w.dropItem(loc, stack);
-									count += amount;
-								}else {
-									// newAmount = 16 - count;
-									int newAmount = max - count;
-									int spawnBack = amount - newAmount;
-									// spawn the smelted
-									stack.setAmount(newAmount);
-									w.dropItem(loc, stack);
-									// spawn it back
-									itemStack.setAmount(spawnBack);
-									w.dropItem(loc, itemStack);
-									break;
-								}
-							}
-						}
 					}
-					
-				}	
-				
-			}catch(NullPointerException e) {
+				}
 				
 			}
 		}
 	}
-	public void tntArmor() {
-		for(Player p : Bukkit.getOnlinePlayers()) {
-			try {
-				String name1 = p.getInventory().getHelmet().getItemMeta().getDisplayName();
-				String name2 = p.getInventory().getChestplate().getItemMeta().getDisplayName();
-				String name3 = p.getInventory().getLeggings().getItemMeta().getDisplayName();
-				String name4 = p.getInventory().getBoots().getItemMeta().getDisplayName();
-				if(name1.equalsIgnoreCase("TNT Helmet") && name2.equalsIgnoreCase("TNT Chestplate") && name3.equalsIgnoreCase("TNT Leggings") && name4.equalsIgnoreCase("TNT Boots")) {
-					String lore = ChatColor.RED + "Explosive - Explodes when sneaking";
-					String lore1 = p.getInventory().getHelmet().getItemMeta().getLore().get(0);
-					String lore2 = p.getInventory().getChestplate().getItemMeta().getLore().get(0);
-					String lore3 = p.getInventory().getLeggings().getItemMeta().getLore().get(0);
-					String lore4 = p.getInventory().getBoots().getItemMeta().getLore().get(0);
-					if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
-						if(p.isSneaking() == true) {
-							if(!(cooldown.contains(p.getUniqueId()))) {
-								p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20, 10, false, false));
-								Entity tnts = p.getWorld().spawnEntity(p.getLocation(), EntityType.PRIMED_TNT);
-								if(tnts instanceof org.bukkit.entity.TNTPrimed) {
-									TNTPrimed tnt = (TNTPrimed) tnts;
-									tnt.setFuseTicks(0);
-									cooldown.add(p.getUniqueId());
-									plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-										public void run() {
-											cooldown.remove(p.getUniqueId());
-										}
-									}, 20);
+	@EventHandler
+	public void tntArmor(PlayerToggleSneakEvent e) {
+		Player p = e.getPlayer();
+		if(e.isSneaking()) {
+			String name1 = p.getInventory().getHelmet().getItemMeta().getDisplayName();
+			String name2 = p.getInventory().getChestplate().getItemMeta().getDisplayName();
+			String name3 = p.getInventory().getLeggings().getItemMeta().getDisplayName();
+			String name4 = p.getInventory().getBoots().getItemMeta().getDisplayName();
+			if(name1.equalsIgnoreCase("TNT Helmet") && name2.equalsIgnoreCase("TNT Chestplate") && name3.equalsIgnoreCase("TNT Leggings") && name4.equalsIgnoreCase("TNT Boots")) {
+				String lore = ChatColor.RED + "Explosive - Explodes when sneaking";
+				String lore1 = p.getInventory().getHelmet().getItemMeta().getLore().get(0);
+				String lore2 = p.getInventory().getChestplate().getItemMeta().getLore().get(0);
+				String lore3 = p.getInventory().getLeggings().getItemMeta().getLore().get(0);
+				String lore4 = p.getInventory().getBoots().getItemMeta().getLore().get(0);
+				if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
+					if(!(cooldown.contains(p.getUniqueId()))) {
+						p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, plugin.interval + 20, 10, false, false));
+						Entity tnts = p.getWorld().spawnEntity(p.getLocation(), EntityType.PRIMED_TNT);
+						if(tnts instanceof org.bukkit.entity.TNTPrimed) {
+							TNTPrimed tnt = (TNTPrimed) tnts;
+							tnt.setFuseTicks(0);
+							cooldown.add(p.getUniqueId());
+							plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+								public void run() {
+									cooldown.remove(p.getUniqueId());
 								}
-							}
+							}, 20);
 						}
 					}
-					
-				}	
-				
-			}catch(NullPointerException e) {
+				}
 				
 			}
 		}
 	}
-
+	
 	@EventHandler
 	public void melody(PlayerMoveEvent e) {
 		try {
@@ -474,162 +462,148 @@ public class ArmorAbilities implements Listener {
 		}
 		
 	}
-	
-	public void spongeArmor() {
-		for(Player p : Bukkit.getOnlinePlayers()) {
-			try {
-				ItemStack helm = p.getInventory().getHelmet();
-				ItemStack chest = p.getInventory().getChestplate();
-				ItemStack legs = p.getInventory().getLeggings();
-				ItemStack boots = p.getInventory().getBoots();
-				String name1 = helm.getItemMeta().getDisplayName();
-				String name2 = chest.getItemMeta().getDisplayName();
-				String name3 = legs.getItemMeta().getDisplayName();
-				String name4 = boots.getItemMeta().getDisplayName();
-				if(name1.equalsIgnoreCase("Sponge Helmet") && name2.equalsIgnoreCase("Sponge Chestplate") && name3.equalsIgnoreCase("Sponge Leggings") && name4.equalsIgnoreCase("Sponge Boots")) {
-					String lore = ChatColor.YELLOW + "Absorbent - Absorbs nearby liquids";
-					String lore1 = helm.getItemMeta().getLore().get(0);
-					String lore2 = chest.getItemMeta().getLore().get(0);
-					String lore3 = legs.getItemMeta().getLore().get(0);
-					String lore4 = boots.getItemMeta().getLore().get(0);
-					if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
-						if(p.isSneaking() == true) {
-							if(!(scooldown.contains(p.getUniqueId()))) {
-								scooldown.add(p.getUniqueId());
-								plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-									public void run() {
-										try {
-											scooldown.remove(p.getUniqueId());
-										}catch(Exception e) {
-											
-										}
-									}
-								}, 20 * 6);
-								int radius = 3;
-								boolean sponged = false;
-								for (int x = -(radius); x <= radius; x ++) {
-									for(int y = -(radius); y <= radius; y ++) {
-										for(int z = -(radius); z <= radius; z ++) {
-											org.bukkit.block.Block block = p.getLocation().getBlock().getRelative(x, y, z);
-											if(block.getType().equals(Material.WATER)) {
-												sponged = true;
-												block.setType(Material.AIR);
-											}else if(block.getType().equals(Material.TALL_SEAGRASS)) {
-												sponged = true;
-												block.setType(Material.AIR);
-											}else if(block.getType().equals(Material.SEAGRASS)) {
-												sponged = true;
-												block.setType(Material.AIR);
-											}
-										}
-									}
-								}
-								if(!sponged) try {
+	@EventHandler
+	public void spongeArmor(PlayerToggleSneakEvent e) {
+		Player p = e.getPlayer();
+		if(e.isSneaking()) {
+			ItemStack helm = p.getInventory().getHelmet();
+			ItemStack chest = p.getInventory().getChestplate();
+			ItemStack legs = p.getInventory().getLeggings();
+			ItemStack boots = p.getInventory().getBoots();
+			String name1 = helm.getItemMeta().getDisplayName();
+			String name2 = chest.getItemMeta().getDisplayName();
+			String name3 = legs.getItemMeta().getDisplayName();
+			String name4 = boots.getItemMeta().getDisplayName();
+			if(name1.equalsIgnoreCase("Sponge Helmet") && name2.equalsIgnoreCase("Sponge Chestplate") && name3.equalsIgnoreCase("Sponge Leggings") && name4.equalsIgnoreCase("Sponge Boots")) {
+				String lore = ChatColor.YELLOW + "Absorbent - Absorbs nearby liquids";
+				String lore1 = helm.getItemMeta().getLore().get(0);
+				String lore2 = chest.getItemMeta().getLore().get(0);
+				String lore3 = legs.getItemMeta().getLore().get(0);
+				String lore4 = boots.getItemMeta().getLore().get(0);
+				if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
+					if(!(scooldown.contains(p.getUniqueId()))) {
+						scooldown.add(p.getUniqueId());
+						plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+							public void run() {
+								try {
 									scooldown.remove(p.getUniqueId());
 								}catch(Exception e) {
 									
 								}
 							}
-						}
-					}
-				}
-			}catch(NullPointerException e) {
-				
-			}
-			
-		}
-		
-	}
-
-	public void dispenserArmor() {
-		for(Player p : Bukkit.getOnlinePlayers()) {
-			try {
-				ItemStack helm = p.getInventory().getHelmet();
-				ItemStack chest = p.getInventory().getChestplate();
-				ItemStack legs = p.getInventory().getLeggings();
-				ItemStack boots = p.getInventory().getBoots();
-				String name1 = helm.getItemMeta().getDisplayName();
-				String name2 = chest.getItemMeta().getDisplayName();
-				String name3 = legs.getItemMeta().getDisplayName();
-				String name4 = boots.getItemMeta().getDisplayName();
-				if(name1.equalsIgnoreCase("Dispenser Helmet") && name2.equalsIgnoreCase("Dispenser Chestplate") && name3.equalsIgnoreCase("Dispenser Leggings") && name4.equalsIgnoreCase("Dispenser Boots")) {
-					String lore = ChatColor.WHITE + "Arrow Defence - Fires arrows outwards";
-					String lore1 = helm.getItemMeta().getLore().get(0);
-					String lore2 = chest.getItemMeta().getLore().get(0);
-					String lore3 = legs.getItemMeta().getLore().get(0);
-					String lore4 = boots.getItemMeta().getLore().get(0);
-					if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
-						/* Put the ability below. This is auto-generated
-						 * from ArmorCreator program
-						 */
-						if(p.isSneaking() == true) {
-							if(!(dispenser.contains(p.getUniqueId()))) {
-								dispenser.add(p.getUniqueId());
-								plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-									public void run() {
-										dispenser.remove(p.getUniqueId());
+						}, 20 * 6);
+						int radius = 3;
+						boolean sponged = false;
+						for (int x = -(radius); x <= radius; x ++) {
+							for(int y = -(radius); y <= radius; y ++) {
+								for(int z = -(radius); z <= radius; z ++) {
+									org.bukkit.block.Block block = p.getLocation().getBlock().getRelative(x, y, z);
+									if(block.getType().equals(Material.WATER)) {
+										sponged = true;
+										block.setType(Material.AIR);
+									}else if(block.getType().equals(Material.TALL_SEAGRASS)) {
+										sponged = true;
+										block.setType(Material.AIR);
+									}else if(block.getType().equals(Material.SEAGRASS)) {
+										sponged = true;
+										block.setType(Material.AIR);
 									}
-								}, 20 * 7);
-								Location loc = p.getLocation().clone();
-								Float yaw = loc.getYaw();
-								loc.setYaw(loc.getYaw() + 45);
-								
-								Arrow a = p.launchProjectile(Arrow.class, loc.getDirection());
-								a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
-								loc.setYaw(yaw);
-								
-								loc.setYaw(loc.getYaw() + 90);
-								
-								a = p.launchProjectile(Arrow.class, loc.getDirection());
-								a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
-								loc.setYaw(yaw);
-								
-								loc.setYaw(loc.getYaw() + 135);
-								
-								a = p.launchProjectile(Arrow.class, loc.getDirection());
-								a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
-								loc.setYaw(yaw);
-								
-								loc.setYaw(loc.getYaw() + 180);
-								
-								a = p.launchProjectile(Arrow.class, loc.getDirection());
-								a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
-								loc.setYaw(yaw);
-								
-								loc.setYaw(loc.getYaw() + 225);
-								
-								a = p.launchProjectile(Arrow.class, loc.getDirection());
-								a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
-								loc.setYaw(yaw);
-								
-								loc.setYaw(loc.getYaw() + 270);
-								
-								a = p.launchProjectile(Arrow.class, loc.getDirection());
-								a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
-								loc.setYaw(yaw);
-								
-								loc.setYaw(loc.getYaw() + 315);
-								
-								a = p.launchProjectile(Arrow.class, loc.getDirection());
-								a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
-								loc.setYaw(yaw);
-								
-								loc.setYaw(loc.getYaw() + 360);
-								
-								a = p.launchProjectile(Arrow.class, loc.getDirection());
-								a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
-								loc.setYaw(yaw);
-								
+								}
 							}
 						}
+						if(!sponged) {try {
+							scooldown.remove(p.getUniqueId());
+						}catch(Exception e1) {
+							
+						}}
 					}
 				}
-			}catch(NullPointerException e) {
-				
 			}
-			
 		}
-		
+	}
+	@EventHandler
+	public void dispenserArmor(PlayerToggleSneakEvent e) {
+		Player p = e.getPlayer();
+		if(e.isSneaking()) {
+			ItemStack helm = p.getInventory().getHelmet();
+			ItemStack chest = p.getInventory().getChestplate();
+			ItemStack legs = p.getInventory().getLeggings();
+			ItemStack boots = p.getInventory().getBoots();
+			String name1 = helm.getItemMeta().getDisplayName();
+			String name2 = chest.getItemMeta().getDisplayName();
+			String name3 = legs.getItemMeta().getDisplayName();
+			String name4 = boots.getItemMeta().getDisplayName();
+			if(name1.equalsIgnoreCase("Dispenser Helmet") && name2.equalsIgnoreCase("Dispenser Chestplate") && name3.equalsIgnoreCase("Dispenser Leggings") && name4.equalsIgnoreCase("Dispenser Boots")) {
+				String lore = ChatColor.WHITE + "Arrow Defence - Fires arrows outwards";
+				String lore1 = helm.getItemMeta().getLore().get(0);
+				String lore2 = chest.getItemMeta().getLore().get(0);
+				String lore3 = legs.getItemMeta().getLore().get(0);
+				String lore4 = boots.getItemMeta().getLore().get(0);
+				if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
+					/* Put the ability below. This is auto-generated
+					 * from ArmorCreator program
+					 */
+					if(!(dispenser.contains(p.getUniqueId()))) {
+						dispenser.add(p.getUniqueId());
+						plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+							public void run() {
+								dispenser.remove(p.getUniqueId());
+							}
+						}, 20 * 7);
+						Location loc = p.getLocation().clone();
+						Float yaw = loc.getYaw();
+						loc.setYaw(loc.getYaw() + 45);
+						
+						Arrow a = p.launchProjectile(Arrow.class, loc.getDirection());
+						a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
+						loc.setYaw(yaw);
+						
+						loc.setYaw(loc.getYaw() + 90);
+						
+						a = p.launchProjectile(Arrow.class, loc.getDirection());
+						a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
+						loc.setYaw(yaw);
+						
+						loc.setYaw(loc.getYaw() + 135);
+						
+						a = p.launchProjectile(Arrow.class, loc.getDirection());
+						a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
+						loc.setYaw(yaw);
+						
+						loc.setYaw(loc.getYaw() + 180);
+						
+						a = p.launchProjectile(Arrow.class, loc.getDirection());
+						a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
+						loc.setYaw(yaw);
+						
+						loc.setYaw(loc.getYaw() + 225);
+						
+						a = p.launchProjectile(Arrow.class, loc.getDirection());
+						a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
+						loc.setYaw(yaw);
+						
+						loc.setYaw(loc.getYaw() + 270);
+						
+						a = p.launchProjectile(Arrow.class, loc.getDirection());
+						a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
+						loc.setYaw(yaw);
+						
+						loc.setYaw(loc.getYaw() + 315);
+						
+						a = p.launchProjectile(Arrow.class, loc.getDirection());
+						a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
+						loc.setYaw(yaw);
+						
+						loc.setYaw(loc.getYaw() + 360);
+						
+						a = p.launchProjectile(Arrow.class, loc.getDirection());
+						a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
+						loc.setYaw(yaw);
+						
+					}
+				}
+			}
+		}
 	}
 	public void prismarineArmor() {
 		for(Player p : Bukkit.getOnlinePlayers()) {
@@ -653,7 +627,7 @@ public class ArmorAbilities implements Listener {
 						 * from ArmorCreator program
 						 */
 						if(p.getLocation().getBlock().getType().equals(Material.KELP) | p.getLocation().getBlock().getType().equals(Material.WATER) | p.getLocation().getBlock().getType().equals(Material.SEAGRASS) | p.getLocation().getBlock().getType().equals(Material.TALL_SEAGRASS)) {
-							if(!p.hasPotionEffect(PotionEffectType.NIGHT_VISION)) p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 10, 2, false, false));
+							if(!p.hasPotionEffect(PotionEffectType.NIGHT_VISION)) p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, plugin.interval + 20, 2, false, false));
 							else {
 								boolean give = false;
 								for(PotionEffect potionEffect : p.getActivePotionEffects()) {
@@ -662,7 +636,7 @@ public class ArmorAbilities implements Listener {
 										break;
 									}
 								}
-								if(give) p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 10, 2, false, false));
+								if(give) p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, plugin.interval + 20, 2, false, false));
 							}
 						}
 					}
@@ -674,36 +648,30 @@ public class ArmorAbilities implements Listener {
 		}
 		
 	}
-	public void enderArmor() {
-		for(Player p : Bukkit.getOnlinePlayers()) {
-			try {
-				ItemStack helm = p.getInventory().getHelmet();
-				ItemStack chest = p.getInventory().getChestplate();
-				ItemStack legs = p.getInventory().getLeggings();
-				ItemStack boots = p.getInventory().getBoots();
-				String name1 = helm.getItemMeta().getDisplayName();
-				String name2 = chest.getItemMeta().getDisplayName();
-				String name3 = legs.getItemMeta().getDisplayName();
-				String name4 = boots.getItemMeta().getDisplayName();
-				if(name1.equalsIgnoreCase("Ender Helmet") && name2.equalsIgnoreCase("Ender Chestplate") && name3.equalsIgnoreCase("Ender Leggings") && name4.equalsIgnoreCase("Ender Boots")) {
-					String lore = plugin.ver16 ? ChatColor.DARK_PURPLE + "Ender Hoarder - Provides access to your ender chest" : "Ender Hoarder - Provides access to your ender chest";
-					String lore1 = helm.getItemMeta().getLore().get(0);
-					String lore2 = chest.getItemMeta().getLore().get(0);
-					String lore3 = legs.getItemMeta().getLore().get(0);
-					String lore4 = boots.getItemMeta().getLore().get(0);
-					if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
-						if(p.isSneaking()) {
-							p.openInventory(p.getEnderChest());
-							p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 1);
-						}
-					}
+	@EventHandler
+	public void enderArmor(PlayerToggleSneakEvent e) {
+		Player p = e.getPlayer();
+		if(e.isSneaking()) {
+			ItemStack helm = p.getInventory().getHelmet();
+			ItemStack chest = p.getInventory().getChestplate();
+			ItemStack legs = p.getInventory().getLeggings();
+			ItemStack boots = p.getInventory().getBoots();
+			String name1 = helm.getItemMeta().getDisplayName();
+			String name2 = chest.getItemMeta().getDisplayName();
+			String name3 = legs.getItemMeta().getDisplayName();
+			String name4 = boots.getItemMeta().getDisplayName();
+			if(name1.equalsIgnoreCase("Ender Helmet") && name2.equalsIgnoreCase("Ender Chestplate") && name3.equalsIgnoreCase("Ender Leggings") && name4.equalsIgnoreCase("Ender Boots")) {
+				String lore = plugin.ver16 ? ChatColor.DARK_PURPLE + "Ender Hoarder - Provides access to your ender chest" : "Ender Hoarder - Provides access to your ender chest";
+				String lore1 = helm.getItemMeta().getLore().get(0);
+				String lore2 = chest.getItemMeta().getLore().get(0);
+				String lore3 = legs.getItemMeta().getLore().get(0);
+				String lore4 = boots.getItemMeta().getLore().get(0);
+				if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
+					p.openInventory(p.getEnderChest());
+					p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 1);
 				}
-			}catch(NullPointerException e) {
-				
 			}
-			
 		}
-		
 	}
 	public void lapisArmor() {
 		for(Player p : Bukkit.getOnlinePlayers()) {
@@ -830,7 +798,7 @@ public class ArmorAbilities implements Listener {
 						/* Put the ability below. This is auto-generated
 						 * from ArmorCreator program
 						 */
-						if(!p.hasPotionEffect(PotionEffectType.SLOW_FALLING)) p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 25, 0, false, false));
+						if(!p.hasPotionEffect(PotionEffectType.SLOW_FALLING)) p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, plugin.interval + 25, 0, false, false));
 						else {
 							boolean give = false;
 							for(PotionEffect potionEffect : p.getActivePotionEffects()) {
@@ -839,7 +807,7 @@ public class ArmorAbilities implements Listener {
 									break;
 								}
 							}
-							if(give) p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 25, 0, false, false));
+							if(give) p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, plugin.interval + 25, 0, false, false));
 						}
 					}
 				}
@@ -871,7 +839,7 @@ public class ArmorAbilities implements Listener {
 						/* Put the ability below. This is auto-generated
 						 * from ArmorCreator program
 						 */						
-						if(!p.hasPotionEffect(PotionEffectType.SPEED)) p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 25, 1, false, false));
+						if(!p.hasPotionEffect(PotionEffectType.SPEED)) p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, plugin.interval + 25, 1, false, false));
 						else {
 							boolean give = false;
 							for(PotionEffect potionEffect : p.getActivePotionEffects()) {
@@ -880,7 +848,7 @@ public class ArmorAbilities implements Listener {
 									break;
 								}
 							}
-							if(give) p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 25, 1, false, false));
+							if(give) p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, plugin.interval + 25, 1, false, false));
 						}
 					}
 				}
@@ -889,91 +857,75 @@ public class ArmorAbilities implements Listener {
 			}
 		}
 	}
-	public void stickypistonArmor() {
-		for(Player p : Bukkit.getOnlinePlayers()) {
-			try {
-				ItemStack helm = p.getInventory().getHelmet();
-				ItemStack chest = p.getInventory().getChestplate();
-				ItemStack legs = p.getInventory().getLeggings();
-				ItemStack boots = p.getInventory().getBoots();
-				String name1 = helm.getItemMeta().getDisplayName();
-				String name2 = chest.getItemMeta().getDisplayName();
-				String name3 = legs.getItemMeta().getDisplayName();
-				String name4 = boots.getItemMeta().getDisplayName();
-				if(name1.equalsIgnoreCase("Sticky Piston Helmet") && name2.equalsIgnoreCase("Sticky Piston Chestplate") && name3.equalsIgnoreCase("Sticky Piston Leggings") && name4.equalsIgnoreCase("Sticky Piston Boots")) {
-					String lore = ChatColor.GRAY + "Puller - Pulls in nearby entities";
-					String lore1 = helm.getItemMeta().getLore().get(0);
-					String lore2 = chest.getItemMeta().getLore().get(0);
-					String lore3 = legs.getItemMeta().getLore().get(0);
-					String lore4 = boots.getItemMeta().getLore().get(0);
-					if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
-						/* Put the ability below. This is auto-generated
-						 * from ArmorCreator program
-                         * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
-						 */
-						if(p.isSneaking()) {
-							if(!(pull.contains(p.getUniqueId()))) {
-								pull.add(p.getUniqueId());
-								plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-									public void run() {
-										pull.remove(p.getUniqueId());
-									}
-								}, 20 * 7);
-								int count = 0;
-								for(Entity entity : p.getWorld().getNearbyEntities(p.getLocation(), 4, 4, 4)) {
-										entity.teleport(p);
-										count++;
-								}
-								try {
-									Method.sendActionBar(p, "[{\"text\":\"You pulled \"},{\"text\":\"" + (count - 1) + "\",\"color\":\"green\"},{\"text\":\" entities!\"}]");
-								}catch(Exception e) {
-									p.sendMessage("You pulled " + ChatColor.GREEN + (count - 1) + ChatColor.RESET + " entities!");
-								}
+	@EventHandler
+	public void stickypistonArmor(PlayerToggleSneakEvent e) {
+		Player p = e.getPlayer();
+		if(e.isSneaking()) {
+			ItemStack helm = p.getInventory().getHelmet();
+			ItemStack chest = p.getInventory().getChestplate();
+			ItemStack legs = p.getInventory().getLeggings();
+			ItemStack boots = p.getInventory().getBoots();
+			String name1 = helm.getItemMeta().getDisplayName();
+			String name2 = chest.getItemMeta().getDisplayName();
+			String name3 = legs.getItemMeta().getDisplayName();
+			String name4 = boots.getItemMeta().getDisplayName();
+			if(name1.equalsIgnoreCase("Sticky Piston Helmet") && name2.equalsIgnoreCase("Sticky Piston Chestplate") && name3.equalsIgnoreCase("Sticky Piston Leggings") && name4.equalsIgnoreCase("Sticky Piston Boots")) {
+				String lore = ChatColor.GRAY + "Puller - Pulls in nearby entities";
+				String lore1 = helm.getItemMeta().getLore().get(0);
+				String lore2 = chest.getItemMeta().getLore().get(0);
+				String lore3 = legs.getItemMeta().getLore().get(0);
+				String lore4 = boots.getItemMeta().getLore().get(0);
+				if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
+					/* Put the ability below. This is auto-generated
+					 * from ArmorCreator program
+                     * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
+					 */
+					if(!(pull.contains(p.getUniqueId()))) {
+						pull.add(p.getUniqueId());
+						plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+							public void run() {
+								pull.remove(p.getUniqueId());
 							}
+						}, 20 * 7);
+						int count = 0;
+						for(Entity entity : p.getWorld().getNearbyEntities(p.getLocation(), 4, 4, 4)) {
+								entity.teleport(p);
+								count++;
+						}
+						try {
+							sendActionBar(p, "[{\"text\":\"You pulled \"},{\"text\":\"" + (count - 1) + "\",\"color\":\"green\"},{\"text\":\" entities!\"}]");
+						}catch(Exception e1) {
+							p.sendMessage("You pulled " + ChatColor.GREEN + (count - 1) + ChatColor.RESET + " entities!");
 						}
 					}
 				}
-			}catch(NullPointerException e) {
-
 			}
-
 		}
-
 	}
-	public void sandArmor() {
-		for(Player p : Bukkit.getOnlinePlayers()) {
-			try {
-				ItemStack helm = p.getInventory().getHelmet();
-				ItemStack chest = p.getInventory().getChestplate();
-				ItemStack legs = p.getInventory().getLeggings();
-				ItemStack boots = p.getInventory().getBoots();
-				String name1 = helm.getItemMeta().getDisplayName();
-				String name2 = chest.getItemMeta().getDisplayName();
-				String name3 = legs.getItemMeta().getDisplayName();
-				String name4 = boots.getItemMeta().getDisplayName();
-				if(name1.equalsIgnoreCase("Sand Helmet") && name2.equalsIgnoreCase("Sand Chestplate") && name3.equalsIgnoreCase("Sand Leggings") && name4.equalsIgnoreCase("Sand Boots")) {
-					String lore = ChatColor.GRAY + "Falling - Falls faster in air and sinks faster in";
-					String lore1 = helm.getItemMeta().getLore().get(0);
-					String lore2 = chest.getItemMeta().getLore().get(0);
-					String lore3 = legs.getItemMeta().getLore().get(0);
-					String lore4 = boots.getItemMeta().getLore().get(0);
-					if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
-						/* Put the ability below. This is auto-generated
-						 * from ArmorCreator program
-                         * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
-						 */
-						if(p.isSneaking()) {
-							Vector v = p.getVelocity().setY(p.getVelocity().getY() - 0.2);
-							p.setVelocity(v);
-						}
-					}
+	@EventHandler
+	public void sandArmor(PlayerToggleSneakEvent e) {
+		Player p = e.getPlayer();
+		if(e.isSneaking()) {
+			ItemStack helm = p.getInventory().getHelmet();
+			ItemStack chest = p.getInventory().getChestplate();
+			ItemStack legs = p.getInventory().getLeggings();
+			ItemStack boots = p.getInventory().getBoots();
+			String name1 = helm.getItemMeta().getDisplayName();
+			String name2 = chest.getItemMeta().getDisplayName();
+			String name3 = legs.getItemMeta().getDisplayName();
+			String name4 = boots.getItemMeta().getDisplayName();
+			if(name1.equalsIgnoreCase("Sand Helmet") && name2.equalsIgnoreCase("Sand Chestplate") && name3.equalsIgnoreCase("Sand Leggings") && name4.equalsIgnoreCase("Sand Boots")) {
+				String lore = ChatColor.GRAY + "Falling - Falls faster in air and sinks faster in";
+				String lore1 = helm.getItemMeta().getLore().get(0);
+				String lore2 = chest.getItemMeta().getLore().get(0);
+				String lore3 = legs.getItemMeta().getLore().get(0);
+				String lore4 = boots.getItemMeta().getLore().get(0);
+				if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
+					Vector v = p.getVelocity().setY(p.getVelocity().getY() - 0.2);
+					p.setVelocity(v);
 				}
-			}catch(NullPointerException e) {
-
 			}
-
 		}
-
 	}
 	public void quartzArmor() {
 		for(Player p : Bukkit.getOnlinePlayers()) {
@@ -997,7 +949,7 @@ public class ArmorAbilities implements Listener {
 						 * from ArmorCreator program
                          * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
 						 */
-						if(!p.hasPotionEffect(PotionEffectType.INCREASE_DAMAGE)) p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 10, 0, false, false));
+						if(!p.hasPotionEffect(PotionEffectType.INCREASE_DAMAGE)) p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, plugin.interval + 20, 0, false, false));
 						else {
 							boolean give = false;
 							for(PotionEffect potionEffect : p.getActivePotionEffects()) {
@@ -1006,9 +958,9 @@ public class ArmorAbilities implements Listener {
 									break;
 								}
 							}
-							if(give) p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 10, 0, false, false));
+							if(give) p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, plugin.interval + 20, 0, false, false));
 						}
-						if(!p.hasPotionEffect(PotionEffectType.SPEED)) p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 10, 1, false, false));
+						if(!p.hasPotionEffect(PotionEffectType.SPEED)) p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, plugin.interval + 20, 1, false, false));
 						else {
 							boolean give = false;
 							for(PotionEffect potionEffect : p.getActivePotionEffects()) {
@@ -1017,7 +969,7 @@ public class ArmorAbilities implements Listener {
 									break;
 								}
 							}
-							if(give) p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 10, 1, false, false));
+							if(give) p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, plugin.interval + 20, 1, false, false));
 						}
 					}
 				}
@@ -1050,7 +1002,7 @@ public class ArmorAbilities implements Listener {
 						 * from ArmorCreator program
                          * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
 						 */
-						if(Method.ifWearingAll(p, "Obsidian", lore)) {
+						if(ifWearingAll(p, "Obsidian", lore)) {
 							ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
 							ItemStack armor2 = new ItemStack(Material.LEATHER_CHESTPLATE);
 							ItemStack armor3 = new ItemStack(Material.LEATHER_LEGGINGS);
@@ -1105,16 +1057,16 @@ public class ArmorAbilities implements Listener {
 							m2.setLore(lores);
 							m3.setLore(lores);
 							m4.setLore(lores);
-							if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
-							if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
-							if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
-							if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
+							if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(GLOWING, 0, true);
+							if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(GLOWING, 0, true);
+							if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(GLOWING, 0, true);
+							if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(GLOWING, 0, true);
 
 							armor1.setItemMeta(m1);
 							armor2.setItemMeta(m2);
 							armor3.setItemMeta(m3);
 							armor4.setItemMeta(m4);
-							Method.changeArmorInArmorSlot(p, armor1, armor2, armor3, armor4);
+							changeArmorInArmorSlot(p, armor1, armor2, armor3, armor4);
 						}
 					}
 				}
@@ -1165,17 +1117,17 @@ public class ArmorAbilities implements Listener {
 				m2.setLore(lore);
 				m3.setLore(lore);
 				m4.setLore(lore);
-				if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
-				if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
-				if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
-				if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
+				if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(GLOWING, 0, true);
+				if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(GLOWING, 0, true);
+				if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(GLOWING, 0, true);
+				if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(GLOWING, 0, true);
 
 				armor1.setItemMeta(m1);
 				armor2.setItemMeta(m2);
 				armor3.setItemMeta(m3);
 				armor4.setItemMeta(m4);
 				ItemStack[] newArmor = {armor1, armor2, armor3, armor4};
-				if(!Method.ifWearingAll(p, "Obsidian", ChatColor.GRAY + "Immovable")) Method.replaceArmorInInventory(p, "obsidian", newArmor, true, Enchantment.PROTECTION_FIRE);
+				if(!ifWearingAll(p, "Obsidian", ChatColor.GRAY + "Immovable")) replaceArmorInInventory(p, "obsidian", newArmor, true, Enchantment.PROTECTION_FIRE);
 			}catch(Exception e) {
 				
 			}
@@ -1205,7 +1157,7 @@ public class ArmorAbilities implements Listener {
 						 * from ArmorCreator program
                          * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
 						 */
-						if(!p.hasPotionEffect(PotionEffectType.LUCK)) p.addPotionEffect(new PotionEffect(PotionEffectType.LUCK, 10, 1, true, false));
+						if(!p.hasPotionEffect(PotionEffectType.LUCK)) p.addPotionEffect(new PotionEffect(PotionEffectType.LUCK, plugin.interval + 20, 1, true, false));
 						else {
 							boolean give = false;
 							for(PotionEffect potionEffect : p.getActivePotionEffects()) {
@@ -1214,7 +1166,7 @@ public class ArmorAbilities implements Listener {
 									break;
 								}
 							}
-							if(give) p.addPotionEffect(new PotionEffect(PotionEffectType.LUCK, 10, 1, true, false));
+							if(give) p.addPotionEffect(new PotionEffect(PotionEffectType.LUCK, plugin.interval + 20, 1, true, false));
 						}
 					}
 				}
@@ -1235,7 +1187,7 @@ public class ArmorAbilities implements Listener {
 			if(!(entity instanceof Mob)) return;
 			Player p = entity.getKiller();
 			Location loc = entity.getLocation();
-			if(Method.ifWearingAll(p, "Emerald", ChatColor.DARK_GREEN + "Lucky - Greatly increases Fortune,")) {
+			if(ifWearingAll(p, "Emerald", ChatColor.DARK_GREEN + "Lucky - Greatly increases Fortune,")) {
 				Random r = new Random();
 				boolean spawnParticle = false;
 				// drops
@@ -1291,10 +1243,10 @@ public class ArmorAbilities implements Listener {
 		}
 	}
 	boolean spawnParticle = false;
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void emeraldFortuneEffect(BlockBreakEvent e) {
 		Player p = e.getPlayer();
-		if(Method.ifWearingAll(p, "Emerald", ChatColor.DARK_GREEN + "Lucky - Greatly increases Fortune,")) {
+		if(ifWearingAll(p, "Emerald", ChatColor.DARK_GREEN + "Lucky - Greatly increases Fortune,")) {
 			Location loc = e.getBlock().getLocation();
 			try {
 				Material mat = e.getBlock().getType();
@@ -1728,160 +1680,147 @@ public class ArmorAbilities implements Listener {
 			}
 		}
 	}
-	public void pistonArmor() {
-		for(Player p : Bukkit.getOnlinePlayers()) {
-			try {
-				if(Method.ifWearingAll(p, "Piston", ChatColor.GRAY + "Pusher - Pushes nearby entities")) {
-					/* Put the ability below. This is auto-generated
-					* from ArmorCreator program
-                    * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
-					*/
-					if(!p.isSneaking()) return;
-					if(pistonCooldown.contains(p.getUniqueId())) return;
-					pistonCooldown.add(p.getUniqueId());
-					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-						public void run() {
-							try {
-								if(pistonCooldown.contains(p.getUniqueId())) {
-									pistonCooldown.remove(p.getUniqueId());
-								}
-							}catch(Exception e) {
-								
-							}
-						}
-					}, 7 * 20L);
-					List<Entity> entities = new ArrayList<Entity>(p.getWorld().getNearbyEntities(p.getLocation(), 4, 4, 4));
-					if(entities.size() == 0) {
-						if(pistonCooldown.contains(p.getUniqueId())) pistonCooldown.remove(p.getUniqueId());
-					}
-					boolean sound = false;
-					int count = 0;
-					for(Entity e : entities) {
-						if(e instanceof Player) {
-							if(p.equals((Player)e)) continue;
-							if(((Player)e).getGameMode() == GameMode.SPECTATOR) continue;
-						}else if(!(e instanceof Mob)) continue;
-						if(e.getVehicle() != null) {
-							if(p.getVehicle() != null) {
-								if(e.getVehicle().getUniqueId().equals(p.getVehicle().getUniqueId())) continue;
-								else e = e.getVehicle();
-							}else e = e.getVehicle();
-						}
-						Vector vec = e.getLocation().toVector().subtract(p.getLocation().toVector()).setY(0).normalize();
-						Vector oldVec = vec.clone();
-						if(Double.isNaN(vec.getX()) || Double.isNaN(vec.getY()) || Double.isNaN(vec.getZ()) || vec.length() == 0) continue;
-						vec.setY(0.45);
-						vec.normalize();
-						vec.multiply(1.6);
-						vec.setY(vec.getY() + 0);
-						if(vec.getY() > 7.5) vec.setY(7.5);
-						if(Integer.parseInt(String.valueOf(Math.floor(p.getLocation().getY())).replace(".0", "")) == Integer.parseInt(String.valueOf(Math.floor(e.getLocation().getY())).replace(".0", ""))) vec.setY(0);
-						else if(Integer.parseInt(String.valueOf(Math.floor(p.getLocation().getY())).replace(".0", "")) > Integer.parseInt(String.valueOf(Math.floor(e.getLocation().getY())).replace(".0", ""))) vec.setY(-(vec.getY()));
-						else {
-							oldVec.setY(0.8);
-							oldVec.normalize();
-							oldVec.multiply(1.6);
-							oldVec.setY(oldVec.getY() + 0);
-							if(oldVec.getY() > 14) oldVec.setY(14);
-							vec = oldVec.clone();
-						}
-						e.setVelocity(vec);
-						count++;
-						sound = true;
-					}
-					if(sound) {
-						Random r = new Random();
-						int random = r.nextInt(6) + 1;
-						float pitch = 1.0F;
-						switch(random) {
-						case 1:
-							pitch = 0.7F;
-						case 2:
-							pitch = 0.8F;
-						case 3:
-							pitch = 0.9F;
-						case 4:
-							pitch = 1.0F;
-						case 5:
-							pitch = 1.1F;
-						case 6:
-							pitch = 1.2F;
-						}
-						p.playSound(p.getLocation(), Sound.BLOCK_PISTON_EXTEND, SoundCategory.BLOCKS, 1, pitch);
+	@EventHandler
+	public void pistonArmor(PlayerToggleSneakEvent event) {
+		Player p = event.getPlayer();
+		if(event.isSneaking()) {
+			if(ifWearingAll(p, "Piston", ChatColor.GRAY + "Pusher - Pushes nearby entities")) {
+				if(pistonCooldown.contains(p.getUniqueId())) return;
+				pistonCooldown.add(p.getUniqueId());
+				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+					public void run() {
 						try {
-							Method.sendActionBar(p, "[{\"text\":\"You pushed \"},{\"text\":\"" + (count - 1) + "\",\"color\":\"green\"},{\"text\":\" entities!\"}]");
+							if(pistonCooldown.contains(p.getUniqueId())) {
+								pistonCooldown.remove(p.getUniqueId());
+							}
 						}catch(Exception e) {
-							p.sendMessage("You pushed " + ChatColor.GREEN + (count - 1) + ChatColor.RESET + " entities!");
+							
 						}
-					}else {
-						if(pistonCooldown.contains(p.getUniqueId())) pistonCooldown.remove(p.getUniqueId());
 					}
+				}, 7 * 20L);
+				List<Entity> entities = new ArrayList<Entity>(p.getWorld().getNearbyEntities(p.getLocation(), 4, 4, 4));
+				if(entities.size() == 0) {
+					if(pistonCooldown.contains(p.getUniqueId())) pistonCooldown.remove(p.getUniqueId());
 				}
-			}catch(Exception e) {
-
+				boolean sound = false;
+				int count = 0;
+				for(Entity e : entities) {
+					if(e instanceof Player) {
+						if(p.equals((Player)e)) continue;
+						if(((Player)e).getGameMode() == GameMode.SPECTATOR) continue;
+					}else if(!(e instanceof Mob)) continue;
+					if(e.getVehicle() != null) {
+						if(p.getVehicle() != null) {
+							if(e.getVehicle().getUniqueId().equals(p.getVehicle().getUniqueId())) continue;
+							else e = e.getVehicle();
+						}else e = e.getVehicle();
+					}
+					Vector vec = e.getLocation().toVector().subtract(p.getLocation().toVector()).setY(0).normalize();
+					Vector oldVec = vec.clone();
+					if(Double.isNaN(vec.getX()) || Double.isNaN(vec.getY()) || Double.isNaN(vec.getZ()) || vec.length() == 0) continue;
+					vec.setY(0.45);
+					vec.normalize();
+					vec.multiply(1.6);
+					vec.setY(vec.getY() + 0);
+					if(vec.getY() > 7.5) vec.setY(7.5);
+					if(Integer.parseInt(String.valueOf(Math.floor(p.getLocation().getY())).replace(".0", "")) == Integer.parseInt(String.valueOf(Math.floor(e.getLocation().getY())).replace(".0", ""))) vec.setY(0);
+					else if(Integer.parseInt(String.valueOf(Math.floor(p.getLocation().getY())).replace(".0", "")) > Integer.parseInt(String.valueOf(Math.floor(e.getLocation().getY())).replace(".0", ""))) vec.setY(-(vec.getY()));
+					else {
+						oldVec.setY(0.8);
+						oldVec.normalize();
+						oldVec.multiply(1.6);
+						oldVec.setY(oldVec.getY() + 0);
+						if(oldVec.getY() > 14) oldVec.setY(14);
+						vec = oldVec.clone();
+					}
+					e.setVelocity(vec);
+					count++;
+					sound = true;
+				}
+				if(sound) {
+					Random r = new Random();
+					int random = r.nextInt(6) + 1;
+					float pitch = 1.0F;
+					switch(random) {
+					case 1:
+						pitch = 0.7F;
+					case 2:
+						pitch = 0.8F;
+					case 3:
+						pitch = 0.9F;
+					case 4:
+						pitch = 1.0F;
+					case 5:
+						pitch = 1.1F;
+					case 6:
+						pitch = 1.2F;
+					}
+					p.playSound(p.getLocation(), Sound.BLOCK_PISTON_EXTEND, SoundCategory.BLOCKS, 1, pitch);
+					try {
+						sendActionBar(p, "[{\"text\":\"You pushed \"},{\"text\":\"" + (count - 1) + "\",\"color\":\"green\"},{\"text\":\" entities!\"}]");
+					}catch(Exception e) {
+						p.sendMessage("You pushed " + ChatColor.GREEN + (count - 1) + ChatColor.RESET + " entities!");
+					}
+				}else {
+					if(pistonCooldown.contains(p.getUniqueId())) pistonCooldown.remove(p.getUniqueId());
+				}
 			}
-
 		}
-
 	}
-	public void wetspongeArmor() {
-		for(Player p : Bukkit.getOnlinePlayers()) {
-			try {
-				if(Method.ifWearingAll(p, "Wet Sponge", ChatColor.YELLOW + "Absorbent - Absorbs nearby liquids")) {
-					/* Put the ability below. This is auto-generated
-					* from ArmorCreator program
-                    * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
-					*/
-					if(p.isSneaking() == true) {
-						if(!(wscooldown.contains(p.getUniqueId()))) {
-							wscooldown.add(p.getUniqueId());
-							plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-								public void run() {
-									try {
-										wscooldown.remove(p.getUniqueId());
-									}catch(Exception e) {
-										
-									}
+	@EventHandler
+	public void wetspongeArmor(PlayerToggleSneakEvent e) {
+		Player p = e.getPlayer();
+		if(e.isSneaking()) {
+			if(ifWearingAll(p, "Wet Sponge", ChatColor.YELLOW + "Absorbent - Absorbs nearby liquids")) {
+				/* Put the ability below. This is auto-generated
+				* from ArmorCreator program
+                * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
+				*/
+				if(p.isSneaking() == true) {
+					if(!(wscooldown.contains(p.getUniqueId()))) {
+						wscooldown.add(p.getUniqueId());
+						plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+							public void run() {
+								try {
+									wscooldown.remove(p.getUniqueId());
+								}catch(Exception e) {
+									
 								}
-							}, 20 * 6);
-							int radius = 3;
-							boolean sponged = false;
-							for (int x = -(radius); x <= radius; x ++) {
-								for(int y = -(radius); y <= radius; y ++) {
-									for(int z = -(radius); z <= radius; z ++) {
-										org.bukkit.block.Block block = p.getLocation().getBlock().getRelative(x, y, z);
-										if(block.getType().equals(Material.WATER)) {
-											sponged = true;
-											block.setType(Material.AIR);
-										}else if(block.getType().equals(Material.TALL_SEAGRASS)) {
-											sponged = true;
-											block.setType(Material.AIR);
-										}else if(block.getType().equals(Material.SEAGRASS)) {
-											sponged = true;
-											block.setType(Material.AIR);
-										}
+							}
+						}, 20 * 6);
+						int radius = 3;
+						boolean sponged = false;
+						for (int x = -(radius); x <= radius; x ++) {
+							for(int y = -(radius); y <= radius; y ++) {
+								for(int z = -(radius); z <= radius; z ++) {
+									org.bukkit.block.Block block = p.getLocation().getBlock().getRelative(x, y, z);
+									if(block.getType().equals(Material.WATER)) {
+										sponged = true;
+										block.setType(Material.AIR);
+									}else if(block.getType().equals(Material.TALL_SEAGRASS)) {
+										sponged = true;
+										block.setType(Material.AIR);
+									}else if(block.getType().equals(Material.SEAGRASS)) {
+										sponged = true;
+										block.setType(Material.AIR);
 									}
 								}
 							}
-							if(!sponged) try {
-								wscooldown.remove(p.getUniqueId());
-							}catch(Exception e) {
-								
-							}
+						}
+						if(!sponged) try {
+							wscooldown.remove(p.getUniqueId());
+						}catch(Exception e1) {
+							
 						}
 					}
 				}
-			}catch(Exception e) {
-				
 			}
-
 		}
-
 	}
 	public void magmaArmor() {
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			try {
-				if(Method.ifWearingAll(p, "Magma", ChatColor.RED + "Fiery - Ignites enemies after attacking or being attacked")) {
+				if(ifWearingAll(p, "Magma", ChatColor.RED + "Fiery - Ignites enemies after attacking or being attacked")) {
 					/* Put the ability below. This is auto-generated
 					* from ArmorCreator program
                     * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
@@ -1934,7 +1873,7 @@ public class ArmorAbilities implements Listener {
 					armor3.setItemMeta(m3);
 					armor4.setItemMeta(m4);
 					
-					Method.changeArmorInArmorSlot(p, armor1, armor2, armor3, armor4);
+					changeArmorInArmorSlot(p, armor1, armor2, armor3, armor4);
 				}else {
 					ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
 					ItemStack armor2 = new ItemStack(Material.LEATHER_CHESTPLATE);
@@ -1974,10 +1913,10 @@ public class ArmorAbilities implements Listener {
 					m2.setLore(lore);
 					m3.setLore(lore);
 					m4.setLore(lore);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(GLOWING, 0, true);
 
 					armor1.setItemMeta(m1);
 					armor2.setItemMeta(m2);
@@ -1985,7 +1924,7 @@ public class ArmorAbilities implements Listener {
 					armor4.setItemMeta(m4);
 					
 					ItemStack[] newArmor = {armor1, armor2, armor3, armor4};
-					Method.replaceArmorInInventory(p, "magma", newArmor, true, Enchantment.PROTECTION_FIRE);
+					replaceArmorInInventory(p, "magma", newArmor, true, Enchantment.PROTECTION_FIRE);
 				}
 			}catch(Exception e) {
 
@@ -1999,8 +1938,8 @@ public class ArmorAbilities implements Listener {
 	public void fiery(EntityDamageByEntityEvent e) {
 		try {
 			if((e.getDamager() instanceof Player) && (e.getEntity() instanceof Player)) {
-				boolean damagerWearing = Method.ifWearingAll((Player)e.getDamager(), "Magma", ChatColor.RED + "Fiery - Ignites enemies after attacking or being attacked") || Method.ifWearingAll((Player)e.getDamager(), "Netherrack", ChatColor.RED + "Fiery - Ignites enemies after attacking or being attacked");
-				boolean damagedWearing = Method.ifWearingAll((Player)e.getEntity(), "Magma", ChatColor.RED + "Fiery - Ignites enemies after attacking or being attacked") || Method.ifWearingAll((Player)e.getEntity(), "Netherrack", ChatColor.RED + "Fiery - Ignites enemies after attacking or being attacked");
+				boolean damagerWearing = ifWearingAll((Player)e.getDamager(), "Magma", ChatColor.RED + "Fiery - Ignites enemies after attacking or being attacked") || ifWearingAll((Player)e.getDamager(), "Netherrack", ChatColor.RED + "Fiery - Ignites enemies after attacking or being attacked");
+				boolean damagedWearing = ifWearingAll((Player)e.getEntity(), "Magma", ChatColor.RED + "Fiery - Ignites enemies after attacking or being attacked") || ifWearingAll((Player)e.getEntity(), "Netherrack", ChatColor.RED + "Fiery - Ignites enemies after attacking or being attacked");
 				
 				Player damager = (Player) e.getDamager();
 				Player damaged = (Player) e.getEntity();
@@ -2014,15 +1953,15 @@ public class ArmorAbilities implements Listener {
 					if(!(damager.getFireTicks() > 0)) damager.setFireTicks(6/*seconds*/ * 20);
 				}
 			}else if(e.getDamager() instanceof Player) {
-				if(Method.ifWearingAll((Player)e.getDamager(), "Magma", ChatColor.RED + "Fiery - Ignites enemies after attacking or being attacked")) {
+				if(ifWearingAll((Player)e.getDamager(), "Magma", ChatColor.RED + "Fiery - Ignites enemies after attacking or being attacked")) {
 					if(!(e.getEntity().getFireTicks() > 0)) e.getEntity().setFireTicks(6 /*seconds*/ * 20);
-				}else if(Method.ifWearingAll((Player)e.getDamager(), "Netherrack", ChatColor.RED + "Fiery - Ignites enemies after attacking or being attacked")) {
+				}else if(ifWearingAll((Player)e.getDamager(), "Netherrack", ChatColor.RED + "Fiery - Ignites enemies after attacking or being attacked")) {
 					if(!(e.getEntity().getFireTicks() > 0)) e.getEntity().setFireTicks(6 /*seconds*/ * 20);
 				}
 			}else if(e.getEntity() instanceof Player) {
-				if(Method.ifWearingAll((Player)e.getEntity(), "Magma", ChatColor.RED + "Fiery - Ignites enemies after attacking or being attacked")) {
+				if(ifWearingAll((Player)e.getEntity(), "Magma", ChatColor.RED + "Fiery - Ignites enemies after attacking or being attacked")) {
 					if(!(e.getDamager().getFireTicks() > 0)) e.getDamager().setFireTicks(6 /*seconds*/ * 20);
-				}else if(Method.ifWearingAll((Player)e.getEntity(), "Netherrack", ChatColor.RED + "Fiery - Ignites enemies after attacking or being attacked")) {
+				}else if(ifWearingAll((Player)e.getEntity(), "Netherrack", ChatColor.RED + "Fiery - Ignites enemies after attacking or being attacked")) {
 					if(!(e.getDamager().getFireTicks() > 0)) e.getDamager().setFireTicks(6 /*seconds*/ * 20);
 				}
 			}	
@@ -2033,7 +1972,7 @@ public class ArmorAbilities implements Listener {
 	public void brickArmor() {
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			try {
-				if(Method.ifWearingAll(p, "Brick", ChatColor.RED + "Health Boost - Increases Max Health by 2 hearts")) {
+				if(ifWearingAll(p, "Brick", ChatColor.RED + "Health Boost - Increases Max Health by 2 hearts")) {
 					/* Put the ability below. This is auto-generated
 					* from ArmorCreator program
                     * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
@@ -2084,17 +2023,17 @@ public class ArmorAbilities implements Listener {
 					m2.setLore(lore);
 					m3.setLore(lore);
 					m4.setLore(lore);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(GLOWING, 0, true);
 
 					armor1.setItemMeta(m1);
 					armor2.setItemMeta(m2);
 					armor3.setItemMeta(m3);
 					armor4.setItemMeta(m4);
 					
-					Method.changeArmorInArmorSlot(p, armor1, armor2, armor3, armor4);
+					changeArmorInArmorSlot(p, armor1, armor2, armor3, armor4);
 				}else {
 					ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
 					ItemStack armor2 = new ItemStack(Material.LEATHER_CHESTPLATE);
@@ -2131,10 +2070,10 @@ public class ArmorAbilities implements Listener {
 					m2.setLore(lore);
 					m3.setLore(lore);
 					m4.setLore(lore);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(GLOWING, 0, true);
 
 					armor1.setItemMeta(m1);
 					armor2.setItemMeta(m2);
@@ -2142,7 +2081,7 @@ public class ArmorAbilities implements Listener {
 					armor4.setItemMeta(m4);
 					
 					ItemStack[] newArmor = {armor1, armor2, armor3, armor4};
-					Method.replaceArmorInInventory(p, "brick", newArmor, true, Attribute.GENERIC_MAX_HEALTH);
+					replaceArmorInInventory(p, "brick", newArmor, true, Attribute.GENERIC_MAX_HEALTH);
 				}
 			}catch(Exception e) {
 
@@ -2154,7 +2093,7 @@ public class ArmorAbilities implements Listener {
 	public void netherBrickArmor() {
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			try {
-				if(Method.ifWearingAll(p, "Nether Brick", ChatColor.RED + "Health Boost - Increases Max Health by 2 hearts")) {
+				if(ifWearingAll(p, "Nether Brick", ChatColor.RED + "Health Boost - Increases Max Health by 2 hearts")) {
 					/* Put the ability below. This is auto-generated
 					* from ArmorCreator program
                     * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
@@ -2205,17 +2144,17 @@ public class ArmorAbilities implements Listener {
 					m2.setLore(lore);
 					m3.setLore(lore);
 					m4.setLore(lore);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(GLOWING, 0, true);
 
 					armor1.setItemMeta(m1);
 					armor2.setItemMeta(m2);
 					armor3.setItemMeta(m3);
 					armor4.setItemMeta(m4);
 					
-					Method.changeArmorInArmorSlot(p, armor1, armor2, armor3, armor4);
+					changeArmorInArmorSlot(p, armor1, armor2, armor3, armor4);
 				}else {
 					ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
 					ItemStack armor2 = new ItemStack(Material.LEATHER_CHESTPLATE);
@@ -2252,10 +2191,10 @@ public class ArmorAbilities implements Listener {
 					m2.setLore(lore);
 					m3.setLore(lore);
 					m4.setLore(lore);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(GLOWING, 0, true);
 
 					armor1.setItemMeta(m1);
 					armor2.setItemMeta(m2);
@@ -2264,7 +2203,7 @@ public class ArmorAbilities implements Listener {
 					
 					ItemStack[] newArmor = {armor1, armor2, armor3, armor4};
 					
-					Method.replaceArmorInInventory(p, "netherBrick", newArmor, true, Attribute.GENERIC_MAX_HEALTH);
+					replaceArmorInInventory(p, "netherBrick", newArmor, true, Attribute.GENERIC_MAX_HEALTH);
 				}
 			}catch(Exception e) {
 
@@ -2276,7 +2215,7 @@ public class ArmorAbilities implements Listener {
 	public void redNetherBrickArmor() {
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			try {
-				if(Method.ifWearingAll(p, "Red Nether Brick", ChatColor.RED + "Health Boost - Increases Max Health by 2 hearts")) {
+				if(ifWearingAll(p, "Red Nether Brick", ChatColor.RED + "Health Boost - Increases Max Health by 2 hearts")) {
 					/* Put the ability below. This is auto-generated
 					* from ArmorCreator program
                     * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
@@ -2327,17 +2266,17 @@ public class ArmorAbilities implements Listener {
 					m2.setLore(lore);
 					m3.setLore(lore);
 					m4.setLore(lore);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(GLOWING, 0, true);
 
 					armor1.setItemMeta(m1);
 					armor2.setItemMeta(m2);
 					armor3.setItemMeta(m3);
 					armor4.setItemMeta(m4);
 					
-					Method.changeArmorInArmorSlot(p, armor1, armor2, armor3, armor4);
+					changeArmorInArmorSlot(p, armor1, armor2, armor3, armor4);
 				}else {
 					ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
 					ItemStack armor2 = new ItemStack(Material.LEATHER_CHESTPLATE);
@@ -2374,10 +2313,10 @@ public class ArmorAbilities implements Listener {
 					m2.setLore(lore);
 					m3.setLore(lore);
 					m4.setLore(lore);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(GLOWING, 0, true);
 
 					armor1.setItemMeta(m1);
 					armor2.setItemMeta(m2);
@@ -2386,7 +2325,7 @@ public class ArmorAbilities implements Listener {
 					
 					ItemStack[] newArmor = {armor1, armor2, armor3, armor4};
 					
-					Method.replaceArmorInInventory(p, "redNetherBrick", newArmor, true, Attribute.GENERIC_MAX_HEALTH);
+					replaceArmorInInventory(p, "redNetherBrick", newArmor, true, Attribute.GENERIC_MAX_HEALTH);
 				}
 			}catch(Exception e) {
 
@@ -2398,7 +2337,7 @@ public class ArmorAbilities implements Listener {
 	@EventHandler
 	public void slimeLandEvent(PlayerLandEvent e) {
 		Player p = e.getPlayer();
-		if(!Method.ifWearingAll(p, "Slime", ChatColor.GREEN + "Slimey - Bounces off floors")) return;
+		if(!ifWearingAll(p, "Slime", ChatColor.GREEN + "Slimey - Bounces off floors")) return;
 		if(!p.isSneaking()) {
 			if(e.getVelocity().getY() > -0.35) return;
 			if(e.getVelocity().getY() > -6) e.getPlayer().setVelocity(e.getPlayer().getVelocity().setY((e.getVelocity().getY() * -17/25)));
@@ -2416,7 +2355,7 @@ public class ArmorAbilities implements Listener {
 	public void slimeDamageEvent(EntityDamageEvent e) {
 		if(e.getEntityType() != EntityType.PLAYER) return;
 		Player p = (Player) e.getEntity();
-		if(!Method.ifWearingAll(p, "Slime", ChatColor.GREEN + "Slimey - Bounces off floors")) return;
+		if(!ifWearingAll(p, "Slime", ChatColor.GREEN + "Slimey - Bounces off floors")) return;
 		if(e.getCause() == DamageCause.FALL) {
 			try {
 				p.stopSound(Sound.ENTITY_PLAYER_SMALL_FALL);
@@ -2431,48 +2370,39 @@ public class ArmorAbilities implements Listener {
 			e.setCancelled(true);
 		}
 	}
-	public void endstoneArmor() {
-		for(Player p : Bukkit.getOnlinePlayers()) {
-			try {
-				if(Method.ifWearingAll(p, "End Stone", plugin.ver16 ? ChatColor.DARK_PURPLE + "Ender - Teleports in the direction you're looking at" : "Ender - Teleports in the direction you're looking at")) {
-					/* Put the ability below. This is auto-generated
-					* from ArmorCreator program
-                    * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
-					*/
-					if(!p.isSneaking()) return;
-					if(teleportCooldown.contains(p.getUniqueId())) return;
-					if(p.getTargetBlock(null, 15).getType() == Material.AIR || p.getTargetBlock(null, 15).getType() == Material.LAVA) {
-						try {
-							Method.sendActionBar(p, "{\"text\":\"You're looking at air or its too far away!\",\"color\":\"red\"}");
-						}catch(Exception e) {
-							p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
-						}
-						return;
+	@EventHandler
+	public void endstoneArmor(PlayerToggleSneakEvent e) {
+		Player p = e.getPlayer();
+		if(e.isSneaking()) {
+			if(ifWearingAll(p, "End Stone", plugin.ver16 ? ChatColor.DARK_PURPLE + "Ender - Teleports in the direction you're looking at" : "Ender - Teleports in the direction you're looking at")) {
+				if(teleportCooldown.contains(p.getUniqueId())) return;
+				if(p.getTargetBlock(null, 15).getType() == Material.AIR || p.getTargetBlock(null, 15).getType() == Material.LAVA) {
+					try {
+						sendActionBar(p, "{\"text\":\"You're looking at air or its too far away!\",\"color\":\"red\"}");
+					}catch(Exception e1) {
+						p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
 					}
-					p.teleport(p.getTargetBlock(null, 30).getLocation().add(0, 1, 0));
-	                p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1F, 1F);
-	                teleportCooldown.add(p.getUniqueId());
-					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-						public void run() {
-							try {
-								teleportCooldown.remove(p.getUniqueId());
-							}catch(Exception e) {
-								
-							}
-						}
-					}, 15 * 20L);
+					return;
 				}
-			}catch(Exception e) {
-				
+				p.teleport(p.getTargetBlock(null, 30).getLocation().add(0, 1, 0));
+                p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1F, 1F);
+                teleportCooldown.add(p.getUniqueId());
+				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+					public void run() {
+						try {
+							teleportCooldown.remove(p.getUniqueId());
+						}catch(Exception e) {
+							
+						}
+					}
+				}, 15 * 20L);
 			}
-
 		}
-
 	}
 	public void iceArmor() {
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			try {
-				if(Method.ifWearingAll(p, "Ice", ChatColor.AQUA + "Frosty - Provides Frost Walking II")) {
+				if(ifWearingAll(p, "Ice", ChatColor.AQUA + "Frosty - Provides Frost Walking II")) {
 					/* Put the ability below. This is auto-generated
 					* from ArmorCreator program
                     * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
@@ -2510,10 +2440,10 @@ public class ArmorAbilities implements Listener {
 					m2.setLore(lore);
 					m3.setLore(lore);
 					m4.setLore(lore);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(GLOWING, 0, true);
 					
 					m1.addEnchant(Enchantment.FROST_WALKER, 2, true);
 					m2.addEnchant(Enchantment.FROST_WALKER, 2, true);
@@ -2525,7 +2455,7 @@ public class ArmorAbilities implements Listener {
 					armor3.setItemMeta(m3);
 					armor4.setItemMeta(m4);
 					
-					Method.changeArmorInArmorSlot(p, armor1, armor2, armor3, armor4);
+					changeArmorInArmorSlot(p, armor1, armor2, armor3, armor4);
 				}else {
 					ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
 					ItemStack armor2 = new ItemStack(Material.LEATHER_CHESTPLATE);
@@ -2560,10 +2490,10 @@ public class ArmorAbilities implements Listener {
 					m2.setLore(lore);
 					m3.setLore(lore);
 					m4.setLore(lore);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(GLOWING, 0, true);
 
 					armor1.setItemMeta(m1);
 					armor2.setItemMeta(m2);
@@ -2572,7 +2502,7 @@ public class ArmorAbilities implements Listener {
 					
 					ItemStack[] newArmor = {armor1, armor2, armor3, armor4};
 					
-					Method.replaceArmorInInventory(p, "ice", newArmor, true, Enchantment.FROST_WALKER);
+					replaceArmorInInventory(p, "ice", newArmor, true, Enchantment.FROST_WALKER);
 				}
 			}catch(Exception e) {
 
@@ -2581,52 +2511,47 @@ public class ArmorAbilities implements Listener {
 		}
 
 	}
-	public void boneArmor() {
-		for(Player p : Bukkit.getOnlinePlayers()) {
-			try {
-				if(Method.ifWearingAll(p, "Bone", ChatColor.WHITE + "Bonemealer - Applies bone meal to nearby blocks.")) {
-					/* Put the ability below. This is auto-generated
-					* from ArmorCreator program
-                    * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
-					*/
-					if(!plugin.ver16) return;
-					if(!p.isSneaking()) return;
-					if(boneCooldown.contains(p.getUniqueId())) return;
-					boneCooldown.add(p.getUniqueId());
-					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-						public void run() {
-							boneCooldown.remove(p.getUniqueId());
-						}
-					}, 10 * 20L);
-					int radius = 2;
-					for (int x = -(radius); x <= radius; x ++) {
-						for(int y = -(radius); y <= radius; y ++) {
-							for(int z = -(radius); z <= radius; z ++) {
-								try {
-									p.getLocation().getBlock().getRelative(x, y, z).applyBoneMeal(BlockFace.UP);
-								}catch(Exception e1) {
-									
-								}
+	@EventHandler
+	public void boneArmor(PlayerToggleSneakEvent e) {
+		Player p = e.getPlayer();
+		if(e.isSneaking()) {
+			if(ifWearingAll(p, "Bone", ChatColor.WHITE + "Bonemealer - Applies bone meal to nearby blocks.")) {
+				/* Put the ability below. This is auto-generated
+				* from ArmorCreator program
+                * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
+				*/
+				if(!plugin.ver16) return;
+				if(boneCooldown.contains(p.getUniqueId())) return;
+				boneCooldown.add(p.getUniqueId());
+				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+					public void run() {
+						boneCooldown.remove(p.getUniqueId());
+					}
+				}, 10 * 20L);
+				int radius = 2;
+				for (int x = -(radius); x <= radius; x ++) {
+					for(int y = -(radius); y <= radius; y ++) {
+						for(int z = -(radius); z <= radius; z ++) {
+							try {
+								p.getLocation().getBlock().getRelative(x, y, z).applyBoneMeal(BlockFace.UP);
+							}catch(Exception e1) {
+								
 							}
 						}
 					}
 				}
-			}catch(Exception e) {
-
 			}
-
 		}
-
 	}
 	public void soulsandArmor() {
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			try {
-				if(Method.ifWearingAll(p, "Soul Sand", ChatColor.GRAY + "Slow Motion - Live life in the slow lane")) {
+				if(ifWearingAll(p, "Soul Sand", ChatColor.GRAY + "Slow Motion - Live life in the slow lane")) {
 					/* Put the ability below. This is auto-generated
 					* from ArmorCreator program
                     * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
 					*/
-					Method.addPotionEffect(p, PotionEffectType.SLOW, 5, 0, false, false, false);
+					addPotionEffect(p, PotionEffectType.SLOW, plugin.interval + 20, 0, false, false, false);
 				}
 			}catch(Exception e) {
 
@@ -2638,7 +2563,7 @@ public class ArmorAbilities implements Listener {
 	public void snowArmor() {
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			try {
-				if(Method.ifWearingAll(p, "Snow", ChatColor.WHITE + "Snowy - Spawns snow and snowballs")) {
+				if(ifWearingAll(p, "Snow", ChatColor.WHITE + "Snowy - Spawns snow and snowballs")) {
 					/* Put the ability below. This is auto-generated
 					* from ArmorCreator program
                     * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
@@ -2676,10 +2601,10 @@ public class ArmorAbilities implements Listener {
 					m2.setLore(lore);
 					m3.setLore(lore);
 					m4.setLore(lore);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(GLOWING, 0, true);
 					
 					m1.addEnchant(Enchantment.FROST_WALKER, 2, true);
 					m2.addEnchant(Enchantment.FROST_WALKER, 2, true);
@@ -2691,7 +2616,7 @@ public class ArmorAbilities implements Listener {
 					armor3.setItemMeta(m3);
 					armor4.setItemMeta(m4);
 					
-					Method.changeArmorInArmorSlot(p, armor1, armor2, armor3, armor4);
+					changeArmorInArmorSlot(p, armor1, armor2, armor3, armor4);
 				}else {
 					ItemStack armor1 = new ItemStack(Material.LEATHER_HELMET);
 					ItemStack armor2 = new ItemStack(Material.LEATHER_CHESTPLATE);
@@ -2726,10 +2651,10 @@ public class ArmorAbilities implements Listener {
 					m2.setLore(lore);
 					m3.setLore(lore);
 					m4.setLore(lore);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(Method.GLOWING, 0, true);
-					if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(Method.GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m1.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m2.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m3.addEnchant(GLOWING, 0, true);
+					if(plugin.getConfig().getBoolean("glowing-armor")) m4.addEnchant(GLOWING, 0, true);
 
 					armor1.setItemMeta(m1);
 					armor2.setItemMeta(m2);
@@ -2737,54 +2662,7 @@ public class ArmorAbilities implements Listener {
 					armor4.setItemMeta(m4);
 					
 					ItemStack[] newArmor = {armor1, armor2, armor3, armor4};
-					Method.replaceArmorInInventory(p, "snow", newArmor, true, Enchantment.FROST_WALKER);
-				}
-			}catch(Exception e) {
-				
-			}
-			try {
-				if(p.isSneaking() && !snowCooldown.contains(p.getUniqueId()) && Method.ifWearingAll(p, "Snow", ChatColor.WHITE + "Snowy - Spawns snow and snowballs")) {
-					int radius = 3;
-					boolean snowed = false;
-					for(int x = -(radius); x <= radius; x++) {
-						for(int y = -(radius); y <= radius; y++) {
-							for(int z = -(radius); z <= radius; z++) {
-								org.bukkit.block.Block block = p.getLocation().getBlock().getRelative(x, y, z);
-								if(block.getType().isOccluding()) {
-									org.bukkit.block.Block top = block.getLocation().add(0, 1, 0).getBlock();
-									if(top.getType() == Material.SNOW) {
-										Snow snow = (Snow) top.getBlockData();
-										if(snow.getLayers() <= (snow.getMinimumLayers() + 1)) snow.setLayers(snow.getLayers()+1);
-										top.setBlockData(snow);
-										if(new Random().nextInt(100) + 1 <= 15) p.getWorld().dropItemNaturally(top.getLocation(), new ItemStack(Material.SNOWBALL));
-										snowed = true;
-									}else if(top.getType() == Material.AIR) {
-										top.setType(Material.SNOW);
-										top = p.getLocation().getBlock().getRelative(x, (y+1), z);
-										Snow snow = (Snow) top.getBlockData();
-										snow.setLayers(snow.getMinimumLayers());
-										top.setBlockData(snow);
-										if(new Random().nextInt(100) + 1 <= 15) p.getWorld().dropItemNaturally(top.getLocation(), new ItemStack(Material.SNOWBALL));
-										snowed = true;
-									}
-								}
-							}
-						}
-					}
-					if(snowed) {
-						snowCooldown.add(p.getUniqueId());
-						plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-							public void run() {
-								try {
-									snowCooldown.remove(p.getUniqueId());
-								}catch(Exception e) {
-									
-								}
-							}
-						}, 2 * 20L);
-					}
-					p.playSound(p.getLocation(), Sound.WEATHER_RAIN, 1, 1);
-					
+					replaceArmorInInventory(p, "snow", newArmor, true, Enchantment.FROST_WALKER);
 				}
 			}catch(Exception e) {
 				
@@ -2792,5 +2670,54 @@ public class ArmorAbilities implements Listener {
 
 		}
 
+	}
+	@EventHandler
+	public void snowArmor(PlayerToggleSneakEvent e) {
+		Player p = e.getPlayer();
+		if(e.isSneaking()) {
+			if(!snowCooldown.contains(p.getUniqueId()) && ifWearingAll(p, "Snow", ChatColor.WHITE + "Snowy - Spawns snow and snowballs")) {
+				int radius = 3;
+				boolean snowed = false;
+				for(int x = -(radius); x <= radius; x++) {
+					for(int y = -(radius); y <= radius; y++) {
+						for(int z = -(radius); z <= radius; z++) {
+							org.bukkit.block.Block block = p.getLocation().getBlock().getRelative(x, y, z);
+							if(block.getType().isOccluding()) {
+								org.bukkit.block.Block top = block.getLocation().add(0, 1, 0).getBlock();
+								if(top.getType() == Material.SNOW) {
+									Snow snow = (Snow) top.getBlockData();
+									if(snow.getLayers() <= (snow.getMinimumLayers() + 1)) snow.setLayers(snow.getLayers()+1);
+									top.setBlockData(snow);
+									if(new Random().nextInt(100) + 1 <= 15) p.getWorld().dropItemNaturally(top.getLocation(), new ItemStack(Material.SNOWBALL));
+									snowed = true;
+								}else if(top.getType() == Material.AIR) {
+									top.setType(Material.SNOW);
+									top = p.getLocation().getBlock().getRelative(x, (y+1), z);
+									Snow snow = (Snow) top.getBlockData();
+									snow.setLayers(snow.getMinimumLayers());
+									top.setBlockData(snow);
+									if(new Random().nextInt(100) + 1 <= 15) p.getWorld().dropItemNaturally(top.getLocation(), new ItemStack(Material.SNOWBALL));
+									snowed = true;
+								}
+							}
+						}
+					}
+				}
+				if(snowed) {
+					snowCooldown.add(p.getUniqueId());
+					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+						public void run() {
+							try {
+								snowCooldown.remove(p.getUniqueId());
+							}catch(Exception e) {
+								
+							}
+						}
+					}, 2 * 20L);
+				}
+				p.playSound(p.getLocation(), Sound.WEATHER_RAIN, 1, 1);
+				
+			}
+		}
 	}
 }

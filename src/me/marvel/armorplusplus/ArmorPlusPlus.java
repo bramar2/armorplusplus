@@ -45,13 +45,14 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 	public String msg = "";
 	public UpdateChecker uc;
 	private boolean hasMineTinker = false;
-	private me.marvel.armorplusplus.events.Listener listener;
+	public me.marvel.armorplusplus.events.Listener listener;
 	public boolean ver16 = false;
 	public ArrayList<String> armorIds = new ArrayList<String>();
 	public List<String> disabledArmors;
 	public ArmorRecipe ar;
 	public static ArmorPlusPlus instance;
 	public InventoryEvents invevents;
+	public int interval;
 	/**
 	 * Hashmap containing
 	 * 1st String = Armor ID
@@ -83,6 +84,20 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 		Method.NMSVERSION = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
 		Method.plugin = this;
 		Method.GLOWING = new GlowingEnchantment("glowing", this);
+		try {
+			int interval = getConfig().getInt("tick-interval");
+			if(interval < 1) {
+				this.interval = 1;
+				getLogger().warning("The value of 'tick-interval' in configuration is below the minimum! Defaulting it to 1.");
+			}else if(interval > 1200) {
+				this.interval = 1;
+				getLogger().warning("The value of 'tick-interval' in configuration is above the maximum! Defaulting it to 1.");
+			}else {
+				this.interval = interval;
+			}
+		}catch(Exception e) {
+			this.interval = 1;
+		}
 		registerGlowing();
 		ar = new ArmorRecipe(this);
 		if(getServer().getVersion().toLowerCase().contains("1.16")) {
@@ -127,7 +142,7 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 		getCommand("armorplusplus").setTabCompleter(new TabComplete());
 		getServer().getPluginManager().registerEvents(invevents, this);
 		getServer().getPluginManager().registerEvents(new ArmorAbilities(this), this);
-		listener = new me.marvel.armorplusplus.events.Listener(this);
+		listener = new me.marvel.armorplusplus.events.Listener(this, this);
 		listener.listen();
 		loadRecipe();
 		loadAbilities();
@@ -212,7 +227,7 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 			}
 		}
 	}
-	private void loadAbilities() {
+	public void loadAbilities() {
 			// For every 2.5 second
 			ArmorAbilities ability = new ArmorAbilities(this);
 			this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
@@ -220,7 +235,7 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 				public void run() {
 					if(!disabledArmors.contains("DIRT")) ability.dirtRegrowth();
 				}
-			}, 0L, 50L);
+			}, 0L, interval * 50L);
 			// For every 6 second
 			this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 				@Override
@@ -228,12 +243,13 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 					if(!disabledArmors.contains("PUMPKIN")) ability.pumpkinFeed();
 					if(!disabledArmors.contains("MELON")) ability.melonFeed();
 				}
-			}, 0L, 120L);
+			}, 0L, interval * 120L);
 			
 			// Every 10 minutes, armor protection 0 fix.
 			this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 				public void run() {
 					// ARMOR PROTECTION 0 FIX
+					boolean glowing = getConfig().getBoolean("glowing-armor");
 					for(Player p : Bukkit.getOnlinePlayers()) {
 						for(int i = 0; i < p.getInventory().getContents().length; i++) {
 							ItemStack item = p.getInventory().getItem(i);
@@ -328,219 +344,214 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 						}catch(Exception e) {
 							
 						}
-					}
-					// ARMOR PROTECTION 0 FIX
-					getLogger().info("Ran changes to players having protection 0 armors and glowing armors.");
-					// GLOWING ARMOR
-					boolean glowing = getConfig().getBoolean("glowing-armor");
-					for(Player p : Bukkit.getOnlinePlayers()) {
 						for(int i = 0; i < p.getInventory().getContents().length; i++) {
+							try {
+								ItemStack item = p.getInventory().getItem(i);
+								if(item == null) continue;
+								if(item.getType() == Material.AIR) continue;
+								if(!Method.getNBTTag(Method.getNBTTag(item, "display").getKey(), "Lore").getValue().contains("'{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"gold\",\"text\":\"(4 pieces must be worn for abilities to work)\"}],\"text\":\"\"}'")) continue;
+								if(!glowing && Method.getNBTTag(item, "Enchantments").getValue().contains("id:\"armorplusplus:glowing\"")) {
+									ItemStack newItem = item.clone();
+									ItemMeta newMeta = newItem.getItemMeta();
+									newMeta.removeEnchant(Method.GLOWING);
+									newItem.setItemMeta(newMeta);
+									item = newItem;
+								}else if(glowing && !Method.getNBTTag(item, "Enchantments").getValue().contains("id:\"armorplusplus:glowing\"")) {
+									ItemStack newItem = item.clone();
+									ItemMeta newMeta = newItem.getItemMeta();
+									newMeta.addEnchant(Method.GLOWING, 0, true);
+									newItem.setItemMeta(newMeta);
+									item = newItem;
+								}
+								p.getInventory().setItem(i, item);
+							}catch(Exception e) {
+								if(glowing) {
+									try {
+										ItemStack item = p.getInventory().getItem(i);
+										if(!Method.hasNBTTag(item, "Enchantments") && Method.getNBTTag(Method.getNBTTag(item, "display").getKey(), "Lore").getValue().contains("'{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"gold\",\"text\":\"(4 pieces must be worn for abilities to work)\"}],\"text\":\"\"}'")) {
+											ItemMeta itemmeta = item.getItemMeta();
+											itemmeta.addEnchant(Method.GLOWING, 0, true);
+											item.setItemMeta(itemmeta);
+											p.getInventory().setItem(i, item);
+										}
+									}catch(Exception e1) {
+										
+									}
+								}
+							}
+						}
+						try {
+							ItemStack item = p.getInventory().getItemInOffHand();
+							if(item == null) throw new IllegalArgumentException();
+							if(item.getType() == Material.AIR) throw new IllegalArgumentException();
+							if(!Method.getNBTTag(Method.getNBTTag(item, "display").getKey(), "Lore").getValue().contains("'{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"gold\",\"text\":\"(4 pieces must be worn for abilities to work)\"}],\"text\":\"\"}'")) throw new IllegalArgumentException();
+							if(!glowing && Method.getNBTTag(item, "Enchantments").getValue().contains("id:\"armorplusplus:glowing\"")) {
+								ItemStack newItem = item.clone();
+								ItemMeta newMeta = newItem.getItemMeta();
+								newMeta.removeEnchant(Method.GLOWING);
+								newItem.setItemMeta(newMeta);
+								item = newItem;
+							}else if(glowing && !Method.getNBTTag(item, "Enchantments").getValue().contains("id:\"armorplusplus:glowing\"")) {
+								ItemStack newItem = item.clone();
+								ItemMeta newMeta = newItem.getItemMeta();
+								newMeta.addEnchant(Method.GLOWING, 0, true);
+								newItem.setItemMeta(newMeta);
+								item = newItem;
+							}
+							p.getInventory().setItemInOffHand(item);
+						}catch(Exception e) {
+							if(glowing) {
 								try {
-									ItemStack item = p.getInventory().getItem(i);
-									if(item == null) continue;
-									if(item.getType() == Material.AIR) continue;
-									if(!Method.getNBTTag(Method.getNBTTag(item, "display").getKey(), "Lore").getValue().contains("'{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"gold\",\"text\":\"(4 pieces must be worn for abilities to work)\"}],\"text\":\"\"}'")) continue;
-									if(!glowing && Method.getNBTTag(item, "Enchantments").getValue().contains("id:\"armorplusplus:glowing\"")) {
-										ItemStack newItem = item.clone();
-										ItemMeta newMeta = newItem.getItemMeta();
-										newMeta.removeEnchant(Method.GLOWING);
-										newItem.setItemMeta(newMeta);
-										item = newItem;
-									}else if(glowing && !Method.getNBTTag(item, "Enchantments").getValue().contains("id:\"armorplusplus:glowing\"")) {
-										ItemStack newItem = item.clone();
-										ItemMeta newMeta = newItem.getItemMeta();
-										newMeta.addEnchant(Method.GLOWING, 0, true);
-										newItem.setItemMeta(newMeta);
-										item = newItem;
+									ItemStack item = p.getInventory().getItemInOffHand();
+									if(!Method.hasNBTTag(item, "Enchantments") && Method.getNBTTag(Method.getNBTTag(item, "display").getKey(), "Lore").getValue().contains("'{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"gold\",\"text\":\"(4 pieces must be worn for abilities to work)\"}],\"text\":\"\"}'")) {
+										ItemMeta itemmeta = item.getItemMeta();
+										itemmeta.addEnchant(Method.GLOWING, 0, true);
+										item.setItemMeta(itemmeta);
+										p.getInventory().setItemInOffHand(item);
 									}
-									p.getInventory().setItem(i, item);
-								}catch(Exception e) {
-									if(glowing) {
-										try {
-											ItemStack item = p.getInventory().getItem(i);
-											if(!Method.hasNBTTag(item, "Enchantments") && Method.getNBTTag(Method.getNBTTag(item, "display").getKey(), "Lore").getValue().contains("'{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"gold\",\"text\":\"(4 pieces must be worn for abilities to work)\"}],\"text\":\"\"}'")) {
-												ItemMeta itemmeta = item.getItemMeta();
-												itemmeta.addEnchant(Method.GLOWING, 0, true);
-												item.setItemMeta(itemmeta);
-												p.getInventory().setItem(i, item);
-											}
-										}catch(Exception e1) {
-											
-										}
-									}
+								}catch(Exception e1) {
+									
 								}
 							}
-							try {
-								ItemStack item = p.getInventory().getItemInOffHand();
-								if(item == null) throw new IllegalArgumentException();
-								if(item.getType() == Material.AIR) throw new IllegalArgumentException();
-								if(!Method.getNBTTag(Method.getNBTTag(item, "display").getKey(), "Lore").getValue().contains("'{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"gold\",\"text\":\"(4 pieces must be worn for abilities to work)\"}],\"text\":\"\"}'")) throw new IllegalArgumentException();
-								if(!glowing && Method.getNBTTag(item, "Enchantments").getValue().contains("id:\"armorplusplus:glowing\"")) {
-									ItemStack newItem = item.clone();
-									ItemMeta newMeta = newItem.getItemMeta();
-									newMeta.removeEnchant(Method.GLOWING);
-									newItem.setItemMeta(newMeta);
-									item = newItem;
-								}else if(glowing && !Method.getNBTTag(item, "Enchantments").getValue().contains("id:\"armorplusplus:glowing\"")) {
-									ItemStack newItem = item.clone();
-									ItemMeta newMeta = newItem.getItemMeta();
-									newMeta.addEnchant(Method.GLOWING, 0, true);
-									newItem.setItemMeta(newMeta);
-									item = newItem;
-								}
-								p.getInventory().setItemInOffHand(item);
-							}catch(Exception e) {
-								if(glowing) {
-									try {
-										ItemStack item = p.getInventory().getItemInOffHand();
-										if(!Method.hasNBTTag(item, "Enchantments") && Method.getNBTTag(Method.getNBTTag(item, "display").getKey(), "Lore").getValue().contains("'{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"gold\",\"text\":\"(4 pieces must be worn for abilities to work)\"}],\"text\":\"\"}'")) {
-											ItemMeta itemmeta = item.getItemMeta();
-											itemmeta.addEnchant(Method.GLOWING, 0, true);
-											item.setItemMeta(itemmeta);
-											p.getInventory().setItemInOffHand(item);
-										}
-									}catch(Exception e1) {
-										
+						}
+						try {
+							ItemStack item = p.getInventory().getHelmet();
+							if(item == null) throw new IllegalArgumentException();
+							if(item.getType() == Material.AIR) throw new IllegalArgumentException();
+							if(!Method.getNBTTag(Method.getNBTTag(item, "display").getKey(), "Lore").getValue().contains("'{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"gold\",\"text\":\"(4 pieces must be worn for abilities to work)\"}],\"text\":\"\"}'")) throw new IllegalArgumentException();
+							if(!glowing && Method.getNBTTag(item, "Enchantments").getValue().contains("id:\"armorplusplus:glowing\"")) {
+								ItemStack newItem = item.clone();
+								ItemMeta newMeta = newItem.getItemMeta();
+								newMeta.removeEnchant(Method.GLOWING);
+								newItem.setItemMeta(newMeta);
+								item = newItem;
+							}else if(glowing && !Method.getNBTTag(item, "Enchantments").getValue().contains("id:\"armorplusplus:glowing\"")) {
+								ItemStack newItem = item.clone();
+								ItemMeta newMeta = newItem.getItemMeta();
+								newMeta.addEnchant(Method.GLOWING, 0, true);
+								newItem.setItemMeta(newMeta);
+								item = newItem;
+							}
+							p.getInventory().setHelmet(item);
+						}catch(Exception e) {
+							if(glowing) {
+								try {
+									ItemStack item = p.getInventory().getHelmet();
+									if(!Method.hasNBTTag(item, "Enchantments") && Method.getNBTTag(Method.getNBTTag(item, "display").getKey(), "Lore").getValue().contains("'{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"gold\",\"text\":\"(4 pieces must be worn for abilities to work)\"}],\"text\":\"\"}'")) {
+										ItemMeta itemmeta = item.getItemMeta();
+										itemmeta.addEnchant(Method.GLOWING, 0, true);
+										item.setItemMeta(itemmeta);
+										p.getInventory().setHelmet(item);
 									}
+								}catch(Exception e1) {
+									
 								}
 							}
-							try {
-								ItemStack item = p.getInventory().getHelmet();
-								if(item == null) throw new IllegalArgumentException();
-								if(item.getType() == Material.AIR) throw new IllegalArgumentException();
-								if(!Method.getNBTTag(Method.getNBTTag(item, "display").getKey(), "Lore").getValue().contains("'{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"gold\",\"text\":\"(4 pieces must be worn for abilities to work)\"}],\"text\":\"\"}'")) throw new IllegalArgumentException();
-								if(!glowing && Method.getNBTTag(item, "Enchantments").getValue().contains("id:\"armorplusplus:glowing\"")) {
-									ItemStack newItem = item.clone();
-									ItemMeta newMeta = newItem.getItemMeta();
-									newMeta.removeEnchant(Method.GLOWING);
-									newItem.setItemMeta(newMeta);
-									item = newItem;
-								}else if(glowing && !Method.getNBTTag(item, "Enchantments").getValue().contains("id:\"armorplusplus:glowing\"")) {
-									ItemStack newItem = item.clone();
-									ItemMeta newMeta = newItem.getItemMeta();
-									newMeta.addEnchant(Method.GLOWING, 0, true);
-									newItem.setItemMeta(newMeta);
-									item = newItem;
-								}
-								p.getInventory().setHelmet(item);
-							}catch(Exception e) {
-								if(glowing) {
-									try {
-										ItemStack item = p.getInventory().getHelmet();
-										if(!Method.hasNBTTag(item, "Enchantments") && Method.getNBTTag(Method.getNBTTag(item, "display").getKey(), "Lore").getValue().contains("'{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"gold\",\"text\":\"(4 pieces must be worn for abilities to work)\"}],\"text\":\"\"}'")) {
-											ItemMeta itemmeta = item.getItemMeta();
-											itemmeta.addEnchant(Method.GLOWING, 0, true);
-											item.setItemMeta(itemmeta);
-											p.getInventory().setHelmet(item);
-										}
-									}catch(Exception e1) {
-										
+						}
+						try {
+							ItemStack item = p.getInventory().getChestplate();
+							if(item == null) throw new IllegalArgumentException();
+							if(item.getType() == Material.AIR) throw new IllegalArgumentException();
+							if(!Method.getNBTTag(Method.getNBTTag(item, "display").getKey(), "Lore").getValue().contains("'{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"gold\",\"text\":\"(4 pieces must be worn for abilities to work)\"}],\"text\":\"\"}'")) throw new IllegalArgumentException();
+							if(!glowing && Method.getNBTTag(item, "Enchantments").getValue().contains("id:\"armorplusplus:glowing\"")) {
+								ItemStack newItem = item.clone();
+								ItemMeta newMeta = newItem.getItemMeta();
+								newMeta.removeEnchant(Method.GLOWING);
+								newItem.setItemMeta(newMeta);
+								item = newItem;
+							}else if(glowing && !Method.getNBTTag(item, "Enchantments").getValue().contains("id:\"armorplusplus:glowing\"")) {
+								ItemStack newItem = item.clone();
+								ItemMeta newMeta = newItem.getItemMeta();
+								newMeta.addEnchant(Method.GLOWING, 0, true);
+								newItem.setItemMeta(newMeta);
+								item = newItem;
+							}
+							p.getInventory().setChestplate(item);
+						}catch(Exception e) {
+							if(glowing) {
+								try {
+									ItemStack item = p.getInventory().getChestplate();
+									if(!Method.hasNBTTag(item, "Enchantments") && Method.getNBTTag(Method.getNBTTag(item, "display").getKey(), "Lore").getValue().contains("'{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"gold\",\"text\":\"(4 pieces must be worn for abilities to work)\"}],\"text\":\"\"}'")) {
+										ItemMeta itemmeta = item.getItemMeta();
+										itemmeta.addEnchant(Method.GLOWING, 0, true);
+										item.setItemMeta(itemmeta);
+										p.getInventory().setChestplate(item);
 									}
+								}catch(Exception e1) {
+									
 								}
 							}
-							try {
-								ItemStack item = p.getInventory().getChestplate();
-								if(item == null) throw new IllegalArgumentException();
-								if(item.getType() == Material.AIR) throw new IllegalArgumentException();
-								if(!Method.getNBTTag(Method.getNBTTag(item, "display").getKey(), "Lore").getValue().contains("'{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"gold\",\"text\":\"(4 pieces must be worn for abilities to work)\"}],\"text\":\"\"}'")) throw new IllegalArgumentException();
-								if(!glowing && Method.getNBTTag(item, "Enchantments").getValue().contains("id:\"armorplusplus:glowing\"")) {
-									ItemStack newItem = item.clone();
-									ItemMeta newMeta = newItem.getItemMeta();
-									newMeta.removeEnchant(Method.GLOWING);
-									newItem.setItemMeta(newMeta);
-									item = newItem;
-								}else if(glowing && !Method.getNBTTag(item, "Enchantments").getValue().contains("id:\"armorplusplus:glowing\"")) {
-									ItemStack newItem = item.clone();
-									ItemMeta newMeta = newItem.getItemMeta();
-									newMeta.addEnchant(Method.GLOWING, 0, true);
-									newItem.setItemMeta(newMeta);
-									item = newItem;
-								}
-								p.getInventory().setChestplate(item);
-							}catch(Exception e) {
-								if(glowing) {
-									try {
-										ItemStack item = p.getInventory().getChestplate();
-										if(!Method.hasNBTTag(item, "Enchantments") && Method.getNBTTag(Method.getNBTTag(item, "display").getKey(), "Lore").getValue().contains("'{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"gold\",\"text\":\"(4 pieces must be worn for abilities to work)\"}],\"text\":\"\"}'")) {
-											ItemMeta itemmeta = item.getItemMeta();
-											itemmeta.addEnchant(Method.GLOWING, 0, true);
-											item.setItemMeta(itemmeta);
-											p.getInventory().setChestplate(item);
-										}
-									}catch(Exception e1) {
-										
+						}
+						try {
+							ItemStack item = p.getInventory().getLeggings();
+							if(item == null) throw new IllegalArgumentException();
+							if(item.getType() == Material.AIR) throw new IllegalArgumentException();
+							if(!Method.getNBTTag(Method.getNBTTag(item, "display").getKey(), "Lore").getValue().contains("'{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"gold\",\"text\":\"(4 pieces must be worn for abilities to work)\"}],\"text\":\"\"}'")) throw new IllegalArgumentException();
+							if(!glowing && Method.getNBTTag(item, "Enchantments").getValue().contains("id:\"armorplusplus:glowing\"")) {
+								ItemStack newItem = item.clone();
+								ItemMeta newMeta = newItem.getItemMeta();
+								newMeta.removeEnchant(Method.GLOWING);
+								newItem.setItemMeta(newMeta);
+								item = newItem;
+							}else if(glowing && !Method.getNBTTag(item, "Enchantments").getValue().contains("id:\"armorplusplus:glowing\"")) {
+								ItemStack newItem = item.clone();
+								ItemMeta newMeta = newItem.getItemMeta();
+								newMeta.addEnchant(Method.GLOWING, 0, true);
+								newItem.setItemMeta(newMeta);
+								item = newItem;
+							}
+							p.getInventory().setLeggings(item);
+						}catch(Exception e) {
+							if(glowing) {
+								try {
+									ItemStack item = p.getInventory().getLeggings();
+									if(!Method.hasNBTTag(item, "Enchantments") && Method.getNBTTag(Method.getNBTTag(item, "display").getKey(), "Lore").getValue().contains("'{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"gold\",\"text\":\"(4 pieces must be worn for abilities to work)\"}],\"text\":\"\"}'")) {
+										ItemMeta itemmeta = item.getItemMeta();
+										itemmeta.addEnchant(Method.GLOWING, 0, true);
+										item.setItemMeta(itemmeta);
+										p.getInventory().setLeggings(item);
 									}
+								}catch(Exception e1) {
+									
 								}
 							}
-							try {
-								ItemStack item = p.getInventory().getLeggings();
-								if(item == null) throw new IllegalArgumentException();
-								if(item.getType() == Material.AIR) throw new IllegalArgumentException();
-								if(!Method.getNBTTag(Method.getNBTTag(item, "display").getKey(), "Lore").getValue().contains("'{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"gold\",\"text\":\"(4 pieces must be worn for abilities to work)\"}],\"text\":\"\"}'")) throw new IllegalArgumentException();
-								if(!glowing && Method.getNBTTag(item, "Enchantments").getValue().contains("id:\"armorplusplus:glowing\"")) {
-									ItemStack newItem = item.clone();
-									ItemMeta newMeta = newItem.getItemMeta();
-									newMeta.removeEnchant(Method.GLOWING);
-									newItem.setItemMeta(newMeta);
-									item = newItem;
-								}else if(glowing && !Method.getNBTTag(item, "Enchantments").getValue().contains("id:\"armorplusplus:glowing\"")) {
-									ItemStack newItem = item.clone();
-									ItemMeta newMeta = newItem.getItemMeta();
-									newMeta.addEnchant(Method.GLOWING, 0, true);
-									newItem.setItemMeta(newMeta);
-									item = newItem;
-								}
-								p.getInventory().setLeggings(item);
-							}catch(Exception e) {
-								if(glowing) {
-									try {
-										ItemStack item = p.getInventory().getLeggings();
-										if(!Method.hasNBTTag(item, "Enchantments") && Method.getNBTTag(Method.getNBTTag(item, "display").getKey(), "Lore").getValue().contains("'{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"gold\",\"text\":\"(4 pieces must be worn for abilities to work)\"}],\"text\":\"\"}'")) {
-											ItemMeta itemmeta = item.getItemMeta();
-											itemmeta.addEnchant(Method.GLOWING, 0, true);
-											item.setItemMeta(itemmeta);
-											p.getInventory().setLeggings(item);
-										}
-									}catch(Exception e1) {
-										
+						}
+						try {
+							ItemStack item = p.getInventory().getBoots();
+							if(item == null) throw new IllegalArgumentException();
+							if(item.getType() == Material.AIR) throw new IllegalArgumentException();
+							if(!Method.getNBTTag(Method.getNBTTag(item, "display").getKey(), "Lore").getValue().contains("'{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"gold\",\"text\":\"(4 pieces must be worn for abilities to work)\"}],\"text\":\"\"}'")) throw new IllegalArgumentException();
+							if(!glowing && Method.getNBTTag(item, "Enchantments").getValue().contains("id:\"armorplusplus:glowing\"")) {
+								ItemStack newItem = item.clone();
+								ItemMeta newMeta = newItem.getItemMeta();
+								newMeta.removeEnchant(Method.GLOWING);
+								newItem.setItemMeta(newMeta);
+								item = newItem;
+							}else if(glowing && !Method.getNBTTag(item, "Enchantments").getValue().contains("id:\"armorplusplus:glowing\"")) {
+								ItemStack newItem = item.clone();
+								ItemMeta newMeta = newItem.getItemMeta();
+								newMeta.addEnchant(Method.GLOWING, 0, true);
+								newItem.setItemMeta(newMeta);
+								item = newItem;
+							}
+							p.getInventory().setBoots(item);
+						}catch(Exception e) {
+							if(glowing) {
+								try {
+									ItemStack item = p.getInventory().getBoots();
+									if(!Method.hasNBTTag(item, "Enchantments") && Method.getNBTTag(Method.getNBTTag(item, "display").getKey(), "Lore").getValue().contains("'{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"gold\",\"text\":\"(4 pieces must be worn for abilities to work)\"}],\"text\":\"\"}'")) {
+										ItemMeta itemmeta = item.getItemMeta();
+										itemmeta.addEnchant(Method.GLOWING, 0, true);
+										item.setItemMeta(itemmeta);
+										p.getInventory().setBoots(item);
 									}
+								}catch(Exception e1) {
+									
 								}
 							}
-							try {
-								ItemStack item = p.getInventory().getBoots();
-								if(item == null) throw new IllegalArgumentException();
-								if(item.getType() == Material.AIR) throw new IllegalArgumentException();
-								if(!Method.getNBTTag(Method.getNBTTag(item, "display").getKey(), "Lore").getValue().contains("'{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"gold\",\"text\":\"(4 pieces must be worn for abilities to work)\"}],\"text\":\"\"}'")) throw new IllegalArgumentException();
-								if(!glowing && Method.getNBTTag(item, "Enchantments").getValue().contains("id:\"armorplusplus:glowing\"")) {
-									ItemStack newItem = item.clone();
-									ItemMeta newMeta = newItem.getItemMeta();
-									newMeta.removeEnchant(Method.GLOWING);
-									newItem.setItemMeta(newMeta);
-									item = newItem;
-								}else if(glowing && !Method.getNBTTag(item, "Enchantments").getValue().contains("id:\"armorplusplus:glowing\"")) {
-									ItemStack newItem = item.clone();
-									ItemMeta newMeta = newItem.getItemMeta();
-									newMeta.addEnchant(Method.GLOWING, 0, true);
-									newItem.setItemMeta(newMeta);
-									item = newItem;
-								}
-								p.getInventory().setBoots(item);
-							}catch(Exception e) {
-								if(glowing) {
-									try {
-										ItemStack item = p.getInventory().getBoots();
-										if(!Method.hasNBTTag(item, "Enchantments") && Method.getNBTTag(Method.getNBTTag(item, "display").getKey(), "Lore").getValue().contains("'{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"gold\",\"text\":\"(4 pieces must be worn for abilities to work)\"}],\"text\":\"\"}'")) {
-											ItemMeta itemmeta = item.getItemMeta();
-											itemmeta.addEnchant(Method.GLOWING, 0, true);
-											item.setItemMeta(itemmeta);
-											p.getInventory().setBoots(item);
-										}
-									}catch(Exception e1) {
-										
-									}
-								}
-							}
+						}
 					}
+					getLogger().info("Ran changes to players having protection 0 armors and glowing armors.");
 					
 				}
 			}, 0L, 10 * 60 * 20L);
@@ -576,9 +587,9 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 							}
 						}
 					}
-			}, 0L, 1L);
+			}, 0L, interval);
 	}
-	private void loadMetrics() {
+	public void loadMetrics() {
 		Metrics metrics = new Metrics(this, 9177);
 		boolean already = false;
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
@@ -625,6 +636,7 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 		if(!config.contains("check-update")) missing.add("check-update");
 		if(!config.contains("disabled-armors")) missing.add("disabled-armors");
 		if(!config.contains("glowing-armor")) missing.add("glowing-armor");
+		if(!config.contains("tick-interval")) missing.add("tick-interval");
 		
 		String missingMsg = "Outdated configuration file/the section is deleted. Missing configuration/s: ";
 		for(int i = 0; i < missing.size(); i++) {
@@ -652,6 +664,7 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 		if(!config.contains("check-update")) missing.add("check-update");
 		if(!config.contains("disabled-armors")) missing.add("disabled-armors");
 		if(!config.contains("glowing-armor")) missing.add("glowing-armor");
+		if(!config.contains("tick-interval")) missing.add("tick-interval");
 		
 		String missingMsg = "Outdated configuration file/the section is deleted. Missing configuration/s: ";
 		for(int i = 0; i < missing.size(); i++) {
@@ -663,7 +676,8 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 		return missing;
 	}
 	
-	public void resetRecipe() {
+	@Override
+	public void onDisable() {
 		@SuppressWarnings("unchecked")
 		List<ShapedRecipe> recipes = (List<ShapedRecipe>) ar.activeRecipes.clone();
 		for(ShapedRecipe recipe : recipes) {
@@ -674,11 +688,6 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 				
 			}
 		}
-	}
-	
-	@Override
-	public void onDisable() {
-		resetRecipe();
 		getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "==========================");
 		getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "Armor++ plugin disabled v" + this.getDescription().getVersion());
 		getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "==========================");
