@@ -48,6 +48,6 @@ public class Listener {
 					}
 				}
 			}
-		}, 0L, main.interval);
+		}, 0L, 3);
 	}
 }

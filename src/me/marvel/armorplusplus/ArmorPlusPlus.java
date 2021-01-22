@@ -29,6 +29,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import me.marvel.armorplusplus.commands.InventoryEvents;
 import me.marvel.armorplusplus.commands.TabComplete;
+import me.marvel.armorplusplus.events.ArmorListener;
+import me.marvel.armorplusplus.events.DispenserArmorListener;
 import me.marvel.armorplusplus.utils.Metrics;
 import me.marvel.armorplusplus.utils.UpdateChecker;
 
@@ -105,6 +107,18 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 		}else ver16 = false;
 		getServer().getPluginManager().registerEvents(this, this);
 		loadArmorIds();
+		try {
+			getServer().getPluginManager().registerEvents(new ArmorListener(Method.armorEquipBlockedList()), this);
+			try {
+				Class.forName("org.bukkit.event.block.BlockDispenseArmorEvent");
+				getServer().getPluginManager().registerEvents(new DispenserArmorListener(), this);
+			}catch(Exception e1) {
+				
+			}
+		}catch(Exception e1) {
+			e1.printStackTrace();
+			getLogger().warning("Failed to register armor equip events!");
+		}
 		getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "==========================");
 		getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "Armor++ plugin enabled v" + this.getDescription().getVersion());
 		getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "==========================");
@@ -235,7 +249,7 @@ public class ArmorPlusPlus extends JavaPlugin implements Listener {
 				public void run() {
 					if(!disabledArmors.contains("DIRT")) ability.dirtRegrowth();
 				}
-			}, 0L, interval * 50L);
+			}, 0L, interval * 75L);
 			// For every 6 second
 			this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 				@Override

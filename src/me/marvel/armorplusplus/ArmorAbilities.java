@@ -1,5 +1,13 @@
 package me.marvel.armorplusplus;
 
+import static me.marvel.armorplusplus.Method.GLOWING;
+import static me.marvel.armorplusplus.Method.addPotionEffect;
+import static me.marvel.armorplusplus.Method.changeArmorInArmorSlot;
+import static me.marvel.armorplusplus.Method.getSmeltableItems;
+import static me.marvel.armorplusplus.Method.ifWearingAll;
+import static me.marvel.armorplusplus.Method.replaceArmorInInventory;
+import static me.marvel.armorplusplus.Method.sendActionBar;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +50,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.EquipmentSlot;
@@ -55,7 +62,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import me.marvel.armorplusplus.events.PlayerLandEvent;
-import static me.marvel.armorplusplus.Method.*;
 
 /**
  * Contains all abilities.
@@ -208,21 +214,25 @@ public class ArmorAbilities implements Listener {
 	
 	@EventHandler
 	public void craftingArmor(PlayerToggleSneakEvent e) {
-		Player p = e.getPlayer();
-		if(e.isSneaking()) {
-			String name1 = p.getInventory().getHelmet().getItemMeta().getDisplayName();
-			String name2 = p.getInventory().getChestplate().getItemMeta().getDisplayName();
-			String name3 = p.getInventory().getLeggings().getItemMeta().getDisplayName();
-			String name4 = p.getInventory().getBoots().getItemMeta().getDisplayName();
-			if(name1.equalsIgnoreCase("Crafting Helmet") && name2.equalsIgnoreCase("Crafting Chestplate") && name3.equalsIgnoreCase("Crafting Leggings") && name4.equalsIgnoreCase("Crafting Boots")) {
-				String lore1 = p.getInventory().getHelmet().getItemMeta().getLore().get(0);
-				String lore2 = p.getInventory().getChestplate().getItemMeta().getLore().get(0);
-				String lore3 = p.getInventory().getLeggings().getItemMeta().getLore().get(0);
-				String lore4 = p.getInventory().getBoots().getItemMeta().getLore().get(0);
-				if(lore1.equalsIgnoreCase(ChatColor.GOLD + "Crafter - Opens a crafting table") && lore2.equalsIgnoreCase(ChatColor.GOLD + "Crafter - Opens a crafting table") && lore3.equalsIgnoreCase(ChatColor.GOLD + "Crafter - Opens a crafting table") && lore4.equalsIgnoreCase(ChatColor.GOLD + "Crafter - Opens a crafting table")) {
-					p.openWorkbench(p.getLocation(), true);
+		try {
+			Player p = e.getPlayer();
+			if(e.isSneaking()) {
+				String name1 = p.getInventory().getHelmet().getItemMeta().getDisplayName();
+				String name2 = p.getInventory().getChestplate().getItemMeta().getDisplayName();
+				String name3 = p.getInventory().getLeggings().getItemMeta().getDisplayName();
+				String name4 = p.getInventory().getBoots().getItemMeta().getDisplayName();
+				if(name1.equalsIgnoreCase("Crafting Helmet") && name2.equalsIgnoreCase("Crafting Chestplate") && name3.equalsIgnoreCase("Crafting Leggings") && name4.equalsIgnoreCase("Crafting Boots")) {
+					String lore1 = p.getInventory().getHelmet().getItemMeta().getLore().get(0);
+					String lore2 = p.getInventory().getChestplate().getItemMeta().getLore().get(0);
+					String lore3 = p.getInventory().getLeggings().getItemMeta().getLore().get(0);
+					String lore4 = p.getInventory().getBoots().getItemMeta().getLore().get(0);
+					if(lore1.equalsIgnoreCase(ChatColor.GOLD + "Crafter - Opens a crafting table") && lore2.equalsIgnoreCase(ChatColor.GOLD + "Crafter - Opens a crafting table") && lore3.equalsIgnoreCase(ChatColor.GOLD + "Crafter - Opens a crafting table") && lore4.equalsIgnoreCase(ChatColor.GOLD + "Crafter - Opens a crafting table")) {
+						p.openWorkbench(p.getLocation(), true);
+					}
 				}
 			}
+		}catch(Exception e1) {
+			
 		}
 	}
 	public void glassArmor() {
@@ -256,142 +266,150 @@ public class ArmorAbilities implements Listener {
 	}
 	@EventHandler
 	public void furnaceArmor(PlayerToggleSneakEvent e) {
-		Player p = e.getPlayer();
-		if(e.isSneaking()) {
-			String name1 = p.getInventory().getHelmet().getItemMeta().getDisplayName();
-			String name2 = p.getInventory().getChestplate().getItemMeta().getDisplayName();
-			String name3 = p.getInventory().getLeggings().getItemMeta().getDisplayName();
-			String name4 = p.getInventory().getBoots().getItemMeta().getDisplayName();
-			if(name1.equalsIgnoreCase("Furnace Helmet") && name2.equalsIgnoreCase("Furnace Chestplate") && name3.equalsIgnoreCase("Furnace Leggings") && name4.equalsIgnoreCase("Furnace Boots")) {
-				String lore = ChatColor.DARK_RED + "AutoSmelt - Smelts nearest dropped items";
-				String lore1 = p.getInventory().getHelmet().getItemMeta().getLore().get(0);
-				String lore2 = p.getInventory().getChestplate().getItemMeta().getLore().get(0);
-				String lore3 = p.getInventory().getLeggings().getItemMeta().getLore().get(0);
-				String lore4 = p.getInventory().getBoots().getItemMeta().getLore().get(0);
-				if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
-					if(smeltCooldown.contains(p.getUniqueId())) return;
-					smeltsneaking.add(p.getUniqueId());
-					if(smeltCooldown.contains(p.getUniqueId())) return;
-					HashMap<Material, Material> smeltable_items = getSmeltableItems();
-					World w = p.getWorld();
-					ArrayList<Entity> nearbyEntities = new ArrayList<Entity>(w.getNearbyEntities(p.getLocation(), 5.0, 5.0, 5.0));
-					ArrayList<Item> item = new ArrayList<Item>();
-					for(Entity entity : nearbyEntities) {
-						if(entity instanceof Item) {
-							item.add(((Item)entity));
+		try {
+			Player p = e.getPlayer();
+			if(e.isSneaking()) {
+				String name1 = p.getInventory().getHelmet().getItemMeta().getDisplayName();
+				String name2 = p.getInventory().getChestplate().getItemMeta().getDisplayName();
+				String name3 = p.getInventory().getLeggings().getItemMeta().getDisplayName();
+				String name4 = p.getInventory().getBoots().getItemMeta().getDisplayName();
+				if(name1.equalsIgnoreCase("Furnace Helmet") && name2.equalsIgnoreCase("Furnace Chestplate") && name3.equalsIgnoreCase("Furnace Leggings") && name4.equalsIgnoreCase("Furnace Boots")) {
+					String lore = ChatColor.DARK_RED + "AutoSmelt - Smelts nearest dropped items";
+					String lore1 = p.getInventory().getHelmet().getItemMeta().getLore().get(0);
+					String lore2 = p.getInventory().getChestplate().getItemMeta().getLore().get(0);
+					String lore3 = p.getInventory().getLeggings().getItemMeta().getLore().get(0);
+					String lore4 = p.getInventory().getBoots().getItemMeta().getLore().get(0);
+					if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
+						if(smeltCooldown.contains(p.getUniqueId())) return;
+						smeltsneaking.add(p.getUniqueId());
+						if(smeltCooldown.contains(p.getUniqueId())) return;
+						HashMap<Material, Material> smeltable_items = getSmeltableItems();
+						World w = p.getWorld();
+						ArrayList<Entity> nearbyEntities = new ArrayList<Entity>(w.getNearbyEntities(p.getLocation(), 5.0, 5.0, 5.0));
+						ArrayList<Item> item = new ArrayList<Item>();
+						for(Entity entity : nearbyEntities) {
+							if(entity instanceof Item) {
+								item.add(((Item)entity));
+							}
 						}
-					}
-					for(Item i : item) {
-						if(smeltable_items.containsKey(i.getItemStack().getType())) {
-							smeltCooldown.add(p.getUniqueId());
-							plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-								public void run() {
-									smeltCooldown.remove(p.getUniqueId());
-								}
-							}, 10 * 20L);
-							break;
-						}
-					}
-					int count = 0;
-					int max = 16;
-					for(Item i : item) {
-						if(count >= max) break;
-						if(smeltable_items.containsKey(i.getItemStack().getType())) {
-							Location loc = i.getLocation();
-							Material type = i.getItemStack().getType();
-							int amount = i.getItemStack().getAmount();
-							ItemStack itemStack = i.getItemStack();
-							i.remove();
-							ItemStack stack = new ItemStack(smeltable_items.get(type));
-							if(!(count + amount > max)) {
-								// count + amount is not > max
-								// meaning count + amount = 1 - 32
-								stack.setAmount(amount);
-								w.dropItem(loc, stack);
-								count += amount;
-							}else {
-								// newAmount = 16 - count;
-								int newAmount = max - count;
-								int spawnBack = amount - newAmount;
-								// spawn the smelted
-								stack.setAmount(newAmount);
-								w.dropItem(loc, stack);
-								// spawn it back
-								itemStack.setAmount(spawnBack);
-								w.dropItem(loc, itemStack);
+						for(Item i : item) {
+							if(smeltable_items.containsKey(i.getItemStack().getType())) {
+								smeltCooldown.add(p.getUniqueId());
+								plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+									public void run() {
+										smeltCooldown.remove(p.getUniqueId());
+									}
+								}, 10 * 20L);
 								break;
 							}
 						}
+						int count = 0;
+						int max = 16;
+						for(Item i : item) {
+							if(count >= max) break;
+							if(smeltable_items.containsKey(i.getItemStack().getType())) {
+								Location loc = i.getLocation();
+								Material type = i.getItemStack().getType();
+								int amount = i.getItemStack().getAmount();
+								ItemStack itemStack = i.getItemStack();
+								i.remove();
+								ItemStack stack = new ItemStack(smeltable_items.get(type));
+								if(!(count + amount > max)) {
+									// count + amount is not > max
+									// meaning count + amount = 1 - 32
+									stack.setAmount(amount);
+									w.dropItem(loc, stack);
+									count += amount;
+								}else {
+									// newAmount = 16 - count;
+									int newAmount = max - count;
+									int spawnBack = amount - newAmount;
+									// spawn the smelted
+									stack.setAmount(newAmount);
+									w.dropItem(loc, stack);
+									// spawn it back
+									itemStack.setAmount(spawnBack);
+									w.dropItem(loc, itemStack);
+									break;
+								}
+							}
+						}
 					}
+					
 				}
-				
 			}
+		}catch(Exception e1) {
+			
 		}
 	}
 	@EventHandler
 	public void tntArmor(PlayerToggleSneakEvent e) {
-		Player p = e.getPlayer();
-		if(e.isSneaking()) {
-			String name1 = p.getInventory().getHelmet().getItemMeta().getDisplayName();
-			String name2 = p.getInventory().getChestplate().getItemMeta().getDisplayName();
-			String name3 = p.getInventory().getLeggings().getItemMeta().getDisplayName();
-			String name4 = p.getInventory().getBoots().getItemMeta().getDisplayName();
-			if(name1.equalsIgnoreCase("TNT Helmet") && name2.equalsIgnoreCase("TNT Chestplate") && name3.equalsIgnoreCase("TNT Leggings") && name4.equalsIgnoreCase("TNT Boots")) {
-				String lore = ChatColor.RED + "Explosive - Explodes when sneaking";
-				String lore1 = p.getInventory().getHelmet().getItemMeta().getLore().get(0);
-				String lore2 = p.getInventory().getChestplate().getItemMeta().getLore().get(0);
-				String lore3 = p.getInventory().getLeggings().getItemMeta().getLore().get(0);
-				String lore4 = p.getInventory().getBoots().getItemMeta().getLore().get(0);
-				if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
-					if(!(cooldown.contains(p.getUniqueId()))) {
-						p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, plugin.interval + 20, 10, false, false));
-						Entity tnts = p.getWorld().spawnEntity(p.getLocation(), EntityType.PRIMED_TNT);
-						if(tnts instanceof org.bukkit.entity.TNTPrimed) {
-							TNTPrimed tnt = (TNTPrimed) tnts;
-							tnt.setFuseTicks(0);
-							cooldown.add(p.getUniqueId());
-							plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-								public void run() {
-									cooldown.remove(p.getUniqueId());
-								}
-							}, 20);
+		try {
+			Player p = e.getPlayer();
+			if(e.isSneaking()) {
+				String name1 = p.getInventory().getHelmet().getItemMeta().getDisplayName();
+				String name2 = p.getInventory().getChestplate().getItemMeta().getDisplayName();
+				String name3 = p.getInventory().getLeggings().getItemMeta().getDisplayName();
+				String name4 = p.getInventory().getBoots().getItemMeta().getDisplayName();
+				if(name1.equalsIgnoreCase("TNT Helmet") && name2.equalsIgnoreCase("TNT Chestplate") && name3.equalsIgnoreCase("TNT Leggings") && name4.equalsIgnoreCase("TNT Boots")) {
+					String lore = ChatColor.RED + "Explosive - Explodes when sneaking";
+					String lore1 = p.getInventory().getHelmet().getItemMeta().getLore().get(0);
+					String lore2 = p.getInventory().getChestplate().getItemMeta().getLore().get(0);
+					String lore3 = p.getInventory().getLeggings().getItemMeta().getLore().get(0);
+					String lore4 = p.getInventory().getBoots().getItemMeta().getLore().get(0);
+					if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
+						if(!(cooldown.contains(p.getUniqueId()))) {
+							p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, plugin.interval + 20, 10, false, false));
+							Entity tnts = p.getWorld().spawnEntity(p.getLocation(), EntityType.PRIMED_TNT);
+							if(tnts instanceof org.bukkit.entity.TNTPrimed) {
+								TNTPrimed tnt = (TNTPrimed) tnts;
+								tnt.setFuseTicks(0);
+								cooldown.add(p.getUniqueId());
+								plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+									public void run() {
+										cooldown.remove(p.getUniqueId());
+									}
+								}, 20);
+							}
 						}
 					}
+					
 				}
-				
 			}
+		}catch(Exception e1) {
+			
 		}
 	}
 	
-	@EventHandler
-	public void melody(PlayerMoveEvent e) {
-		try {
-			Player p = e.getPlayer();
-			String name1 = p.getInventory().getHelmet().getItemMeta().getDisplayName();
-			String name2 = p.getInventory().getChestplate().getItemMeta().getDisplayName();
-			String name3 = p.getInventory().getLeggings().getItemMeta().getDisplayName();
-			String name4 = p.getInventory().getBoots().getItemMeta().getDisplayName();
-			if(name1.equalsIgnoreCase("Note Helmet") && name2.equalsIgnoreCase("Note Chestplate") && name3.equalsIgnoreCase("Note Leggings") && name4.equalsIgnoreCase("Note Boots")) {
-				String lore1 = p.getInventory().getHelmet().getItemMeta().getLore().get(0);
-				String lore2 = p.getInventory().getChestplate().getItemMeta().getLore().get(0);
-				String lore3 = p.getInventory().getLeggings().getItemMeta().getLore().get(0);
-				String lore4 = p.getInventory().getBoots().getItemMeta().getLore().get(0);
-				String lore = ChatColor.LIGHT_PURPLE + "Musical - Every step you take becomes a musical melody";
-				if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
-					if(!(melodycooldown.contains(p.getUniqueId()))) {
-							check(p);
-							melodycooldown.add(p.getUniqueId());
-							plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-								public void run() {
-									melodycooldown.remove(p.getUniqueId());
-								}
-							}, 20 * 2);
+	public void melody() {
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			try {
+				String name1 = p.getInventory().getHelmet().getItemMeta().getDisplayName();
+				String name2 = p.getInventory().getChestplate().getItemMeta().getDisplayName();
+				String name3 = p.getInventory().getLeggings().getItemMeta().getDisplayName();
+				String name4 = p.getInventory().getBoots().getItemMeta().getDisplayName();
+				if(name1.equalsIgnoreCase("Note Helmet") && name2.equalsIgnoreCase("Note Chestplate") && name3.equalsIgnoreCase("Note Leggings") && name4.equalsIgnoreCase("Note Boots")) {
+					String lore1 = p.getInventory().getHelmet().getItemMeta().getLore().get(0);
+					String lore2 = p.getInventory().getChestplate().getItemMeta().getLore().get(0);
+					String lore3 = p.getInventory().getLeggings().getItemMeta().getLore().get(0);
+					String lore4 = p.getInventory().getBoots().getItemMeta().getLore().get(0);
+					String lore = ChatColor.LIGHT_PURPLE + "Musical - Every step you take becomes a musical melody";
+					if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
+						if(!(melodycooldown.contains(p.getUniqueId()))) {
+								check(p);
+								melodycooldown.add(p.getUniqueId());
+								plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+									public void run() {
+										melodycooldown.remove(p.getUniqueId());
+									}
+								}, 20 * 2);
+							}
 						}
 					}
+				}catch(NullPointerException error) {
+					
 				}
-			}catch(NullPointerException error) {
-				
-			}
+		}
 	}
 
 	public void pumpkinFeed() {
@@ -464,145 +482,153 @@ public class ArmorAbilities implements Listener {
 	}
 	@EventHandler
 	public void spongeArmor(PlayerToggleSneakEvent e) {
-		Player p = e.getPlayer();
-		if(e.isSneaking()) {
-			ItemStack helm = p.getInventory().getHelmet();
-			ItemStack chest = p.getInventory().getChestplate();
-			ItemStack legs = p.getInventory().getLeggings();
-			ItemStack boots = p.getInventory().getBoots();
-			String name1 = helm.getItemMeta().getDisplayName();
-			String name2 = chest.getItemMeta().getDisplayName();
-			String name3 = legs.getItemMeta().getDisplayName();
-			String name4 = boots.getItemMeta().getDisplayName();
-			if(name1.equalsIgnoreCase("Sponge Helmet") && name2.equalsIgnoreCase("Sponge Chestplate") && name3.equalsIgnoreCase("Sponge Leggings") && name4.equalsIgnoreCase("Sponge Boots")) {
-				String lore = ChatColor.YELLOW + "Absorbent - Absorbs nearby liquids";
-				String lore1 = helm.getItemMeta().getLore().get(0);
-				String lore2 = chest.getItemMeta().getLore().get(0);
-				String lore3 = legs.getItemMeta().getLore().get(0);
-				String lore4 = boots.getItemMeta().getLore().get(0);
-				if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
-					if(!(scooldown.contains(p.getUniqueId()))) {
-						scooldown.add(p.getUniqueId());
-						plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-							public void run() {
-								try {
-									scooldown.remove(p.getUniqueId());
-								}catch(Exception e) {
-									
+		try {
+			Player p = e.getPlayer();
+			if(e.isSneaking()) {
+				ItemStack helm = p.getInventory().getHelmet();
+				ItemStack chest = p.getInventory().getChestplate();
+				ItemStack legs = p.getInventory().getLeggings();
+				ItemStack boots = p.getInventory().getBoots();
+				String name1 = helm.getItemMeta().getDisplayName();
+				String name2 = chest.getItemMeta().getDisplayName();
+				String name3 = legs.getItemMeta().getDisplayName();
+				String name4 = boots.getItemMeta().getDisplayName();
+				if(name1.equalsIgnoreCase("Sponge Helmet") && name2.equalsIgnoreCase("Sponge Chestplate") && name3.equalsIgnoreCase("Sponge Leggings") && name4.equalsIgnoreCase("Sponge Boots")) {
+					String lore = ChatColor.YELLOW + "Absorbent - Absorbs nearby liquids";
+					String lore1 = helm.getItemMeta().getLore().get(0);
+					String lore2 = chest.getItemMeta().getLore().get(0);
+					String lore3 = legs.getItemMeta().getLore().get(0);
+					String lore4 = boots.getItemMeta().getLore().get(0);
+					if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
+						if(!(scooldown.contains(p.getUniqueId()))) {
+							scooldown.add(p.getUniqueId());
+							plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+								public void run() {
+									try {
+										scooldown.remove(p.getUniqueId());
+									}catch(Exception e) {
+										
+									}
 								}
-							}
-						}, 20 * 6);
-						int radius = 3;
-						boolean sponged = false;
-						for (int x = -(radius); x <= radius; x ++) {
-							for(int y = -(radius); y <= radius; y ++) {
-								for(int z = -(radius); z <= radius; z ++) {
-									org.bukkit.block.Block block = p.getLocation().getBlock().getRelative(x, y, z);
-									if(block.getType().equals(Material.WATER)) {
-										sponged = true;
-										block.setType(Material.AIR);
-									}else if(block.getType().equals(Material.TALL_SEAGRASS)) {
-										sponged = true;
-										block.setType(Material.AIR);
-									}else if(block.getType().equals(Material.SEAGRASS)) {
-										sponged = true;
-										block.setType(Material.AIR);
+							}, 20 * 6);
+							int radius = 3;
+							boolean sponged = false;
+							for (int x = -(radius); x <= radius; x ++) {
+								for(int y = -(radius); y <= radius; y ++) {
+									for(int z = -(radius); z <= radius; z ++) {
+										org.bukkit.block.Block block = p.getLocation().getBlock().getRelative(x, y, z);
+										if(block.getType().equals(Material.WATER)) {
+											sponged = true;
+											block.setType(Material.AIR);
+										}else if(block.getType().equals(Material.TALL_SEAGRASS)) {
+											sponged = true;
+											block.setType(Material.AIR);
+										}else if(block.getType().equals(Material.SEAGRASS)) {
+											sponged = true;
+											block.setType(Material.AIR);
+										}
 									}
 								}
 							}
+							if(!sponged) {try {
+								scooldown.remove(p.getUniqueId());
+							}catch(Exception e1) {
+								
+							}}
 						}
-						if(!sponged) {try {
-							scooldown.remove(p.getUniqueId());
-						}catch(Exception e1) {
-							
-						}}
 					}
 				}
 			}
+		}catch(Exception e1) {
+			
 		}
 	}
 	@EventHandler
 	public void dispenserArmor(PlayerToggleSneakEvent e) {
-		Player p = e.getPlayer();
-		if(e.isSneaking()) {
-			ItemStack helm = p.getInventory().getHelmet();
-			ItemStack chest = p.getInventory().getChestplate();
-			ItemStack legs = p.getInventory().getLeggings();
-			ItemStack boots = p.getInventory().getBoots();
-			String name1 = helm.getItemMeta().getDisplayName();
-			String name2 = chest.getItemMeta().getDisplayName();
-			String name3 = legs.getItemMeta().getDisplayName();
-			String name4 = boots.getItemMeta().getDisplayName();
-			if(name1.equalsIgnoreCase("Dispenser Helmet") && name2.equalsIgnoreCase("Dispenser Chestplate") && name3.equalsIgnoreCase("Dispenser Leggings") && name4.equalsIgnoreCase("Dispenser Boots")) {
-				String lore = ChatColor.WHITE + "Arrow Defence - Fires arrows outwards";
-				String lore1 = helm.getItemMeta().getLore().get(0);
-				String lore2 = chest.getItemMeta().getLore().get(0);
-				String lore3 = legs.getItemMeta().getLore().get(0);
-				String lore4 = boots.getItemMeta().getLore().get(0);
-				if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
-					/* Put the ability below. This is auto-generated
-					 * from ArmorCreator program
-					 */
-					if(!(dispenser.contains(p.getUniqueId()))) {
-						dispenser.add(p.getUniqueId());
-						plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-							public void run() {
-								dispenser.remove(p.getUniqueId());
-							}
-						}, 20 * 7);
-						Location loc = p.getLocation().clone();
-						Float yaw = loc.getYaw();
-						loc.setYaw(loc.getYaw() + 45);
-						
-						Arrow a = p.launchProjectile(Arrow.class, loc.getDirection());
-						a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
-						loc.setYaw(yaw);
-						
-						loc.setYaw(loc.getYaw() + 90);
-						
-						a = p.launchProjectile(Arrow.class, loc.getDirection());
-						a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
-						loc.setYaw(yaw);
-						
-						loc.setYaw(loc.getYaw() + 135);
-						
-						a = p.launchProjectile(Arrow.class, loc.getDirection());
-						a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
-						loc.setYaw(yaw);
-						
-						loc.setYaw(loc.getYaw() + 180);
-						
-						a = p.launchProjectile(Arrow.class, loc.getDirection());
-						a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
-						loc.setYaw(yaw);
-						
-						loc.setYaw(loc.getYaw() + 225);
-						
-						a = p.launchProjectile(Arrow.class, loc.getDirection());
-						a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
-						loc.setYaw(yaw);
-						
-						loc.setYaw(loc.getYaw() + 270);
-						
-						a = p.launchProjectile(Arrow.class, loc.getDirection());
-						a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
-						loc.setYaw(yaw);
-						
-						loc.setYaw(loc.getYaw() + 315);
-						
-						a = p.launchProjectile(Arrow.class, loc.getDirection());
-						a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
-						loc.setYaw(yaw);
-						
-						loc.setYaw(loc.getYaw() + 360);
-						
-						a = p.launchProjectile(Arrow.class, loc.getDirection());
-						a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
-						loc.setYaw(yaw);
-						
+		try {
+			Player p = e.getPlayer();
+			if(e.isSneaking()) {
+				ItemStack helm = p.getInventory().getHelmet();
+				ItemStack chest = p.getInventory().getChestplate();
+				ItemStack legs = p.getInventory().getLeggings();
+				ItemStack boots = p.getInventory().getBoots();
+				String name1 = helm.getItemMeta().getDisplayName();
+				String name2 = chest.getItemMeta().getDisplayName();
+				String name3 = legs.getItemMeta().getDisplayName();
+				String name4 = boots.getItemMeta().getDisplayName();
+				if(name1.equalsIgnoreCase("Dispenser Helmet") && name2.equalsIgnoreCase("Dispenser Chestplate") && name3.equalsIgnoreCase("Dispenser Leggings") && name4.equalsIgnoreCase("Dispenser Boots")) {
+					String lore = ChatColor.WHITE + "Arrow Defence - Fires arrows outwards";
+					String lore1 = helm.getItemMeta().getLore().get(0);
+					String lore2 = chest.getItemMeta().getLore().get(0);
+					String lore3 = legs.getItemMeta().getLore().get(0);
+					String lore4 = boots.getItemMeta().getLore().get(0);
+					if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
+						/* Put the ability below. This is auto-generated
+						 * from ArmorCreator program
+						 */
+						if(!(dispenser.contains(p.getUniqueId()))) {
+							dispenser.add(p.getUniqueId());
+							plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+								public void run() {
+									dispenser.remove(p.getUniqueId());
+								}
+							}, 20 * 7);
+							Location loc = p.getLocation().clone();
+							Float yaw = loc.getYaw();
+							loc.setYaw(loc.getYaw() + 45);
+							
+							Arrow a = p.launchProjectile(Arrow.class, loc.getDirection());
+							a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
+							loc.setYaw(yaw);
+							
+							loc.setYaw(loc.getYaw() + 90);
+							
+							a = p.launchProjectile(Arrow.class, loc.getDirection());
+							a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
+							loc.setYaw(yaw);
+							
+							loc.setYaw(loc.getYaw() + 135);
+							
+							a = p.launchProjectile(Arrow.class, loc.getDirection());
+							a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
+							loc.setYaw(yaw);
+							
+							loc.setYaw(loc.getYaw() + 180);
+							
+							a = p.launchProjectile(Arrow.class, loc.getDirection());
+							a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
+							loc.setYaw(yaw);
+							
+							loc.setYaw(loc.getYaw() + 225);
+							
+							a = p.launchProjectile(Arrow.class, loc.getDirection());
+							a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
+							loc.setYaw(yaw);
+							
+							loc.setYaw(loc.getYaw() + 270);
+							
+							a = p.launchProjectile(Arrow.class, loc.getDirection());
+							a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
+							loc.setYaw(yaw);
+							
+							loc.setYaw(loc.getYaw() + 315);
+							
+							a = p.launchProjectile(Arrow.class, loc.getDirection());
+							a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
+							loc.setYaw(yaw);
+							
+							loc.setYaw(loc.getYaw() + 360);
+							
+							a = p.launchProjectile(Arrow.class, loc.getDirection());
+							a.setPickupStatus(PickupStatus.CREATIVE_ONLY);
+							loc.setYaw(yaw);
+							
+						}
 					}
 				}
 			}
+		}catch(Exception e1) {
+			
 		}
 	}
 	public void prismarineArmor() {
@@ -650,27 +676,31 @@ public class ArmorAbilities implements Listener {
 	}
 	@EventHandler
 	public void enderArmor(PlayerToggleSneakEvent e) {
-		Player p = e.getPlayer();
-		if(e.isSneaking()) {
-			ItemStack helm = p.getInventory().getHelmet();
-			ItemStack chest = p.getInventory().getChestplate();
-			ItemStack legs = p.getInventory().getLeggings();
-			ItemStack boots = p.getInventory().getBoots();
-			String name1 = helm.getItemMeta().getDisplayName();
-			String name2 = chest.getItemMeta().getDisplayName();
-			String name3 = legs.getItemMeta().getDisplayName();
-			String name4 = boots.getItemMeta().getDisplayName();
-			if(name1.equalsIgnoreCase("Ender Helmet") && name2.equalsIgnoreCase("Ender Chestplate") && name3.equalsIgnoreCase("Ender Leggings") && name4.equalsIgnoreCase("Ender Boots")) {
-				String lore = plugin.ver16 ? ChatColor.DARK_PURPLE + "Ender Hoarder - Provides access to your ender chest" : "Ender Hoarder - Provides access to your ender chest";
-				String lore1 = helm.getItemMeta().getLore().get(0);
-				String lore2 = chest.getItemMeta().getLore().get(0);
-				String lore3 = legs.getItemMeta().getLore().get(0);
-				String lore4 = boots.getItemMeta().getLore().get(0);
-				if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
-					p.openInventory(p.getEnderChest());
-					p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 1);
+		try {
+			Player p = e.getPlayer();
+			if(e.isSneaking()) {
+				ItemStack helm = p.getInventory().getHelmet();
+				ItemStack chest = p.getInventory().getChestplate();
+				ItemStack legs = p.getInventory().getLeggings();
+				ItemStack boots = p.getInventory().getBoots();
+				String name1 = helm.getItemMeta().getDisplayName();
+				String name2 = chest.getItemMeta().getDisplayName();
+				String name3 = legs.getItemMeta().getDisplayName();
+				String name4 = boots.getItemMeta().getDisplayName();
+				if(name1.equalsIgnoreCase("Ender Helmet") && name2.equalsIgnoreCase("Ender Chestplate") && name3.equalsIgnoreCase("Ender Leggings") && name4.equalsIgnoreCase("Ender Boots")) {
+					String lore = plugin.ver16 ? ChatColor.DARK_PURPLE + "Ender Hoarder - Provides access to your ender chest" : "Ender Hoarder - Provides access to your ender chest";
+					String lore1 = helm.getItemMeta().getLore().get(0);
+					String lore2 = chest.getItemMeta().getLore().get(0);
+					String lore3 = legs.getItemMeta().getLore().get(0);
+					String lore4 = boots.getItemMeta().getLore().get(0);
+					if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
+						p.openInventory(p.getEnderChest());
+						p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 1);
+					}
 				}
 			}
+		}catch(Exception e1) {
+			
 		}
 	}
 	public void lapisArmor() {
@@ -859,72 +889,80 @@ public class ArmorAbilities implements Listener {
 	}
 	@EventHandler
 	public void stickypistonArmor(PlayerToggleSneakEvent e) {
-		Player p = e.getPlayer();
-		if(e.isSneaking()) {
-			ItemStack helm = p.getInventory().getHelmet();
-			ItemStack chest = p.getInventory().getChestplate();
-			ItemStack legs = p.getInventory().getLeggings();
-			ItemStack boots = p.getInventory().getBoots();
-			String name1 = helm.getItemMeta().getDisplayName();
-			String name2 = chest.getItemMeta().getDisplayName();
-			String name3 = legs.getItemMeta().getDisplayName();
-			String name4 = boots.getItemMeta().getDisplayName();
-			if(name1.equalsIgnoreCase("Sticky Piston Helmet") && name2.equalsIgnoreCase("Sticky Piston Chestplate") && name3.equalsIgnoreCase("Sticky Piston Leggings") && name4.equalsIgnoreCase("Sticky Piston Boots")) {
-				String lore = ChatColor.GRAY + "Puller - Pulls in nearby entities";
-				String lore1 = helm.getItemMeta().getLore().get(0);
-				String lore2 = chest.getItemMeta().getLore().get(0);
-				String lore3 = legs.getItemMeta().getLore().get(0);
-				String lore4 = boots.getItemMeta().getLore().get(0);
-				if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
-					/* Put the ability below. This is auto-generated
-					 * from ArmorCreator program
-                     * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
-					 */
-					if(!(pull.contains(p.getUniqueId()))) {
-						pull.add(p.getUniqueId());
-						plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-							public void run() {
-								pull.remove(p.getUniqueId());
+		try {
+			Player p = e.getPlayer();
+			if(e.isSneaking()) {
+				ItemStack helm = p.getInventory().getHelmet();
+				ItemStack chest = p.getInventory().getChestplate();
+				ItemStack legs = p.getInventory().getLeggings();
+				ItemStack boots = p.getInventory().getBoots();
+				String name1 = helm.getItemMeta().getDisplayName();
+				String name2 = chest.getItemMeta().getDisplayName();
+				String name3 = legs.getItemMeta().getDisplayName();
+				String name4 = boots.getItemMeta().getDisplayName();
+				if(name1.equalsIgnoreCase("Sticky Piston Helmet") && name2.equalsIgnoreCase("Sticky Piston Chestplate") && name3.equalsIgnoreCase("Sticky Piston Leggings") && name4.equalsIgnoreCase("Sticky Piston Boots")) {
+					String lore = ChatColor.GRAY + "Puller - Pulls in nearby entities";
+					String lore1 = helm.getItemMeta().getLore().get(0);
+					String lore2 = chest.getItemMeta().getLore().get(0);
+					String lore3 = legs.getItemMeta().getLore().get(0);
+					String lore4 = boots.getItemMeta().getLore().get(0);
+					if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
+						/* Put the ability below. This is auto-generated
+						 * from ArmorCreator program
+	                     * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
+						 */
+						if(!(pull.contains(p.getUniqueId()))) {
+							pull.add(p.getUniqueId());
+							plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+								public void run() {
+									pull.remove(p.getUniqueId());
+								}
+							}, 20 * 7);
+							int count = 0;
+							for(Entity entity : p.getWorld().getNearbyEntities(p.getLocation(), 4, 4, 4)) {
+									entity.teleport(p);
+									count++;
 							}
-						}, 20 * 7);
-						int count = 0;
-						for(Entity entity : p.getWorld().getNearbyEntities(p.getLocation(), 4, 4, 4)) {
-								entity.teleport(p);
-								count++;
-						}
-						try {
-							sendActionBar(p, "[{\"text\":\"You pulled \"},{\"text\":\"" + (count - 1) + "\",\"color\":\"green\"},{\"text\":\" entities!\"}]");
-						}catch(Exception e1) {
-							p.sendMessage("You pulled " + ChatColor.GREEN + (count - 1) + ChatColor.RESET + " entities!");
+							try {
+								sendActionBar(p, "[{\"text\":\"You pulled \"},{\"text\":\"" + (count - 1) + "\",\"color\":\"green\"},{\"text\":\" entities!\"}]");
+							}catch(Exception e1) {
+								p.sendMessage("You pulled " + ChatColor.GREEN + (count - 1) + ChatColor.RESET + " entities!");
+							}
 						}
 					}
 				}
 			}
+		}catch(Exception e1) {
+			
 		}
 	}
 	@EventHandler
 	public void sandArmor(PlayerToggleSneakEvent e) {
-		Player p = e.getPlayer();
-		if(e.isSneaking()) {
-			ItemStack helm = p.getInventory().getHelmet();
-			ItemStack chest = p.getInventory().getChestplate();
-			ItemStack legs = p.getInventory().getLeggings();
-			ItemStack boots = p.getInventory().getBoots();
-			String name1 = helm.getItemMeta().getDisplayName();
-			String name2 = chest.getItemMeta().getDisplayName();
-			String name3 = legs.getItemMeta().getDisplayName();
-			String name4 = boots.getItemMeta().getDisplayName();
-			if(name1.equalsIgnoreCase("Sand Helmet") && name2.equalsIgnoreCase("Sand Chestplate") && name3.equalsIgnoreCase("Sand Leggings") && name4.equalsIgnoreCase("Sand Boots")) {
-				String lore = ChatColor.GRAY + "Falling - Falls faster in air and sinks faster in";
-				String lore1 = helm.getItemMeta().getLore().get(0);
-				String lore2 = chest.getItemMeta().getLore().get(0);
-				String lore3 = legs.getItemMeta().getLore().get(0);
-				String lore4 = boots.getItemMeta().getLore().get(0);
-				if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
-					Vector v = p.getVelocity().setY(p.getVelocity().getY() - 0.2);
-					p.setVelocity(v);
+		try {
+			Player p = e.getPlayer();
+			if(e.isSneaking()) {
+				ItemStack helm = p.getInventory().getHelmet();
+				ItemStack chest = p.getInventory().getChestplate();
+				ItemStack legs = p.getInventory().getLeggings();
+				ItemStack boots = p.getInventory().getBoots();
+				String name1 = helm.getItemMeta().getDisplayName();
+				String name2 = chest.getItemMeta().getDisplayName();
+				String name3 = legs.getItemMeta().getDisplayName();
+				String name4 = boots.getItemMeta().getDisplayName();
+				if(name1.equalsIgnoreCase("Sand Helmet") && name2.equalsIgnoreCase("Sand Chestplate") && name3.equalsIgnoreCase("Sand Leggings") && name4.equalsIgnoreCase("Sand Boots")) {
+					String lore = ChatColor.GRAY + "Falling - Falls faster in air and sinks faster in";
+					String lore1 = helm.getItemMeta().getLore().get(0);
+					String lore2 = chest.getItemMeta().getLore().get(0);
+					String lore3 = legs.getItemMeta().getLore().get(0);
+					String lore4 = boots.getItemMeta().getLore().get(0);
+					if(lore1.equalsIgnoreCase(lore) && lore2.equalsIgnoreCase(lore) && lore3.equalsIgnoreCase(lore) && lore4.equalsIgnoreCase(lore)) {
+						Vector v = p.getVelocity().setY(p.getVelocity().getY() - 0.2);
+						p.setVelocity(v);
+					}
 				}
 			}
+		}catch(Exception e1) {
+			
 		}
 	}
 	public void quartzArmor() {
@@ -1682,139 +1720,147 @@ public class ArmorAbilities implements Listener {
 	}
 	@EventHandler
 	public void pistonArmor(PlayerToggleSneakEvent event) {
-		Player p = event.getPlayer();
-		if(event.isSneaking()) {
-			if(ifWearingAll(p, "Piston", ChatColor.GRAY + "Pusher - Pushes nearby entities")) {
-				if(pistonCooldown.contains(p.getUniqueId())) return;
-				pistonCooldown.add(p.getUniqueId());
-				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					public void run() {
-						try {
-							if(pistonCooldown.contains(p.getUniqueId())) {
-								pistonCooldown.remove(p.getUniqueId());
+		try {
+			Player p = event.getPlayer();
+			if(event.isSneaking()) {
+				if(ifWearingAll(p, "Piston", ChatColor.GRAY + "Pusher - Pushes nearby entities")) {
+					if(pistonCooldown.contains(p.getUniqueId())) return;
+					pistonCooldown.add(p.getUniqueId());
+					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+						public void run() {
+							try {
+								if(pistonCooldown.contains(p.getUniqueId())) {
+									pistonCooldown.remove(p.getUniqueId());
+								}
+							}catch(Exception e) {
+								
 							}
-						}catch(Exception e) {
-							
 						}
+					}, 7 * 20L);
+					List<Entity> entities = new ArrayList<Entity>(p.getWorld().getNearbyEntities(p.getLocation(), 4, 4, 4));
+					if(entities.size() == 0) {
+						if(pistonCooldown.contains(p.getUniqueId())) pistonCooldown.remove(p.getUniqueId());
 					}
-				}, 7 * 20L);
-				List<Entity> entities = new ArrayList<Entity>(p.getWorld().getNearbyEntities(p.getLocation(), 4, 4, 4));
-				if(entities.size() == 0) {
-					if(pistonCooldown.contains(p.getUniqueId())) pistonCooldown.remove(p.getUniqueId());
-				}
-				boolean sound = false;
-				int count = 0;
-				for(Entity e : entities) {
-					if(e instanceof Player) {
-						if(p.equals((Player)e)) continue;
-						if(((Player)e).getGameMode() == GameMode.SPECTATOR) continue;
-					}else if(!(e instanceof Mob)) continue;
-					if(e.getVehicle() != null) {
-						if(p.getVehicle() != null) {
-							if(e.getVehicle().getUniqueId().equals(p.getVehicle().getUniqueId())) continue;
-							else e = e.getVehicle();
-						}else e = e.getVehicle();
+					boolean sound = false;
+					int count = 0;
+					for(Entity e : entities) {
+						if(e instanceof Player) {
+							if(p.equals((Player)e)) continue;
+							if(((Player)e).getGameMode() == GameMode.SPECTATOR) continue;
+						}else if(!(e instanceof Mob)) continue;
+						if(e.getVehicle() != null) {
+							if(p.getVehicle() != null) {
+								if(e.getVehicle().getUniqueId().equals(p.getVehicle().getUniqueId())) continue;
+								else e = e.getVehicle();
+							}else e = e.getVehicle();
+						}
+						Vector vec = e.getLocation().toVector().subtract(p.getLocation().toVector()).setY(0).normalize();
+						Vector oldVec = vec.clone();
+						if(Double.isNaN(vec.getX()) || Double.isNaN(vec.getY()) || Double.isNaN(vec.getZ()) || vec.length() == 0) continue;
+						vec.setY(0.45);
+						vec.normalize();
+						vec.multiply(1.6);
+						vec.setY(vec.getY() + 0);
+						if(vec.getY() > 7.5) vec.setY(7.5);
+						if(Integer.parseInt(String.valueOf(Math.floor(p.getLocation().getY())).replace(".0", "")) == Integer.parseInt(String.valueOf(Math.floor(e.getLocation().getY())).replace(".0", ""))) vec.setY(0);
+						else if(Integer.parseInt(String.valueOf(Math.floor(p.getLocation().getY())).replace(".0", "")) > Integer.parseInt(String.valueOf(Math.floor(e.getLocation().getY())).replace(".0", ""))) vec.setY(-(vec.getY()));
+						else {
+							oldVec.setY(0.8);
+							oldVec.normalize();
+							oldVec.multiply(1.6);
+							oldVec.setY(oldVec.getY() + 0);
+							if(oldVec.getY() > 14) oldVec.setY(14);
+							vec = oldVec.clone();
+						}
+						e.setVelocity(vec);
+						count++;
+						sound = true;
 					}
-					Vector vec = e.getLocation().toVector().subtract(p.getLocation().toVector()).setY(0).normalize();
-					Vector oldVec = vec.clone();
-					if(Double.isNaN(vec.getX()) || Double.isNaN(vec.getY()) || Double.isNaN(vec.getZ()) || vec.length() == 0) continue;
-					vec.setY(0.45);
-					vec.normalize();
-					vec.multiply(1.6);
-					vec.setY(vec.getY() + 0);
-					if(vec.getY() > 7.5) vec.setY(7.5);
-					if(Integer.parseInt(String.valueOf(Math.floor(p.getLocation().getY())).replace(".0", "")) == Integer.parseInt(String.valueOf(Math.floor(e.getLocation().getY())).replace(".0", ""))) vec.setY(0);
-					else if(Integer.parseInt(String.valueOf(Math.floor(p.getLocation().getY())).replace(".0", "")) > Integer.parseInt(String.valueOf(Math.floor(e.getLocation().getY())).replace(".0", ""))) vec.setY(-(vec.getY()));
-					else {
-						oldVec.setY(0.8);
-						oldVec.normalize();
-						oldVec.multiply(1.6);
-						oldVec.setY(oldVec.getY() + 0);
-						if(oldVec.getY() > 14) oldVec.setY(14);
-						vec = oldVec.clone();
+					if(sound) {
+						Random r = new Random();
+						int random = r.nextInt(6) + 1;
+						float pitch = 1.0F;
+						switch(random) {
+						case 1:
+							pitch = 0.7F;
+						case 2:
+							pitch = 0.8F;
+						case 3:
+							pitch = 0.9F;
+						case 4:
+							pitch = 1.0F;
+						case 5:
+							pitch = 1.1F;
+						case 6:
+							pitch = 1.2F;
+						}
+						p.playSound(p.getLocation(), Sound.BLOCK_PISTON_EXTEND, SoundCategory.BLOCKS, 1, pitch);
+						try {
+							sendActionBar(p, "[{\"text\":\"You pushed \"},{\"text\":\"" + (count - 1) + "\",\"color\":\"green\"},{\"text\":\" entities!\"}]");
+						}catch(Exception e) {
+							p.sendMessage("You pushed " + ChatColor.GREEN + (count - 1) + ChatColor.RESET + " entities!");
+						}
+					}else {
+						if(pistonCooldown.contains(p.getUniqueId())) pistonCooldown.remove(p.getUniqueId());
 					}
-					e.setVelocity(vec);
-					count++;
-					sound = true;
-				}
-				if(sound) {
-					Random r = new Random();
-					int random = r.nextInt(6) + 1;
-					float pitch = 1.0F;
-					switch(random) {
-					case 1:
-						pitch = 0.7F;
-					case 2:
-						pitch = 0.8F;
-					case 3:
-						pitch = 0.9F;
-					case 4:
-						pitch = 1.0F;
-					case 5:
-						pitch = 1.1F;
-					case 6:
-						pitch = 1.2F;
-					}
-					p.playSound(p.getLocation(), Sound.BLOCK_PISTON_EXTEND, SoundCategory.BLOCKS, 1, pitch);
-					try {
-						sendActionBar(p, "[{\"text\":\"You pushed \"},{\"text\":\"" + (count - 1) + "\",\"color\":\"green\"},{\"text\":\" entities!\"}]");
-					}catch(Exception e) {
-						p.sendMessage("You pushed " + ChatColor.GREEN + (count - 1) + ChatColor.RESET + " entities!");
-					}
-				}else {
-					if(pistonCooldown.contains(p.getUniqueId())) pistonCooldown.remove(p.getUniqueId());
 				}
 			}
+		}catch(Exception e1) {
+			
 		}
 	}
 	@EventHandler
 	public void wetspongeArmor(PlayerToggleSneakEvent e) {
-		Player p = e.getPlayer();
-		if(e.isSneaking()) {
-			if(ifWearingAll(p, "Wet Sponge", ChatColor.YELLOW + "Absorbent - Absorbs nearby liquids")) {
-				/* Put the ability below. This is auto-generated
-				* from ArmorCreator program
-                * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
-				*/
-				if(p.isSneaking() == true) {
-					if(!(wscooldown.contains(p.getUniqueId()))) {
-						wscooldown.add(p.getUniqueId());
-						plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-							public void run() {
-								try {
-									wscooldown.remove(p.getUniqueId());
-								}catch(Exception e) {
-									
+		try {
+			Player p = e.getPlayer();
+			if(e.isSneaking()) {
+				if(ifWearingAll(p, "Wet Sponge", ChatColor.YELLOW + "Absorbent - Absorbs nearby liquids")) {
+					/* Put the ability below. This is auto-generated
+					* from ArmorCreator program
+	                * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
+					*/
+					if(p.isSneaking() == true) {
+						if(!(wscooldown.contains(p.getUniqueId()))) {
+							wscooldown.add(p.getUniqueId());
+							plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+								public void run() {
+									try {
+										wscooldown.remove(p.getUniqueId());
+									}catch(Exception e) {
+										
+									}
 								}
-							}
-						}, 20 * 6);
-						int radius = 3;
-						boolean sponged = false;
-						for (int x = -(radius); x <= radius; x ++) {
-							for(int y = -(radius); y <= radius; y ++) {
-								for(int z = -(radius); z <= radius; z ++) {
-									org.bukkit.block.Block block = p.getLocation().getBlock().getRelative(x, y, z);
-									if(block.getType().equals(Material.WATER)) {
-										sponged = true;
-										block.setType(Material.AIR);
-									}else if(block.getType().equals(Material.TALL_SEAGRASS)) {
-										sponged = true;
-										block.setType(Material.AIR);
-									}else if(block.getType().equals(Material.SEAGRASS)) {
-										sponged = true;
-										block.setType(Material.AIR);
+							}, 20 * 6);
+							int radius = 3;
+							boolean sponged = false;
+							for (int x = -(radius); x <= radius; x ++) {
+								for(int y = -(radius); y <= radius; y ++) {
+									for(int z = -(radius); z <= radius; z ++) {
+										org.bukkit.block.Block block = p.getLocation().getBlock().getRelative(x, y, z);
+										if(block.getType().equals(Material.WATER)) {
+											sponged = true;
+											block.setType(Material.AIR);
+										}else if(block.getType().equals(Material.TALL_SEAGRASS)) {
+											sponged = true;
+											block.setType(Material.AIR);
+										}else if(block.getType().equals(Material.SEAGRASS)) {
+											sponged = true;
+											block.setType(Material.AIR);
+										}
 									}
 								}
 							}
-						}
-						if(!sponged) try {
-							wscooldown.remove(p.getUniqueId());
-						}catch(Exception e1) {
-							
+							if(!sponged) try {
+								wscooldown.remove(p.getUniqueId());
+							}catch(Exception e1) {
+								
+							}
 						}
 					}
 				}
 			}
+		}catch(Exception e1) {
+			
 		}
 	}
 	public void magmaArmor() {
@@ -2372,31 +2418,35 @@ public class ArmorAbilities implements Listener {
 	}
 	@EventHandler
 	public void endstoneArmor(PlayerToggleSneakEvent e) {
-		Player p = e.getPlayer();
-		if(e.isSneaking()) {
-			if(ifWearingAll(p, "End Stone", plugin.ver16 ? ChatColor.DARK_PURPLE + "Ender - Teleports in the direction you're looking at" : "Ender - Teleports in the direction you're looking at")) {
-				if(teleportCooldown.contains(p.getUniqueId())) return;
-				if(p.getTargetBlock(null, 15).getType() == Material.AIR || p.getTargetBlock(null, 15).getType() == Material.LAVA) {
-					try {
-						sendActionBar(p, "{\"text\":\"You're looking at air or its too far away!\",\"color\":\"red\"}");
-					}catch(Exception e1) {
-						p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
-					}
-					return;
-				}
-				p.teleport(p.getTargetBlock(null, 30).getLocation().add(0, 1, 0));
-                p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1F, 1F);
-                teleportCooldown.add(p.getUniqueId());
-				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					public void run() {
+		try {
+			Player p = e.getPlayer();
+			if(e.isSneaking()) {
+				if(ifWearingAll(p, "End Stone", plugin.ver16 ? ChatColor.DARK_PURPLE + "Ender - Teleports in the direction you're looking at" : "Ender - Teleports in the direction you're looking at")) {
+					if(teleportCooldown.contains(p.getUniqueId())) return;
+					if(p.getTargetBlock(null, 15).getType() == Material.AIR || p.getTargetBlock(null, 15).getType() == Material.LAVA) {
 						try {
-							teleportCooldown.remove(p.getUniqueId());
-						}catch(Exception e) {
-							
+							sendActionBar(p, "{\"text\":\"You're looking at air or its too far away!\",\"color\":\"red\"}");
+						}catch(Exception e1) {
+							p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
 						}
+						return;
 					}
-				}, 15 * 20L);
+					p.teleport(p.getTargetBlock(null, 30).getLocation().add(0, 1, 0));
+	                p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1F, 1F);
+	                teleportCooldown.add(p.getUniqueId());
+					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+						public void run() {
+							try {
+								teleportCooldown.remove(p.getUniqueId());
+							}catch(Exception e) {
+								
+							}
+						}
+					}, 15 * 20L);
+				}
 			}
+		}catch(Exception e1) {
+			
 		}
 	}
 	public void iceArmor() {
@@ -2513,34 +2563,38 @@ public class ArmorAbilities implements Listener {
 	}
 	@EventHandler
 	public void boneArmor(PlayerToggleSneakEvent e) {
-		Player p = e.getPlayer();
-		if(e.isSneaking()) {
-			if(ifWearingAll(p, "Bone", ChatColor.WHITE + "Bonemealer - Applies bone meal to nearby blocks.")) {
-				/* Put the ability below. This is auto-generated
-				* from ArmorCreator program
-                * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
-				*/
-				if(!plugin.ver16) return;
-				if(boneCooldown.contains(p.getUniqueId())) return;
-				boneCooldown.add(p.getUniqueId());
-				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					public void run() {
-						boneCooldown.remove(p.getUniqueId());
-					}
-				}, 10 * 20L);
-				int radius = 2;
-				for (int x = -(radius); x <= radius; x ++) {
-					for(int y = -(radius); y <= radius; y ++) {
-						for(int z = -(radius); z <= radius; z ++) {
-							try {
-								p.getLocation().getBlock().getRelative(x, y, z).applyBoneMeal(BlockFace.UP);
-							}catch(Exception e1) {
-								
+		try {
+			Player p = e.getPlayer();
+			if(e.isSneaking()) {
+				if(ifWearingAll(p, "Bone", ChatColor.WHITE + "Bonemealer - Applies bone meal to nearby blocks.")) {
+					/* Put the ability below. This is auto-generated
+					* from ArmorCreator program
+	                * TO-DO AUTO-GENERATED BY ARMORCREATOR PROGRAM
+					*/
+					if(!plugin.ver16) return;
+					if(boneCooldown.contains(p.getUniqueId())) return;
+					boneCooldown.add(p.getUniqueId());
+					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+						public void run() {
+							boneCooldown.remove(p.getUniqueId());
+						}
+					}, 10 * 20L);
+					int radius = 2;
+					for (int x = -(radius); x <= radius; x ++) {
+						for(int y = -(radius); y <= radius; y ++) {
+							for(int z = -(radius); z <= radius; z ++) {
+								try {
+									p.getLocation().getBlock().getRelative(x, y, z).applyBoneMeal(BlockFace.UP);
+								}catch(Exception e1) {
+									
+								}
 							}
 						}
 					}
 				}
 			}
+		}catch(Exception e1) {
+			
 		}
 	}
 	public void soulsandArmor() {
@@ -2673,51 +2727,55 @@ public class ArmorAbilities implements Listener {
 	}
 	@EventHandler
 	public void snowArmor(PlayerToggleSneakEvent e) {
-		Player p = e.getPlayer();
-		if(e.isSneaking()) {
-			if(!snowCooldown.contains(p.getUniqueId()) && ifWearingAll(p, "Snow", ChatColor.WHITE + "Snowy - Spawns snow and snowballs")) {
-				int radius = 3;
-				boolean snowed = false;
-				for(int x = -(radius); x <= radius; x++) {
-					for(int y = -(radius); y <= radius; y++) {
-						for(int z = -(radius); z <= radius; z++) {
-							org.bukkit.block.Block block = p.getLocation().getBlock().getRelative(x, y, z);
-							if(block.getType().isOccluding()) {
-								org.bukkit.block.Block top = block.getLocation().add(0, 1, 0).getBlock();
-								if(top.getType() == Material.SNOW) {
-									Snow snow = (Snow) top.getBlockData();
-									if(snow.getLayers() <= (snow.getMinimumLayers() + 1)) snow.setLayers(snow.getLayers()+1);
-									top.setBlockData(snow);
-									if(new Random().nextInt(100) + 1 <= 15) p.getWorld().dropItemNaturally(top.getLocation(), new ItemStack(Material.SNOWBALL));
-									snowed = true;
-								}else if(top.getType() == Material.AIR) {
-									top.setType(Material.SNOW);
-									top = p.getLocation().getBlock().getRelative(x, (y+1), z);
-									Snow snow = (Snow) top.getBlockData();
-									snow.setLayers(snow.getMinimumLayers());
-									top.setBlockData(snow);
-									if(new Random().nextInt(100) + 1 <= 15) p.getWorld().dropItemNaturally(top.getLocation(), new ItemStack(Material.SNOWBALL));
-									snowed = true;
+		try {
+			Player p = e.getPlayer();
+			if(e.isSneaking()) {
+				if(!snowCooldown.contains(p.getUniqueId()) && ifWearingAll(p, "Snow", ChatColor.WHITE + "Snowy - Spawns snow and snowballs")) {
+					int radius = 3;
+					boolean snowed = false;
+					for(int x = -(radius); x <= radius; x++) {
+						for(int y = -(radius); y <= radius; y++) {
+							for(int z = -(radius); z <= radius; z++) {
+								org.bukkit.block.Block block = p.getLocation().getBlock().getRelative(x, y, z);
+								if(block.getType().isOccluding()) {
+									org.bukkit.block.Block top = block.getLocation().add(0, 1, 0).getBlock();
+									if(top.getType() == Material.SNOW) {
+										Snow snow = (Snow) top.getBlockData();
+										if(snow.getLayers() <= (snow.getMinimumLayers() + 1)) snow.setLayers(snow.getLayers()+1);
+										top.setBlockData(snow);
+										if(new Random().nextInt(100) + 1 <= 15) p.getWorld().dropItemNaturally(top.getLocation(), new ItemStack(Material.SNOWBALL));
+										snowed = true;
+									}else if(top.getType() == Material.AIR) {
+										top.setType(Material.SNOW);
+										top = p.getLocation().getBlock().getRelative(x, (y+1), z);
+										Snow snow = (Snow) top.getBlockData();
+										snow.setLayers(snow.getMinimumLayers());
+										top.setBlockData(snow);
+										if(new Random().nextInt(100) + 1 <= 15) p.getWorld().dropItemNaturally(top.getLocation(), new ItemStack(Material.SNOWBALL));
+										snowed = true;
+									}
 								}
 							}
 						}
 					}
-				}
-				if(snowed) {
-					snowCooldown.add(p.getUniqueId());
-					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-						public void run() {
-							try {
-								snowCooldown.remove(p.getUniqueId());
-							}catch(Exception e) {
-								
+					if(snowed) {
+						snowCooldown.add(p.getUniqueId());
+						plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+							public void run() {
+								try {
+									snowCooldown.remove(p.getUniqueId());
+								}catch(Exception e) {
+									
+								}
 							}
-						}
-					}, 2 * 20L);
+						}, 2 * 20L);
+					}
+					p.playSound(p.getLocation(), Sound.WEATHER_RAIN, 1, 1);
+					
 				}
-				p.playSound(p.getLocation(), Sound.WEATHER_RAIN, 1, 1);
-				
 			}
+		}catch(Exception e1) {
+			
 		}
 	}
 }
