@@ -1,0 +1,27 @@
+# INFO HERE: Because it resets on config reload if its not here
+# check-update
+# Automatically check for updates and tell every operator.
+# Note: Does not download the update automatically.
+# Available values: TRUE, FALSE
+#
+# disabled-items
+# Disabled custom items
+# Items that (might) be too OP can be disabled down here!
+#
+# disabled-armors
+# Disables the armor recipe and ability.
+# ID can be found at /armorplusplus gui
+# Can create glitchy armor pieces.
+# Like, obsidian helmet having Fire Prot 4 (supposed to have it when all sets are weared)
+#
+# glowing-armor
+# If it is true, the armor will be glowing.
+# if it is false, the armor will not be glowing with the exception of other enchantments.
+#
+# Custom items list: witchpotion
+check-update: true
+disabled-armors:
+- toRegisterThisAsAList
+glowing-armor: true
+disabled-items:
+- toRegisterThisAsAList
