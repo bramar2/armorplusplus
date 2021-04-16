@@ -1,0 +1,23 @@
+Current Version: 0.5.1
+Targeted Version: 0.6.5
+
+Changelog:
+- 'tick-interval' configuration is now removed. The ability system is changed.
+- Ability system is now based off events except for the PlayerLandEvent which is for every 5 ticks, cactus armor, and tick-based changing armors (every 2-6 second or 40-120 ticks).
+The plugin shouldnt cause as much lag as before.
+- All the tick-based armors now run in a single for-loop instead of multiple for-loops making it more optimised? idk whats the word for this
+- Note armor fixed not working.
+- Y Velocity for arrows in dispenser armor is now higher.
+- Added configuration 'disabled-items' for custom items.
+- Added the witch potion crafted by a potion (any) and 8 glowstone surrounding it.
+  Effects: 15s Regen 2, 7s Speed 2, 1m Absorption, 20s Strength
+- Removal of command /armorplusplus config for reason: Too glitchy and too many bugs to fix rather than
+  just configuring it and doing /armorplusplus reload
+- Added: Witch armor - Crafted like normally but using witch potions. It makes your effects last double
+  as long!
+- Nerfed obsidian armor KB resistance from 7.5 (literally AntiKB) to 1 (netherite)
+- Added /armorplusplus items for custom items
+- Update checker now gives more specific info, like download url, author, update title, update changelog, etc
+- Minor changes: Piston armor now display the correct entities pushed, plugin is now configured in maven,
+  , disabled armor and items now have a different optimised way of checking, lapis armor now actually
+  listens for 'LAPIS' id instead of 'DIRT', and /armorplusplus give now gives custom items.

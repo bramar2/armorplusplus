@@ -1,0 +1,21 @@
+name: ArmorPlusPlus
+description: Recreates the famous BlockArmor mod!
+version: 0.6.5
+main: me.bramar.armorplusplus.ArmorPlusPlus
+author: Author
+api-version: 1.13
+commands:
+    armorplusplus:
+        usage: /<command>
+        description: Opens a GUI with all armor or to check for updates.
+permissions:
+    armorplusplus.*:
+        description: No description
+        children:
+            armorplusplus.cheat: true
+            armorplusplus.checkupdate: true
+            armorplusplus.reload: true
+    armorplusplus.cheat:
+        description: No description
+        children:
+            armorplusplus.checkupdate: true
