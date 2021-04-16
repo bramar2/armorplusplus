@@ -1,4 +1,0 @@
-# Automatically check for updates and tell every operator.
-# Note: Does not download the update automatically.
-# Available values: TRUE, FALSE
-check-update: true
