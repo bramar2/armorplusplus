@@ -11,4 +11,5 @@ Milestones
 
 1000 Downloads ✓ - 10/16/2020, 
 2000 Downloads ✓ - 1/2/2021,
-5000 Downloads ✗
+5000 Downloads ✓ - I have no idea, i just came back to this and its on 6.5k (7/22/2021) so like around May-June
+10000 Downloads ✗
